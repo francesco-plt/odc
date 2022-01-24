@@ -1,8 +1,4 @@
-# Write-ups
-
-## Disclaimer
-
-I do not take any responsability about the correctness of this document. It was written in my spare time, and as such it is not **by any means** a in-depth explanation of how to approach those challenges. If you have any suggestion or you find errors, I would like for you to open an issue on [the GitHub repository](https://github.com/plt-francesco/odc-notes).
+# Challenge Write-ups
 
 ## Shellcode
 
