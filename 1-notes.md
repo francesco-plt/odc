@@ -1,7 +1,8 @@
 # Lecture Notes
 
 ## Disclaimer
-I do not take any responsability about the correctness of this document. The following was put together to help myself while studying for the course. As such it was not intended to be shared and it may contain errors.
+
+I do not take any responsibility about the correctness of this document. The following was put together to help myself while studying for the course. As such it was not intended to be shared and it may contain errors.
 
 ### Introductory lesson: how to approach challenges (backtoshell notes)
 
@@ -20,31 +21,27 @@ void main(void) {
 
 `UNRECOVERED_JUMPTABLE` = the compiler is guessing the presence of a jump table, but its not. Its just a buffer.
 
-**mmap**
-
-`mmap` = linux func that allocates memory regions
+**`mmap`**: function that allocates memory regions.
 
 If the mmap address is zero, the address will be randomized. The other parameters says where to find the size of the data that will be allocated, and its permissions. The fd is used to load a file into memory. in mmap 7 means rwx.
 
-**read**
+**`read`**: linux `syscall` that reads bytes from file descriptors (for e.g. 0 is the `fd` of stdin). For example:
 
-`read` = linux syscall that reads bytes from file descriptors (for e.g. 0 is the fd of the stdin). Example:
+`read(0, UNRECOVERED_JUMPTABLE, 0x200)` reads from zero into the jump table for `0x200` bytes.
 
-`read(0, UNRECOVERED_JUMPTABLE, 0x200)` reads from zero into the jump table for 0x200 bytes. Note that this info is obtainable trough the `man` command.
+#### Behaviour of the binary
 
-**binary behaviour**
+`(*memory)(0,0,0,0,0,0)` means "jump to memory". When this is happening, the first six registers contain zeroes.
 
-`(*memory)(0,0,0,0,0,0)` means: jump to memory. It means that the first six registers contain zeros.
+The binary is creating a page in memory, and jumping into it.
 
-backtoshell is creating a page in memory from an executable, and jumping in it.
+How do we exploit this behavior to read the flag?
 
-How do we exploit backtoshell to read the flag? **We need to run shellcode**.
+#### `syscall`
 
-**syscall**
+**`syscall`**: way that programs uses to interact with the kernel, in order for e.g. to r/w a file, send packets, use hw, etc. To execute system calls, some registers get set up and the call is ran. The kernel knows which syscall is going to be executed by the `rax` register content (for e.g. read has number `0x00`).
 
-`syscall` = way that programs use to interact with the kernel, in order for e.g. to r/w a file, send packets, use hw, etc. To execute syscalls, some registers get set up and the syscall is ran. The kernel knows which syscalls is going to be executed by the `rax` register content (for e.g. read has number `0x00`).
-
-**execve**
+#### execve
 
 ![image-20210914145615236](.assets/image-20210914145615236.png)
 
