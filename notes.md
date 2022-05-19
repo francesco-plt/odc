@@ -4,6 +4,10 @@
 
 I do not take any responsibility about the correctness of this document. The following was put together to help myself while studying for the course. As such it was not intended to be shared and it may contain errors.
 
+The notes file was taken during lecture, and as such it's badly written. Still it can be useful to clear some notions.
+
+The write-ups file contains key ideas as well as some code snippets useful to solve every challenge that was assigned during the course (a.y. 2021/2022).
+
 ### Introductory lesson: how to approach challenges (backtoshell notes)
 
 ```c
@@ -43,13 +47,11 @@ How do we exploit this behavior to read the flag?
 
 #### execve
 
-![image-20210914145615236](.assets/image-20210914145615236.png)
-
 To open a shell, we need the `execve` syscall, which has to be executed with `/bin/sh` as first parameter. In order to do that we will put `0x3b` in the `rax` register, and a pointer to `/bin/sh\x00` into `rdi`.
 
 Note that the string terminator is very important in order to make the exploit work.
 
-**useful links**
+#### Online resources
 
 * [Ghidra cheatsheet](https://ghidra-sre.org/CheatSheet.html)
 * [Online assembler, to write shellcode](https://defuse.ca/online-x86-assembler.htm)
@@ -60,7 +62,7 @@ Note that the string terminator is very important in order to make the exploit w
 * [Polymorphic and smaller versions of three shell-storm’s x64 shellcodes, including the smallest execve /bin/sh – Pentester's life (pentesterslife.blog)](https://pentesterslife.blog/2018/01/13/polymorphic-and-smaller-versions-of-three-shell-storms-x64-shellcodes-including-the-smallest-execve-bin-sh/)
 * [shell-storm | Shellcodes Database](http://shell-storm.org/shellcode/)
 
-**how does the exploit work**
+#### How does the exploit work
 
 First we need to get the string /bin/sh into memory, since we need to put its address in the `rdi` register. For e.g. we can do this by pushing it on the stack, using the `push` assembly function. First, we need to encode the string in hex using python:
 
@@ -102,15 +104,12 @@ Which will output our shellcode:
 
     \x48\x89\xC3\x48\x83\xC3\x40\x48\x89\xDC\x48\xBB\x2F\x62\x69\x6E\x2F\x73\x68\x00\x53\x48\x89\xE7\x48\x31\xDB\x53\x48\x89\xE6\x48\x89\xE2\x48\xC7\xC0\x3B\x00\x00\x00\x0F\x05
 
-**Note (zeros)** that zeros in the exploits needs to be avoided is the input is read with a scanf function.
+#### Notes
 
-**Note (char array as sycall argument)** that we need to put a pointer to a zero to terminate the array of arguments of the execv function, which means that we need to put a pointer to a zero in the `rsi` register (since the function writes those registers in this order: `rax`, `rdi`, `rsi`).
-
-**Note (rax register)** - the `rax` register is usually used for function return values.
-
-**Note** - remember to use `objdump`
-
-**Note** - general purpose shellcode to spawn a shell:
+* Zeros in the exploits needs to be avoided is the input is read with a scanf function.
+* We need to put a pointer to a zero to terminate the array of arguments of the execv function, which means that we need to put a pointer to a zero in the `rsi` register (since the function writes those registers in this order: `rax`, `rdi`, `rsi`).
+* The `rax` register is usually used for function return values.
+* General purpose shellcode to spawn a shell:
 
 ```
 "\x48\xBB\x2F\x62\x69\x6E\x2F\x73\x68\x00\x53\x48\x89\xE7\x48\x31\xDB\x53\x48\x89\xE6\x48\x89\xE2\x48\xC7\xC0\x3B\x00\x00\x00\x0F\x05"
@@ -170,7 +169,7 @@ int _start() {
    gdb attach <BINARY_PID>
    ```
 
-**Even easier setup with pwntools:**
+Even easier setup with pwntools:
 
 ```assembly
 from pwn import *
@@ -189,7 +188,7 @@ p.send(SC)
 p.interactive()
 ```
 
-**Note (custom breakpoint)** - Sw breakpoint achieved trough the `int3` instruction, which is a single byte instruction (`0xcc`). This case be also used by us: if we put it inside the shellcode, we can get a free breakpoint.
+**Note (custom breakpoint)**: Sw breakpoint achieved trough the `int3` instruction, which is a single byte instruction (`0xcc`). This case be also used by us: if we put it inside the shellcode, we can get a free breakpoint.
 
 ### Reverse shell
 
@@ -279,7 +278,7 @@ These two facts will become very useful to use in [Return Oriented Programming](
 
 ### ROP
 
-**x86 ROP exploit**
+#### x86 ROP exploit
 
 `read` call example, stack layout:
 
@@ -296,7 +295,7 @@ These two facts will become very useful to use in [Return Oriented Programming](
 
 the cleaner is a gadget such as `pop rdi; ret`. Note that the cleaner needs to pop at least the size of the arguments. For e.g. if we have three arguments, the cleaner needs to move at least three cells.
 
-**x64 ROP exploit**
+#### x64 ROP exploit
 
 Different calling convention: paramenters inside registers.
 
@@ -315,7 +314,7 @@ Stack layout:
 | pointer to system    |
 | ...                  |
 
-**Magic gadget**
+##### Magic gadget
 
 If we jump there, magically a shell spawns? -> `one_gadget`. It works depending on whatever value is inside the registers:
 
@@ -359,11 +358,11 @@ nextchunk-> +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
 
 **Note**: the size of the chunk must be a multiple of 16.
 
-**the top chunk**
+##### The top chunk
 
 Special chunk that occupies all the available  memory space in the heap. Every time a malloc is called it might be  shrinked. Once there’s no more space on the heap, a `brk(void *)` is called to allocate more pages to  the heap and the top chunk is expanded.
 
-**in practice**
+In practice:
 
 ```c
 #include <stdlib.h>
@@ -378,24 +377,6 @@ int main(int argc, char const *argv[]) {
     return 0; 
 }
 ```
-
-after a `b main` in gdb:
-
-![image-20211019171201023](.assets/image-20211019171201023.png)
-
-We can see that there is no heap allocated. After getting to the instruction that allocated the first buffer:
-
-![image-20211019171241385](.assets/image-20211019171241385.png)
-
-We have it. To inspect its content:
-
-```
-pwngdb> x/32gx    0x555555756260-8
-```
-
-![image-20211019171816810](.assets/image-20211019171816810.png)
-
-As we can see in the first 16 bytes we get the size of the allocated chunk. the `0x20d81` is the size of the top chunk, which begins at `0x555555756288`.
 
 #### Memory deallocation
 
@@ -412,13 +393,13 @@ they are lists of free chunks of a specific size. Heads of the lists are located
 3. small bins (62 double linked lists)
 4. large bins (62 double linked lists)
 
-**unsorted bins**
+##### unsorted bins
 
  Any freed chunk with size >= `0xA0` (160) ends up in the unsorted bin.
 
 When a chunk in the unsorted bin is not able to satisfy a  malloc request (e.g., `malloc(0x200)` but the freed chunk  has size `0x100`), the chunk in the unsorted bin is moved to the proper small or large bin: they work like a middle ground between small and large bins.
 
-**linked lists in c**
+##### Recall: Linked lists in c
 
 From [Linked lists - Learn C - Free Interactive C Tutorial (learn-c.org)](https://www.learn-c.org/en/Linked_lists):
 
@@ -444,7 +425,7 @@ And from [Linked List | Set 1 (Introduction) - GeeksforGeeks](https://www.geeksf
 > };
 > ```
 
-**fast bins**
+#### fast bins
 
 They are optimized bins for tiny freed chunks, not used for heavy operations.
 
@@ -477,39 +458,11 @@ From [Heap Exploitation - Nightmare (guyinatuxedo.github.io)](https://guyinatuxe
 > 0x602030: 0x0 0x0
 > ```
 
-<img src=".assets/image-20211019172646768.png" alt="image-20211019172646768" style="zoom:67%;" />
-
-The first element of the list containts all bins 16 bytes long, the second all elements 32 bytes long, and so on. As for the previous code example, assuming that we added three free to the end of the code, we would have:
-
-1. before `free(0xCCD0) ` deallocation:
-   
-   <img src=".assets/image-20211019172753017.png" alt="image-20211019172753017" style="zoom:67%;" />
-
-2. after `free(0xCCD0) ` deallocation:
-   
-   <img src=".assets/image-20211019172853692.png" alt="image-20211019172853692" style="zoom:67%;" />
-
-And after `free(0xBBC0)`:
-
-<img src=".assets/image-20211019181217613.png" alt="image-20211019181217613" style="zoom: 80%;" />
-
 #### `__malloc_hook`
 
 > The GNU C Library lets you modify the behavior of `malloc`, `realloc`, and `free` by specifying appropriate hook functions. You can use these hooks to help you debug programs that use dynamic memory allocation, for example.
 
-<img src=".assets/image-20211019173554280.png" alt="image-20211019173554280" style="zoom:80%;" />
-
-After the first malloc we get a pointer to the address of the top chunk:
-
-```
-0x7ffff7dcdca0 <main_arena+96>: 0x0000555555756280      0x0000000000000000
-```
-
-After the first free the head of the bin points to the first free chunk. After another free we get the same behavior from the second chunk, and so on:
-
-<img src=".assets/image-20211019173943823.png" alt="image-20211019173943823" style="zoom: 67%;" />
-
-**What are we trying to achieve with heap manipulation?**
+##### What are we trying to achieve with heap manipulation?
 
 The final goal of this kind of attack is to overwrite `__malloc_hook` or `_free_hook`. Those are pointers to monitor the allocation. If we put a function inside those variables, the functions putted there gets executed instead of `free` and `malloc`. This basically is code execution. Since the parameter of the `__free_hook` is the same of the `free()`, if we put `/bin/sh` in a chunk, and we put `system()` into `__free_hook`, we will have a shell.
 
@@ -597,8 +550,6 @@ We need 3 chunks:
 > 
 > Source: [Shrinking Free Chunks - heap-exploitation (dhavalkapil.com)](https://heap-exploitation.dhavalkapil.com/attacks/shrinking_free_chunks)
 
-<img src=".assets/image-20211022180356586.png" alt="image-20211022180356586" style="zoom: 50%;" />
-
 Steps:
 
 1. free(B) -> that space gets into the unsorted bin list;
@@ -640,7 +591,7 @@ if (__builtin_expect (chunksize(P) != prev_size (next_chunk(P)), 0))
 
 Basically a check between the size of the newly allocated chunks and their previous size is implemented. Given a chunk P, its previous size is recovered by taking it from the next chunk, which is just the address of P plus its size. 
 
-To bypass this, we can put a fake `prev_size` at the beginning of B, and align 8 bytes later the real `prev_size`:<img src="theory.assets/Schermata 2021-11-27 alle 18.02.35.png" alt="Schermata 2021-11-27 alle 18.02.35" style="zoom:67%;" />
+To bypass this, we can put a fake `prev_size` at the beginning of B, and align 8 bytes later the real `prev_size.
 
 #### T-Cache
 
@@ -648,21 +599,23 @@ It is a cache for chunk size < `0x500`. It is a LIFO single linked list which ho
 
 When we free something we get a pointer to the bin. Note that the pointer is to the actual data, not to the metadata like for fast bins. When a chunk gets freed it ends up at the top of the list.
 
-**Note**: if I have more than 7 chunks per bin the next one we free will go into the T-Cache.
+##### Notes
 
-**Note:** It can be useful to check the source code of the `malloc` function to check for libc version specific code. For example, here's a [link to the source code of the function in the 2.27 libc]([malloc.c - malloc/malloc.c - Glibc source code (glibc-2.27) - Bootlin](https://elixir.bootlin.com/glibc/glibc-2.27/source/malloc/malloc.c)).
+* If I have more than 7 chunks per bin the next one we free will go into the T-Cache.
+* It can be useful to check the source code of the `malloc` function to check for libc version specific code. For example, here's a [link to the source code of the function in the 2.27 libc]([malloc.c - malloc/malloc.c - Glibc source code (glibc-2.27) - Bootlin](https://elixir.bootlin.com/glibc/glibc-2.27/source/malloc/malloc.c)).
 
 ##### Tcache poison attack
 
 Idea: overwrite the pointer of the chunk inside t-cache. Then if we keep allocating the memory region of this arbitrary value will be make writable by the next `malloc`, and it can be overwritten in any way we want.
 
-**Note**: there is no check on the size like we have for the regular bins.
-
 **T-Cache Key**: similar to canary. It is a random value that gets putted inside a chunk inside the T-Cache. If when freeing the value is not there, some extra checks are applied.
 
-**Pointer protection**: ??. It complicates T-Cache exploits by needing to leak the address of the heap.
+**Pointer protection**: It complicates T-Cache exploits by needing to leak the address of the heap.
 
-**Note**: to check the code of a specific libc version we can use [Linux source code (v5.14.14) - Bootlin](https://elixir.bootlin.com/linux/latest/source).
+##### Notes
+
+* There is no check on the size like we have for the regular bins.
+* To check the code of a specific libc version we can use [Linux source code (v5.14.14) - Bootlin](https://elixir.bootlin.com/linux/latest/source).
 
 ### Static analysis
 
@@ -672,7 +625,6 @@ Means understanding the functionality of a binary by looking at the code:
 * recover function
 * recover types
 * decompile
-* ...
 
 **Note**: in assembly the types vary only basing on the size of variables and how we interpret that sequence of bytes.
 

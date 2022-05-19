@@ -419,14 +419,14 @@ int main(){
 ### ropasaurusrex (32- bit `ROP` chain)
 
 ```assembly
-❯ pwn checksec ropasaurusrex
+$ pwn checksec ropasaurusrex
 [*] '/home/zerocool/chall/solved/ropasaurusrex/ropasaurusrex'
     Arch:     i386-32-little
     RELRO:    No RELRO
     Stack:    No canary found
     NX:       NX enabled
     PIE:      No PIE (0x8048000)
-❯ file ropasaurusrex
+$ file ropasaurusrex
 ropasaurusrex: ELF 32-bit LSB executable, Intel 80386, version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux.so.2, for GNU/Linux 2.6.18, BuildID[sha1]=96997aacd6ee7889b99dc156d83c9d205eb58092, stripped
 ```
 
@@ -479,7 +479,7 @@ GOT protection: No RELRO | GOT functions: 4
 pwndbg>
 ```
 
-#### cyclic
+#### `cyclic`
 
 To check how deep are we in the stack we can use `pwn cyclic -n 4 200 | ./ropasaurusrex` which generates a pattern of 4 bytes, 200 chars long (since we are in a 32 bit environment, otherwise we would need a 8 bytes pattern). Then we check with gdb what section of the pattern gets into the instruction pointer (for e.g. gdb would print `Invalid address at 0x6261616b`), and then we can actually see how long must be our padding, by running:
 
@@ -503,8 +503,6 @@ Since the binary is x86, we need to put call arguments on the stack. We need the
 | Frame of caller / arg #3 (3rd argument of what we want to execute, how much to write) |
 | Frame of caller / `main` address (**return address** after that the gadget cleans the stack) |
 | ...                                                          |
-
-Code for that:
 
 ```python
 # STAGE 1
@@ -533,7 +531,7 @@ print('address of system: ' + str(hex(sysaddr)))
 
 On top of the stack we have the pointer of the write, the return address (`CCCC`, for now we do not need it), and its parameters. The code above, when assembled into shellcode and executed, will execute a `write` syscall, which will write to `stdout` the address of the `write` itself. How did we tell to the `write` what to print? We passed as argument in the stack (remember x86 calling convention, which unlike x64 uses the stack instead of the register for function arguments) the address of `write` in the `GOT` table, which at runtime corresponds to the address of the same function but in `libc`. This means that since we know the offset of the `write` inside the library, we can compute `libc` base to know the address of `system`, which is the function that we'll use to spawn a shell.
 
-**Note about cleaner gadget**
+**Note about cleaner gadgets**
 
 ```python
 e = ELF('./ropasaurusrex')
@@ -546,7 +544,7 @@ cleaner = (rop.find_gadget(['pop esi','pop edi','pop ebp','ret']))[0]
 
 This gadget will remove the arguments that we put in the stack to correctly execute the call. It is necessary if we want to execute a `ROP` chain.
 
-#### spawning a shell
+#### Spawning a shell
 
 ```python
 # STAGE 2
@@ -576,7 +574,7 @@ input("press any key to spawn a shell...")
 r.interactive()
 ```
 
-### emptyspaces (64-bit `ROP` chain)
+### emptyspaces (64-bit ROP chain)
 
 ```bash
 $ file easyrop
@@ -640,7 +638,7 @@ void empty(char *buf) {
 }
 ```
 
-**Note**:  `empty()` does not complicates things, since it just fills some space which would be padding anyway. If for example we fill the buffer with 64 'A' characters, the stack would look like this:
+**Note**:  `empty` does not complicates things, since it just fills some space which would be padding anyway. If for example we fill the buffer with 64 'A' characters, the stack would look like this:
 
 ```assembly
 pwndbg> x/30gx $rsp
@@ -662,13 +660,13 @@ Stack level 0, frame at 0x7fffffffdfe0:
 
 `sEBP` is overwritten, but we do not need it anyway.
 
-#### what to do
+#### What to do
 
 We know that we can perform a buffer overflow, but still we need to leak and put on the stack the canary (if present), and execute at least two syscalls: one to read `/bin/sh` and put it in memory, the other one to execute `execve(/bin/sh, 0, 0);`. We also need to find some gadgets to setup the registers to run a syscall. Weirdly `ropper` won't find useful gadgets, while `ROPgadgets` works just fine.
 
 Note that in order to do that we need to restart the execution from main, since the read only takes 137 bytes and our exploit is longer than that. Since the binary is not `PIE`, this is possible without leaking any address at runtime.
 
-#### the exploit
+#### The exploit
 
 The payload is made up by some padding necessary to reach `sEIP`. Then there is a first payload which is used to call a `read` to put in the heap `/bin/sh`, then we'll pass the string to put it in memory (at an arbitrary address decided by us):
 
@@ -749,7 +747,7 @@ int main(int argc, char * argv[]){
 
 ### easyrop
 
-#### initial considerations
+#### Initial considerations
 
 ```shell
 $ file easyrop
@@ -793,7 +791,7 @@ undefined8 main(void)
 
 Basically we can fill up 8 bytes (1 cell) of the buffer in each loop iteration, since no array bound check is performed. Between the beginning of the array and seip there are 56 bytes.
 
-#### the actual exploit
+#### The actual exploit
 
 This will be the structure of our exploit:  
 
@@ -1039,10 +1037,10 @@ Now lets try `ltrace` on it:
 
 ```sh
 $ ltrace ./revmem ciao
-malloc(30)                                                                                       = 0x555555559260
-strncmp("flag{this_was_an_easy_reverse}", "ciao", 30)                                            = 3
+malloc(30)                                                                                         0x555555559260
+strncmp("flag{this_was_an_easy_reverse}", "ciao", 30)                                            
 puts("Wrong!"Wrong!
-)                                                                                   = 7
+)                                                                                   
 +++ exited (status 0) +++
 ```
 
@@ -1078,7 +1076,7 @@ From this snippet of code we can see that the flag is put in memory by a `malloc
 
 ### revmemp
 
-Very similar to **revmem**. Both `strace` and `ltrace` outputs are not very useful in this case. We can try to debug the application when the `strcmp` between the user input and the flag gets executed. From the disassembler:
+Very similar to revmem. Both `strace` and `ltrace` outputs are not very useful in this case. We can try to debug the application when the `strcmp` between the user input and the flag gets executed. From the disassembler:
 
 ```assembly
 0010136d e8 be fc ff ff      CALL      <EXTERNAL>::strncmp
@@ -1147,10 +1145,6 @@ void wtf(void)
 
 It basicaly checks if the first and second symbols of entry are breakpoints (`0xcc`). It basically avoids the user from using them.
 
-#### ~~Exploit idea~~
-
-We could patch all the functions which play tricks to stop us from debugging the code, ~~or we could just patch the binary to print us the flag for every wrong input we try~~. Actually this is of no use, since the program does not print the flag at all, it just says to us of we passed the correct one to him...
-
 #### How to patch the binary (`xxd`, the hard way)
 
 We'll be using vim. First of all open the binary: `vim ./revmemnp`. then input the following:
@@ -1186,7 +1180,7 @@ Basically we just need to overwrite both checks, the one which prevents us from 
 
 ---
 
-### keycheck_baby notes
+### keycheck_baby
 
 In this challenge we have to reverse engineer a key encryption algorithm divided in two steps. We have the key which is split in two and encrypted differently using two loops.
 
@@ -1260,8 +1254,6 @@ for i in range(1, 12):
 
 In the code above $p_{i}$ are characters of the flag, while $c_{i}$ are characters of `magic1`. 
 
----
-
 ### crackme
 
 Another easy reversing challenge, in this case we have a XOR cypher:
@@ -1295,7 +1287,7 @@ print(f'flag: {flag}')
 
 ### fastbin-attack
 
-#### environment setup
+#### Environment setup
 
 We are given the loader because there may be inconsistencies with the given `libc` and the system loader:
 
@@ -1356,7 +1348,7 @@ Since we are incresing the size of the single item, we need to decrease the numb
   }
 ```
 
-#### what does it do
+#### What does it do
 
 Basically the binary manipulates lists that have the following structure:
 
@@ -1514,7 +1506,7 @@ void free_entry(void)
 
 Same as the other function: there is no check in place. We can free a chunk more than once. This means that we can basically print everything we want, which means that we can also leak the address of `libc`.
 
-#### the exploit in theory
+#### The exploit in theory
 
 1. vulnerability: `read_entry`, can be used to leak stuff.
 
@@ -1522,7 +1514,7 @@ Same as the other function: there is no check in place. We can free a chunk more
 
    More specifically when overwriting `__free_hook` we overwrite it with `system` and we pass `/bin/sh` to it. Instead when we overwrite `__malloc_hook`  we use `one_gadget` since the parameter of the `malloc` is a number, not a string.
 
-#### the exploit in practice
+#### The exploit in practice
 
 **simplifying the process**
 
@@ -1607,7 +1599,7 @@ print("[!] libc_leak: %#x" % libc_leak)
 print("[!] libc_base: %#x" % libc_base)
 ```
 
-**part 1: leaking libc address** 
+**Part 1: leaking libc address** 
 
 We need to leak `libc`, how do we do it? We allocate a small bin and **free it**, since after the free it will contain an address to a location which is is located into libc:
 
@@ -1619,7 +1611,7 @@ print(chunk_a, read(chunk_a))
 
 This happens because when we have only one chunk it will contain a random libc address, from which we can compute the address of the base of the libc. To find the offset we will use `vmmap` in gdb.
 
-**part 2: exploiting ~~`__free_hook`~~ `__malloc_hook` to spawn a shell**
+**Part 2: exploiting ~~`__free_hook`~~ `__malloc_hook` to spawn a shell**
 
 ```python
 chunk_c = alloc(size)
@@ -1720,7 +1712,7 @@ r.interactive()
 
 ### playground
 
-#### what does it do
+#### What does it do
 
 It has only the `main` function which encompasses all the functionality. There are some nested loops that executes the following functionalities:
 
@@ -1756,7 +1748,7 @@ Here's what we need to do in order to exploit this binary:
 We need to exploit the presence of the key in the tcache, since it allows us to overwrite any DWORD with zeros. Here's an example:
 
 ```shell
-❯ LD_PRELOAD=./libc-2.27.so ./playground
+$ LD_PRELOAD=./libc-2.27.so ./playground
 pid: 10714
 main: 0x5555555551d9
 > malloc 32
@@ -1918,7 +1910,7 @@ And then there's the pointer to the pokemon name, which is `0x405110`. As for th
 
 Which makes sense, since its `0x21` bytes long, which is 4 WORDS long.
 
-#### what we need to do
+#### Exploit idea
 
 We need to put in place a null byte poisoning exploit, which can be achieved trough the function used to assign names to pokemons:
 
@@ -2256,9 +2248,9 @@ As you can see from `0x4056b0`, if we do the `heap` command in gdb, it does not 
 
 Basically up to now we just did things to trick malloc into giving us two chunks allocated and overlapping. Now we can actuate the exploit, which consists in replacing the function pointer of some move of a pokemon (chunk B2) with our exploit to get rce. We can do that by writing a target address in the overlapped chunk resulting from the null byte overflow. The binary helps us because each pkm struct has an array of function pointer which gets called by a function of the binary. So, to recap:
 
-       1.  We perform the null byte exploit
-       2.  We use the overlapping chunk to write an address of interest in the moves array of the overlapped pokemon
-       3.  We call the function which executes the code at the given address to gain rce
+1.  We perform the null byte exploit;
+2.  We use the overlapping chunk to write an address of interest in the moves array of the overlapped pokemon;
+3.  We call the function which executes the code at the given address to gain RCE.
 
 We could write a `one_gadget` address, or somethigs else. In my case `one_gadget` was not working, so I wrote
 the following into the overlapped pokemon:
@@ -2641,7 +2633,7 @@ def check01(key):
 
 ## Race condition
 
-### aart notes
+### aart
 
 **Goal**: register a user and login before that the restriction gets activated. This is the point of the **race condition**: we need to make the login happen before the registration is actually complete. More specifically, this is from `register.php`:
 
@@ -2692,11 +2684,11 @@ if($_POST['username'] === $row['username'] and $_POST['password'] === $row['pass
 
 And we need to make registration and login happen at the same time in order to be able to login before that `INSERT into privs (userid, isRestricted) values ((select users.id from users where username='$username'), TRUE);` gets executed.
 
-#### The toolkit
+#### Toolkit
 
 Best python library for handling HTTP requests, hands down. We'll use it for this challenge, since both the login and registration functions are POST requests. To look at requests we could use chrome developer tools or wireshark since HTTP requests are in clear.
 
-#### The approach
+#### Approach
 
 First approach: we can try making the registration and the login happen at the same time. This will not work:
 
@@ -2753,7 +2745,7 @@ The code above actually prints the flag.
 
 ## Serialization
 
-### lolshop notes
+### lolshop
 
 We wanto to exploit the `restore` function, since it has a vulnerability which can allow execution of non serialized malicious code. Ideally we would also like to exploit the `getPicture` function in `products.php`, since it has an hardcoded path into it. Note that it is also called into a `toDict` function.
 
@@ -3302,7 +3294,7 @@ Some notes about CSP:
 
 6. `'unsafe-eval'` allows the application to use the `eval()` JavaScript function. This reduces the protection against certain types of DOM-based XSS bugs, but makes it easier to adopt CSP. If your application doesn't use `eval()`, you can remove this keyword and have a safer policy. More on the `eval` function:
 
-### What is API callback and why are we using it?
+### Recall: What is API callback and why are we using it?
 
 From [Bypassing CSP by Abusing JSONP Endpoints | by Mazin Ahmed | Medium](https://medium.com/@mazin.ahmed/bypassing-csp-by-abusing-jsonp-endpoints-47cf453624d5):
 
@@ -3328,7 +3320,7 @@ Since the CSP of the website is:
 default-src 'self'; script-src 'self' *.google.com; connect-src *
 ```
 
-#### the exploit
+#### The exploit
 
 We need a page that makes an HTTP req to reqbins, and that sends to it all the cookies. Then we use the XSS vulnerability on the website of the challenge to make the admin visit that webpage, and we should be all set. More specifically those are the steps to follow:
 
@@ -3524,7 +3516,7 @@ pwndbg> x/30gi 0x804970e
    0x804976a:	sub    esp,0x4
 ```
 
-#### From prof's lesson
+#### Notes from lesson
 
 Basically I was almost right about what was happening here. We have that the main is calling an unpacking routine, which is the `unpack` function above. The `num` parameter is a counter for a loop:
 
@@ -3561,7 +3553,7 @@ We have two approaches:
 * **Static**: Since we understand the unpacking routine we can build an unpacker and look at it with ghidra.
 * **Dynamic**: we could run the binary and use ghidra to look at the unpacked running code, or we can dump the memory of the running binary and look at it.
 
-##### Dynamic approach
+#### Dynamic approach
 
 We'll break at the `unpack` function with gdb:
 
@@ -3718,7 +3710,7 @@ We've got a call to the `strstr` function, and another call to the packer.
 
 **From this behaviour we unedrstand that the check on the flag is performed incrementally by calling `unpack` and the `pack` on some code, and so on. This means that we'll not have a point in time in which during execution the binary is completely unpacked.** Extracting the unpacked code dynamically can be very time consuming, which means that a more efficient method would be to write a script that reverse engineer the packing algorithm, which then can be used to create a binary containing an unpacked payload. This is what the static approach does in a nutshell.
 
-##### Static approach
+#### Static approach
 
 Let's reverse engineer the packer with python:
 
