@@ -1,6 +1,6 @@
-## Serialization
+# Serialization
 
-### lolshop
+## lolshop
 
 We wanto to exploit the `restore` function, since it has a vulnerability which can allow execution of non serialized malicious code. Ideally we would also like to exploit the `getPicture` function in `products.php`, since it has an hardcoded path into it. Note that it is also called into a `toDict` function.
 
@@ -13,7 +13,7 @@ zlib.decompress(state)
 
 The result is a php serialized object. We can inject anything we want into it. We need another class / more than on class to get a print of the secret file present in the server's file system.
 
-#### In a nutshell
+### In a nutshell
 
 If we send a product instead of a state, the `toDict` of the product is going to be called. The output will contain the `getPicture` function, which will read from the filesystem the path we want, which will be the secret file. Code for that:
 
@@ -45,7 +45,7 @@ In the first line we copied into the console all the class code from the website
 
 **Note:** HTTP status code 500 means internal serve error. It is good, since it means that there's something wrong that we can exploit.
 
-### free-as-in-beer
+## free-as-in-beer
 
 We do not have any source code... We just have the url of the challenge, and some hints: we know that the flag is contained in the `flag.php` file, and that we'll probably find some exploitable code if we look carefully. In fact we can find some PHP source code in plain text:
 
@@ -139,7 +139,7 @@ I'm a bit of a novice in PHP, so let's look more carefully at what we're dealing
 
   **header()** is used to send a raw HTTP header. See the [» HTTP/1.1 specification](http://www.faqs.org/rfcs/rfc2616) for more information on HTTP headers.
 
-#### A first approach
+### A first approach
 
 This is the exploitable part of the code, leaked in the html of the page:
 
@@ -185,7 +185,7 @@ Recall on magic methods such as `__toString`:
 
 Basically we need to serialize an instance of the `GPLSourceBloater` class with the `source` variable setted as `flag.php`. To achieve that we create the object, serialize it, and put it in the `todos` array. After that it's just a matter of sending a GET to the server with our custom cookie and the flag will be printed.
 
-### metactf
+## metactf
 
 More complex than free-as-in-beer. We have two classes: `User` and `Challenge`:
 
@@ -302,7 +302,7 @@ It is used to fetch a result row as an associative array.
 * `__construct`: If you create a `__construct()` function, PHP will automatically call this function when you create an object from a class.
 * `__destruct`: If you create a `__destruct()` function, PHP will automatically call this function at the end of the script. This is the method we'll exploit to leak the flag.
 
-#### A first approach
+### A first approach
 
 I tried downloading the default user object created by the website, changing the number of points and setting `isAdmin` to `true`:
 
@@ -336,7 +336,7 @@ O:4:"User":5:{s:4:"name";s:3:"123";s:2:"id";i:0;s:7:"isAdmin";b:1;s:6:"solved";a
 
 The code above gets printed for every user, admin or not.
 
-#### The solution
+### The solution
 
 Since in the code of the `Challenge` class we can execute arbitrary shell commands, we could try executing `cat /flag.txt`. First we need to instantiate a new object, which we did (Test Challenge). Then we need to delete it, which will call the `__destruct()` magic method, which will call the `stop()` function. If we previously set `$c->stop_cmp = 'cat /flag.txt'`, we should be all set. Still we need a way to manipulate the object...
 
@@ -386,7 +386,7 @@ Then, after uploading this, we load `index.php` and we'll get:
 >
 >Stoping challenge!flag{nice_yuo_got_the_unserialize_flag!}
 
-### metarace
+## metarace
 
 Same webapp as metactf, but different exploit: we need to registrate, login and get to the homepage before that the registration is finished. This is because at registration time the user is setted as non admin, which means that he cannot see all the challenges present in the database. If we are able to send a login request and to get the index.php faster than that, we'll be able to print what we need.
 
@@ -497,7 +497,7 @@ Same webapp as metactf, but different exploit: we need to registrate, login and 
         }
     ```
 
-  #### The solution
+  ### The solution
 
   Quite straightforward: we setup two threads and we try to login and get to the home page of the website while the registration is still ongoing in order to be faster than the `fix_user` function, which would block access to the database.
   

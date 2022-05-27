@@ -1,6 +1,6 @@
-## Symbolic
+# Symbolic
 
-### pnrg
+## pnrg
 
 Very simple program in theory: it takes 4 truly random bytes from `/dev/random`, it checks them agains user input: if they are equal, it prints the flag. Basically we need to recover those random bytes. In the middle of this we have some calls to functions called `seedRand` and `genRandLong`, which together with the name of the challenge can give us some hints about its nature:
 
@@ -16,7 +16,7 @@ From the Ghidra pseudocode we can deduce that `local_1408` is the internal state
 
 **Note**: the seed is 8 bytes long.
 
-#### Symbolic execution method
+### Symbolic execution method
 
 Basically we need to replicate the behaviour of the program using z3 to reconstruct the final output. `main` code:
 
@@ -120,7 +120,7 @@ from IPython import embed
 embed()
 ```
 
-##### `seedRand`
+#### `seedRand`
 
 Let's start by converting `m_seedRand` in python:
 
@@ -170,7 +170,7 @@ def seedRand(s, seed):
     return s
 ```
 
-##### `genRandLong`
+#### `genRandLong`
 
 ```c
 ulong genRandLong(undefined8 *param_1)
@@ -271,7 +271,7 @@ Recall: this code is a random number generator with a random seed. The challenge
 
 Why are we able to reverse: from the same state we can always get the same output. **The only random part of the algorithm is the seed**.
 
-### prodkey
+## prodkey
 
 We have a 30 characters long key that we have to guess to get the flag, which is stored remotely. To check the correctness of our input flag the binary calls a function called `verify_key`, which returns 1 if its correct, 0 otherwise.
 
@@ -328,9 +328,9 @@ def check01(key):
 )
 ```
 
-## Race condition
+# Race condition
 
-### aart
+## aart
 
 **Goal**: register a user and login before that the restriction gets activated. This is the point of the **race condition**: we need to make the login happen before the registration is actually complete. More specifically, this is from `register.php`:
 
@@ -381,11 +381,11 @@ if($_POST['username'] === $row['username'] and $_POST['password'] === $row['pass
 
 And we need to make registration and login happen at the same time in order to be able to login before that `INSERT into privs (userid, isRestricted) values ((select users.id from users where username='$username'), TRUE);` gets executed.
 
-#### Toolkit
+### Toolkit
 
 Best python library for handling HTTP requests, hands down. We'll use it for this challenge, since both the login and registration functions are POST requests. To look at requests we could use chrome developer tools or wireshark since HTTP requests are in clear.
 
-#### Approach
+### Approach
 
 First approach: we can try making the registration and the login happen at the same time. This will not work:
 

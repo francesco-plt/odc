@@ -1,6 +1,6 @@
-## Shellcode
+# Shellcode
 
-### backtoshell
+## backtoshell
 
 ```c
 void main(void) {
@@ -25,11 +25,11 @@ If the mmap address is zero, the address will be randomized. The other parameter
 
 `read(0, UNRECOVERED_JUMPTABLE, 0x200)` reads from zero into the jump table for `0x200` bytes. Note that this info is obtainable trough  `man`.
 
-#### behaviour
+### behaviour
 
 `(*memory)(0,0,0,0,0,0)` means: jump to memory. It means that the first six registers contain zeros when jumping. So basically this binary is creating a page in memory, reading user input into it, and then it jumps into it. We want to put some code in that page which when executed will helps us to spawn a shell.
 
-#### Putting together the shellcode
+### Putting together the shellcode
 
 First of all we need a **syscall**:
 
@@ -94,7 +94,7 @@ int _start() {
 }
 ```
 
-### syscall, syscalr
+## syscall, syscalr
 
 Here we need an auto modifying shellcode, since the only obstacle to executing our exploit is that we cannot give `\x0f` or `\x05` in input to the `read` otherwise the program would exit:
 
@@ -149,7 +149,7 @@ We can manually swap the last two bytes:
 
 This means that when the code will be run it will first pass the check, and then correct itself to execute `syscall` as last assembly instruction.
 
-### multistage
+## multistage
 
 **Hint**: the challenge name means that we'll probably need a two step exploit for some reason. In this case the problem is the following:
 
@@ -196,7 +196,7 @@ mov edx, 0x100
 syscall
 ```
 
-### gimme3bytes
+## gimme3bytes
 
 ```c
 #include <stdio.h>
@@ -273,7 +273,7 @@ p.interactive()
 
 **Note**: we can send both shellcodes with one call of the `send` function.
 
-### leakers, gonnaleak, aslr
+## leakers, gonnaleak, aslr
 
 **Note**: I have put all those challenges in one chapter because they are really similar.
 

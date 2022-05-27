@@ -1,6 +1,6 @@
-## ROP
+# ROP
 
-### ropasaurusrex (32- bit `ROP` chain)
+## ropasaurusrex (32- bit `ROP` chain)
 
 ```assembly
 $ pwn checksec ropasaurusrex
@@ -37,7 +37,7 @@ void vuln(void) {
 }
 ```
 
-#### what do we do?
+### what do we do?
 
 We have an overflow but we cannot perform a `ROP` exploit since we don't know where `libc` is in memory. Since we cannot print out the stack, we could exploit the `GOT` table to leak the address of `system`. Since the binary is not `PIE`, and the momry addresses of the code are not randomized at runtime, the `GOT` table has a permanent address that can be found with Ghidra. From the previous screenshot we can see the address of `read`: `804961c`, and also the address of `write`. Those two functions alone are enough to read and print to screen the content of the file containing the flag.
 
@@ -63,7 +63,7 @@ GOT protection: No RELRO | GOT functions: 4
 pwndbg>
 ```
 
-#### `cyclic`
+### `cyclic`
 
 To check how deep are we in the stack we can use `pwn cyclic -n 4 200 | ./ropasaurusrex` which generates a pattern of 4 bytes, 200 chars long (since we are in a 32 bit environment, otherwise we would need a 8 bytes pattern). Then we check with gdb what section of the pattern gets into the instruction pointer (for e.g. gdb would print `Invalid address at 0x6261616b`), and then we can actually see how long must be our padding, by running:
 
@@ -72,7 +72,7 @@ To check how deep are we in the stack we can use `pwn cyclic -n 4 200 | ./ropasa
 140
 ```
 
-#### leaking `libc`
+### leaking `libc`
 
 Since the binary is x86, we need to put call arguments on the stack. We need the following stack layout:
 
@@ -128,7 +128,7 @@ cleaner = (rop.find_gadget(['pop esi','pop edi','pop ebp','ret']))[0]
 
 This gadget will remove the arguments that we put in the stack to correctly execute the call. It is necessary if we want to execute a `ROP` chain.
 
-#### Spawning a shell
+### Spawning a shell
 
 ```python
 # STAGE 2
@@ -158,7 +158,7 @@ input("press any key to spawn a shell...")
 r.interactive()
 ```
 
-### emptyspaces (64-bit ROP chain)
+## emptyspaces (64-bit ROP chain)
 
 ```bash
 $ file easyrop
@@ -190,7 +190,7 @@ Actually this is weird because there's no canary in the binary.
 
 **Note**: if the program crashes it is useful to do a `dmesg` to obtain additional info about it. As for security measures:
 
-#### the code
+### the code
 
 `main`
 
@@ -244,13 +244,13 @@ Stack level 0, frame at 0x7fffffffdfe0:
 
 `sEBP` is overwritten, but we do not need it anyway.
 
-#### What to do
+### What to do
 
 We know that we can perform a buffer overflow, but still we need to leak and put on the stack the canary (if present), and execute at least two syscalls: one to read `/bin/sh` and put it in memory, the other one to execute `execve(/bin/sh, 0, 0);`. We also need to find some gadgets to setup the registers to run a syscall. Weirdly `ropper` won't find useful gadgets, while `ROPgadgets` works just fine.
 
 Note that in order to do that we need to restart the execution from main, since the read only takes 137 bytes and our exploit is longer than that. Since the binary is not `PIE`, this is possible without leaking any address at runtime.
 
-#### The exploit
+### The exploit
 
 The payload is made up by some padding necessary to reach `sEIP`. Then there is a first payload which is used to call a `read` to put in the heap `/bin/sh`, then we'll pass the string to put it in memory (at an arbitrary address decided by us):
 
@@ -329,9 +329,9 @@ int main(int argc, char * argv[]){
     return 0;
 ```
 
-### easyrop
+## easyrop
 
-#### Initial considerations
+### Initial considerations
 
 ```shell
 $ file easyrop
@@ -375,7 +375,7 @@ undefined8 main(void)
 
 Basically we can fill up 8 bytes (1 cell) of the buffer in each loop iteration, since no array bound check is performed. Between the beginning of the array and seip there are 56 bytes.
 
-#### The actual exploit
+### The actual exploit
 
 This will be the structure of our exploit:  
 
