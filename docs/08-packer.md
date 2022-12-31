@@ -1,6 +1,6 @@
-## Packer
+# Packer
 
-### john
+## john
 
 ```shell
 ➜ file john
@@ -18,7 +18,7 @@ john: ELF 32-bit LSB executable, Intel 80386, version 1 (SYSV), dynamically link
 
 As we know a packer is a type of malware that has an encrypted payload in order to avoid detection during static analysis. At runtime the malicious portion of the code is unpacked, and execute. This means that we need to look for some procedure that manipulates the `.text` section of the executable. From [Unpacking Redaman Malware & Basics of Self-Injection Packers - ft. OALabs (liveoverflow.com)](https://liveoverflow.com/unpacking-buhtrap-malware-basics-of-self-injection-packers-ft-oalabs-2/):
 
->Self-Injection is just one of the techniques used by malware authors for obfuscation, there are many other techniques like *Process Injection* (or *Process Hollowing*), *Classic DLL Injection* and *Thread Execution Hijacking*. There are a few different techniques for Self-Injection itself, but a common technique is to first unpack a small stub in-memory, it transfers the execution to the stub, <u>the stub code then changes the permission of a section in the process</u>, write the malicious code into those sections and transfer the execution back to the overwritten sections of the PE file.
+> Self-Injection is just one of the techniques used by malware authors for obfuscation, there are many other techniques like _Process Injection_ (or _Process Hollowing_), _Classic DLL Injection_ and _Thread Execution Hijacking_. There are a few different techniques for Self-Injection itself, but a common technique is to first unpack a small stub in-memory, it transfers the execution to the stub, <u>the stub code then changes the permission of a section in the process</u>, write the malicious code into those sections and transfer the execution back to the overwritten sections of the PE file.
 
 We have something similare here:
 
@@ -27,7 +27,7 @@ int unpack(uint *param_1,int param_2) {
   uint uVar1;
   uint *puVar2;
   int iVar3;
-  
+
   mprotect((void *)((uint)param_1 & 0xfffff000),0x1000,7);
   uVar1 = *(uint *)(&PTR_DAT_0804c03c)[(int)param_1 % 5];
   puVar2 = param_1;
@@ -88,7 +88,7 @@ pwndbg> x/30gi 0x804970e
    0x804976a:	sub    esp,0x4
 ```
 
-#### Notes from lesson
+### Notes from lesson
 
 Basically I was almost right about what was happening here. We have that the main is calling an unpacking routine, which is the `unpack` function above. The `num` parameter is a counter for a loop:
 
@@ -118,14 +118,14 @@ The counter is likely the size of the function to unpack. Note that the key used
 
 We looked at the unpacking routine, but we're still missing the main part.
 
-#### Where do we start?
+### Where do we start?
 
 We have two approaches:
 
-* **Static**: Since we understand the unpacking routine we can build an unpacker and look at it with ghidra.
-* **Dynamic**: we could run the binary and use ghidra to look at the unpacked running code, or we can dump the memory of the running binary and look at it.
+- **Static**: Since we understand the unpacking routine we can build an unpacker and look at it with ghidra.
+- **Dynamic**: we could run the binary and use ghidra to look at the unpacked running code, or we can dump the memory of the running binary and look at it.
 
-#### Dynamic approach
+### Dynamic approach
 
 We'll break at the `unpack` function with gdb:
 
@@ -140,8 +140,8 @@ unpack((char *)malicious_func_maybe,83,argc,argv);
                          undefined malicious_func_maybe()
            undefined       AL:1         <RETURN>
                          malicious_func_maybe                      XREF[3]:   																																				main:08049878(*),
-                         																			0804a228, 
-                                                              0804a444(*)  
+                         																			0804a228,
+                                                              0804a444(*)
       0804970e 17            POP       SS
 ```
 
@@ -282,7 +282,7 @@ We've got a call to the `strstr` function, and another call to the packer.
 
 **From this behaviour we unedrstand that the check on the flag is performed incrementally by calling `unpack` and the `pack` on some code, and so on. This means that we'll not have a point in time in which during execution the binary is completely unpacked.** Extracting the unpacked code dynamically can be very time consuming, which means that a more efficient method would be to write a script that reverse engineer the packing algorithm, which then can be used to create a binary containing an unpacked payload. This is what the static approach does in a nutshell.
 
-#### Static approach
+###
 
 Let's reverse engineer the packer with python:
 
@@ -334,7 +334,7 @@ void FUN_0804970e(void)
   int iVar7;
   int in_stack_00000014;
   undefined4 *in_stack_00000018;
-  
+
   if (in_stack_00000014 < 2) {
     printf("Usage:\n %s flag{<key>}\n",*in_stack_00000018);
                     /* WARNING: Subroutine does not return */
@@ -357,7 +357,7 @@ void FUN_0804970e(void)
 }
 ```
 
-We need to repeat this to unpack every function used to create the flag. The first three, as already seen, are respectively checks on the prefix (`flag{}`),  the suffix (`}`) and the type of characters of the flag (must be ascii). The last one is a check on the flag length (==33). As for the other function we have the following structure:
+We need to repeat this to unpack every function used to create the flag. The first three, as already seen, are respectively checks on the prefix (`flag{}`), the suffix (`}`) and the type of characters of the flag (must be ascii). The last one is a check on the flag length (==33). As for the other function we have the following structure:
 
 ```
 FUN_080496ab (0x18)
@@ -371,7 +371,7 @@ FUN_08049546 (0x27)
 
 Where the indented functions are calls that are made inside the outer ones. The first function determines the first 6 characters of the flag, which are 'packer'. We are still missing 21 characters, which are originated from `FUN_080495e4` and `FUN_08049546`.
 
-###### `FUN_080496ab`
+##### `FUN_080496ab`
 
 After unpacking we get:
 
@@ -381,7 +381,7 @@ int FUN_080496ab(void) {
   int in_stack_00000014;
   int i;
   char usrinput;
-  
+
   i = 1;
   while( true ) {
     if (6 < i) {
@@ -405,7 +405,7 @@ int FUN_08049385(void) {
   double dVar3;
   double dVar4;
   int in_stack_00000014;
-  
+
   dVar1 = pow((double)in_stack_00000014,5.0);
   dVar2 = pow((double)in_stack_00000014,4.0);
   dVar3 = pow((double)in_stack_00000014,3.0);
@@ -418,7 +418,7 @@ int FUN_08049385(void) {
 
 Which we can either reverse engineer with z3, or by looking at which characters are outputed in registers by using gdb (again dynamic approach). After reverse engineering this we'll get that the first part of the flag is `flag{packer`. Since the flag is 33 chars long, we are still missing 21.
 
-###### ` FUN_080495e4`
+##### ` FUN_080495e4`
 
 Looks like we need to reverse engineer this:
 
@@ -433,7 +433,7 @@ undefined4 FUN_080495e4(void) {
   int j;
   undefined4 local_7c [23];
   int canary;
-  
+
   canary = *(int *)(in_GS_OFFSET + 0x14);
   puVar2 = &weird_string;
   puVar3 = local_7c;
@@ -483,7 +483,7 @@ bool FUN_0804945e(void) {
   uint in_stack_0000001c;
   uint local_34;
   uint uStack48;
-  
+
   dVar2 = sqrt((double)in_stack_00000014);
   fVar1 = (float10)powl((float10)in_stack_00000014,SUB104((float10)dVar2,0),
                         (int6)((unkuint10)(float10)dVar2 >> 0x20));
@@ -527,7 +527,7 @@ exiting...
 
 Ok now we know that the flag up to now is: `flag{packer-4a3-1337` something `}`, where the missing part is 12 characters long.
 
-###### `FUN_08049546`
+##### `FUN_08049546`
 
 Ok we're still missing 20 characters, identified by this function:
 
@@ -537,7 +537,7 @@ undefined4 FUN_08049546(void) {
   undefined4 uVar2;
   char *in_stack_00000014;
   int in_stack_00000018;
-  
+
   sVar1 = strlen(in_stack_00000014);
   if (in_stack_00000018 + 0x16U < sVar1) {
     if ((char)(in_stack_00000014[in_stack_00000018 + 0x14] ^ (&DAT_0804a081)[in_stack_00000018]) ==
@@ -621,4 +621,4 @@ for char in printable:
 #embed()
 ```
 
-And with this we should be all set. 
+And with this we should be all set.
