@@ -2,10 +2,12 @@ input: ./docs
 output: .retype
 url: # Add your website address here
 branding:
-  title: "Offensive and Defensive Cybersecurity [2021/2022] [056896]"
+  title: "Offensive and Defensive Cybersecurity"
   label: "Challenges summary & write-up"
 links:
-  # - text: Getting Started
-  #   link: https://retype.com/guides/getting-started/
+  - text: My GitHub
+    link: https://github.com/francesco-plt/
+  - text: Course Page
+    link: https://webeep.polimi.it/course/view.php?id=2636  
 footer:
   copyright: "Check out my GitHub profile for other notes: https://github.com/francesco-plt"
