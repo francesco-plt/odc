@@ -1,0 +1,11 @@
+input: ./docs
+output: .retype
+url: # Add your website address here
+branding:
+  title: "Offensive and Defensive Cybersecurity [2021/2022] [056896]"
+  label: "Challenges summary & write-up"
+links:
+  # - text: Getting Started
+  #   link: https://retype.com/guides/getting-started/
+footer:
+  copyright: "Check out my GitHub profile for other notes: https://github.com/francesco-plt"
