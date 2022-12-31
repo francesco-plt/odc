@@ -3,14 +3,14 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
-    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="2.4.0.725804999934">
+    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="2.4.0.725805375834">
 
     <!-- See retype.com -->
     <meta name="generator" content="Retype 2.4.0">
 
     <!-- Primary Meta Tags -->
-    <title>08 packer</title>
-    <meta name="title" content="08 packer">
+    <title>Packer</title>
+    <meta name="title" content="Packer">
     <meta name="description" content="As we know a packer is a type of malware that has an encrypted payload in order to avoid detection during static analysis." />
 
     <!-- Canonical -->
@@ -19,23 +19,23 @@
     <!-- Open Graph / Facebook -->
     <meta property="og:type" content="website">
     <meta property="og:url" content="/08-packer/">
-    <meta property="og:title" content="08 packer">
+    <meta property="og:title" content="Packer">
     <meta property="og:description" content="As we know a packer is a type of malware that has an encrypted payload in order to avoid detection during static analysis.">
 
     <!-- Twitter -->
     <meta property="twitter:card" content="summary_large_image">
     <meta property="twitter:url" content="/08-packer/">
-    <meta property="twitter:title" content="08 packer">
+    <meta property="twitter:title" content="Packer">
     <meta property="twitter:description" content="As we know a packer is a type of malware that has an encrypted payload in order to avoid detection during static analysis.">
 
     <script>(function () { var el = document.documentElement, m = localStorage.getItem("doc_theme"), wm = window.matchMedia; if (m === "dark" || (!m && wm && wm("(prefers-color-scheme: dark)").matches)) { el.classList.add("dark") } else { el.classList.remove("dark") } })();</script>
 
-    <link href="../resources/css/retype.css?v=2.4.0.725804999934" rel="stylesheet" />
+    <link href="../resources/css/retype.css?v=2.4.0.725805375834" rel="stylesheet" />
 
-    <script type="text/javascript" src="../resources/js/config.js?v=2.4.0.725804999934" data-turbo-eval="false" defer></script>
+    <script type="text/javascript" src="../resources/js/config.js?v=2.4.0.725805375834" data-turbo-eval="false" defer></script>
     <script type="text/javascript" src="../resources/js/retype.js?v=2.4.0" data-turbo-eval="false" defer></script>
-    <script id="lunr-js" type="text/javascript" src="../resources/js/lunr.js?v=2.4.0.725804999934" data-turbo-eval="false" defer></script>
-    <script id="prism-js" type="text/javascript" src="../resources/js/prism.js?v=2.4.0.725804999934" defer></script>
+    <script id="lunr-js" type="text/javascript" src="../resources/js/lunr.js?v=2.4.0.725805375834" data-turbo-eval="false" defer></script>
+    <script id="prism-js" type="text/javascript" src="../resources/js/prism.js?v=2.4.0.725805375834" defer></script>
 </head>
 <body>
     <div id="docs-app" class="relative text-base antialiased text-gray-700 bg-white font-body dark:bg-dark-850 dark:text-dark-300">
@@ -153,23 +153,17 @@
                                 <div id="docs-sidebar-right-toggle"></div>
                 
                                 <!-- Page content  -->
-<doc-anchor-target id="08-packer" class="break-words">
+<doc-anchor-target id="packer" class="break-words">
     <h1>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#08-packer">#</doc-anchor-trigger>
-        <span>08 packer</span>
-    </h1>
-</doc-anchor-target>
-<doc-anchor-target id="packer">
-    <h2>
         <doc-anchor-trigger class="header-anchor-trigger" to="#packer">#</doc-anchor-trigger>
         <span>Packer</span>
-    </h2>
+    </h1>
 </doc-anchor-target>
 <doc-anchor-target id="john">
-    <h3>
+    <h2>
         <doc-anchor-trigger class="header-anchor-trigger" to="#john">#</doc-anchor-trigger>
         <span>john</span>
-    </h3>
+    </h2>
 </doc-anchor-target>
 <div class="codeblock-wrapper"><doc-codeblock>
 <pre class="language-bash"><code v-pre class="language-bash">➜ file john
@@ -193,7 +187,7 @@ john: ELF 32-bit LSB executable, Intel 80386, version 1 (SYSV), dynamically link
   uint uVar1;
   uint *puVar2;
   int iVar3;
-  
+
   mprotect((void *)((uint)param_1 &amp; 0xfffff000),0x1000,7);
   uVar1 = *(uint *)(&amp;PTR_DAT_0804c03c)[(int)param_1 % 5];
   puVar2 = param_1;
@@ -250,10 +244,10 @@ pwndbg&gt; x/30gi 0x804970e
    0x804976a:	sub    esp,0x4</code></pre>
 </doc-codeblock></div>
 <doc-anchor-target id="notes-from-lesson">
-    <h4>
+    <h3>
         <doc-anchor-trigger class="header-anchor-trigger" to="#notes-from-lesson">#</doc-anchor-trigger>
         <span>Notes from lesson</span>
-    </h4>
+    </h3>
 </doc-anchor-target>
 <p>Basically I was almost right about what was happening here. We have that the main is calling an unpacking routine, which is the <code v-pre>unpack</code> function above. The <code v-pre>num</code> parameter is a counter for a loop:</p>
 <div class="codeblock-wrapper"><doc-codeblock>
@@ -280,10 +274,10 @@ pwndbg&gt; x/30gi 0x804970e
 <p>The counter is likely the size of the function to unpack. Note that the key used to decrypt the function depends on the address of the function itself.</p>
 <p>We looked at the unpacking routine, but we&#x27;re still missing the main part.</p>
 <doc-anchor-target id="where-do-we-start">
-    <h4>
+    <h3>
         <doc-anchor-trigger class="header-anchor-trigger" to="#where-do-we-start">#</doc-anchor-trigger>
         <span>Where do we start?</span>
-    </h4>
+    </h3>
 </doc-anchor-target>
 <p>We have two approaches:</p>
 <ul>
@@ -291,10 +285,10 @@ pwndbg&gt; x/30gi 0x804970e
 <li><strong>Dynamic</strong>: we could run the binary and use ghidra to look at the unpacked running code, or we can dump the memory of the running binary and look at it.</li>
 </ul>
 <doc-anchor-target id="dynamic-approach">
-    <h4>
+    <h3>
         <doc-anchor-trigger class="header-anchor-trigger" to="#dynamic-approach">#</doc-anchor-trigger>
         <span>Dynamic approach</span>
-    </h4>
+    </h3>
 </doc-anchor-target>
 <p>We&#x27;ll break at the <code v-pre>unpack</code> function with gdb:</p>
 <div class="codeblock-wrapper"><doc-codeblock>
@@ -307,8 +301,8 @@ pwndbg&gt; x/30gi 0x804970e
                          undefined malicious_func_maybe()
            undefined       AL:1         &lt;RETURN&gt;
                          malicious_func_maybe                      XREF[3]:   																																				main:08049878(*),
-                         																			0804a228, 
-                                                              0804a444(*)  
+                         																			0804a228,
+                                                              0804a444(*)
       0804970e 17            POP       SS</code></pre>
 </doc-codeblock></div>
 <div class="codeblock-wrapper"><doc-codeblock>
@@ -434,11 +428,11 @@ pwndbg&gt; x/30gi 0x804970e
 </doc-codeblock></div>
 <p>We&#x27;ve got a call to the <code v-pre>strstr</code> function, and another call to the packer.</p>
 <p><strong>From this behaviour we unedrstand that the check on the flag is performed incrementally by calling <code v-pre>unpack</code> and the <code v-pre>pack</code> on some code, and so on. This means that we&#x27;ll not have a point in time in which during execution the binary is completely unpacked.</strong> Extracting the unpacked code dynamically can be very time consuming, which means that a more efficient method would be to write a script that reverse engineer the packing algorithm, which then can be used to create a binary containing an unpacked payload. This is what the static approach does in a nutshell.</p>
-<doc-anchor-target id="static-approach">
-    <h4>
-        <doc-anchor-trigger class="header-anchor-trigger" to="#static-approach">#</doc-anchor-trigger>
-        <span>Static approach</span>
-    </h4>
+<doc-anchor-target id="section">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#section">#</doc-anchor-trigger>
+        <span></span>
+    </h3>
 </doc-anchor-target>
 <p>Let&#x27;s reverse engineer the packer with python:</p>
 <div class="codeblock-wrapper"><doc-codeblock>
@@ -487,7 +481,7 @@ ff.close()</code></pre>
   int iVar7;
   int in_stack_00000014;
   undefined4 *in_stack_00000018;
-  
+
   if (in_stack_00000014 &lt; 2) {
     printf(&quot;Usage:\n %s flag{&lt;key&gt;}\n&quot;,*in_stack_00000018);
                     /* WARNING: Subroutine does not return */
@@ -509,7 +503,7 @@ ff.close()</code></pre>
   return;
 }</code></pre>
 </doc-codeblock></div>
-<p>We need to repeat this to unpack every function used to create the flag. The first three, as already seen, are respectively checks on the prefix (<code v-pre>flag{}</code>),  the suffix (<code v-pre>}</code>) and the type of characters of the flag (must be ascii). The last one is a check on the flag length (==33). As for the other function we have the following structure:</p>
+<p>We need to repeat this to unpack every function used to create the flag. The first three, as already seen, are respectively checks on the prefix (<code v-pre>flag{}</code>), the suffix (<code v-pre>}</code>) and the type of characters of the flag (must be ascii). The last one is a check on the flag length (==33). As for the other function we have the following structure:</p>
 <div class="codeblock-wrapper"><doc-codeblock>
 <pre class="language-none"><code v-pre class="language-none">FUN_080496ab (0x18)
 	FUN_08049385 (0x36)
@@ -521,10 +515,10 @@ FUN_08049546 (0x27)</code></pre>
 </doc-codeblock></div>
 <p>Where the indented functions are calls that are made inside the outer ones. The first function determines the first 6 characters of the flag, which are &#x27;packer&#x27;. We are still missing 21 characters, which are originated from <code v-pre>FUN_080495e4</code> and <code v-pre>FUN_08049546</code>.</p>
 <doc-anchor-target id="fun_080496ab">
-    <h6>
+    <h5>
         <doc-anchor-trigger class="header-anchor-trigger" to="#fun_080496ab">#</doc-anchor-trigger>
         <span><code v-pre>FUN_080496ab</code></span>
-    </h6>
+    </h5>
 </doc-anchor-target>
 <p>After unpacking we get:</p>
 <div class="codeblock-wrapper"><doc-codeblock>
@@ -533,7 +527,7 @@ FUN_08049546 (0x27)</code></pre>
   int in_stack_00000014;
   int i;
   char usrinput;
-  
+
   i = 1;
   while( true ) {
     if (6 &lt; i) {
@@ -555,7 +549,7 @@ FUN_08049546 (0x27)</code></pre>
   double dVar3;
   double dVar4;
   int in_stack_00000014;
-  
+
   dVar1 = pow((double)in_stack_00000014,5.0);
   dVar2 = pow((double)in_stack_00000014,4.0);
   dVar3 = pow((double)in_stack_00000014,3.0);
@@ -567,10 +561,10 @@ FUN_08049546 (0x27)</code></pre>
 </doc-codeblock></div>
 <p>Which we can either reverse engineer with z3, or by looking at which characters are outputed in registers by using gdb (again dynamic approach). After reverse engineering this we&#x27;ll get that the first part of the flag is <code v-pre>flag{packer</code>. Since the flag is 33 chars long, we are still missing 21.</p>
 <doc-anchor-target id="fun-080495e4">
-    <h6>
+    <h5>
         <doc-anchor-trigger class="header-anchor-trigger" to="#fun-080495e4">#</doc-anchor-trigger>
         <span><code v-pre> FUN_080495e4</code></span>
-    </h6>
+    </h5>
 </doc-anchor-target>
 <p>Looks like we need to reverse engineer this:</p>
 <div class="codeblock-wrapper"><doc-codeblock>
@@ -584,7 +578,7 @@ FUN_08049546 (0x27)</code></pre>
   int j;
   undefined4 local_7c [23];
   int canary;
-  
+
   canary = *(int *)(in_GS_OFFSET + 0x14);
   puVar2 = &amp;weird_string;
   puVar3 = local_7c;
@@ -632,7 +626,7 @@ LAB_08049692:
   uint in_stack_0000001c;
   uint local_34;
   uint uStack48;
-  
+
   dVar2 = sqrt((double)in_stack_00000014);
   fVar1 = (float10)powl((float10)in_stack_00000014,SUB104((float10)dVar2,0),
                         (int6)((unkuint10)(float10)dVar2 &gt;&gt; 0x20));
@@ -671,10 +665,10 @@ exiting...</code></pre>
 </doc-codeblock></div>
 <p>Ok now we know that the flag up to now is: <code v-pre>flag{packer-4a3-1337</code> something <code v-pre>}</code>, where the missing part is 12 characters long.</p>
 <doc-anchor-target id="fun_08049546">
-    <h6>
+    <h5>
         <doc-anchor-trigger class="header-anchor-trigger" to="#fun_08049546">#</doc-anchor-trigger>
         <span><code v-pre>FUN_08049546</code></span>
-    </h6>
+    </h5>
 </doc-anchor-target>
 <p>Ok we&#x27;re still missing 20 characters, identified by this function:</p>
 <div class="codeblock-wrapper"><doc-codeblock>
@@ -683,7 +677,7 @@ exiting...</code></pre>
   undefined4 uVar2;
   char *in_stack_00000014;
   int in_stack_00000018;
-  
+
   sVar1 = strlen(in_stack_00000014);
   if (in_stack_00000018 + 0x16U &lt; sVar1) {
     if ((char)(in_stack_00000014[in_stack_00000018 + 0x14] ^ (&amp;DAT_0804a081)[in_stack_00000018]) ==
@@ -772,20 +766,20 @@ for char in printable:
                             
                                 <nav class="flex mt-14">
                                     <div class="w-1/2">
-                                        <a class="px-5 py-4 h-full flex items-center break-normal font-medium text-blue-500 dark:text-blue-400 border border-gray-300 hover:border-gray-400 dark:border-dark-650 dark:hover:border-dark-450 rounded-l-lg transition-colors duration-150 relative hover:z-5" href="../">
+                                        <a class="px-5 py-4 h-full flex items-center break-normal font-medium text-blue-500 dark:text-blue-400 border border-gray-300 hover:border-gray-400 dark:border-dark-650 dark:hover:border-dark-450 rounded-l-lg transition-colors duration-150 relative hover:z-5" href="../04-heap/">
                                             <svg xmlns="http://www.w3.org/2000/svg" class="mr-3" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" overflow="visible"><path d="M19 11H7.41l5.29-5.29a.996.996 0 10-1.41-1.41l-7 7a1 1 0 000 1.42l7 7a1.024 1.024 0 001.42-.01.996.996 0 000-1.41L7.41 13H19c.55 0 1-.45 1-1s-.45-1-1-1z" /><path fill="none" d="M0 0h24v24H0z" /></svg>
                                             <span>
                                                 <span class="block text-xs font-normal text-gray-400 dark:text-dark-400">Previous</span>
-                                                <span class="block mt-1">Welcome</span>
+                                                <span class="block mt-1">Heap</span>
                                             </span>
                                         </a>
                                     </div>
                             
                                     <div class="w-1/2">
-                                        <a class="px-5 py-4 -mx-px h-full flex items-center justify-end break-normal font-medium text-blue-500 dark:text-blue-400 border border-gray-300 hover:border-gray-400 dark:border-dark-650 dark:hover:border-dark-450 rounded-r-lg transition-colors duration-150 relative hover:z-5" href="../04-heap/">
+                                        <a class="px-5 py-4 -mx-px h-full flex items-center justify-end break-normal font-medium text-blue-500 dark:text-blue-400 border border-gray-300 hover:border-gray-400 dark:border-dark-650 dark:hover:border-dark-450 rounded-r-lg transition-colors duration-150 relative hover:z-5" href="../03-reversing/">
                                             <span>
                                                 <span class="block text-xs font-normal text-right text-gray-400 dark:text-dark-400">Next</span>
-                                                <span class="block mt-1">Heap</span>
+                                                <span class="block mt-1">Reversing</span>
                                             </span>
                                             <svg xmlns="http://www.w3.org/2000/svg" class="ml-3" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" overflow="visible"><path d="M19.92 12.38a1 1 0 00-.22-1.09l-7-7a.996.996 0 10-1.41 1.41l5.3 5.3H5c-.55 0-1 .45-1 1s.45 1 1 1h11.59l-5.29 5.29a.996.996 0 000 1.41c.19.2.44.3.7.3s.51-.1.71-.29l7-7c.09-.09.16-.21.21-.33z" /><path fill="none" d="M0 0h24v24H0z" /></svg>
                                         </a>
@@ -829,6 +823,6 @@ for char in printable:
 
     <div id="docs-overlay-target"></div>
 
-    <script>window.__DOCS__ = { "title": "08 packer", level: 1, icon: "file", hasPrism: true, hasMermaid: false, hasMath: false }</script>
+    <script>window.__DOCS__ = { "title": "Packer", level: 1, icon: "file", hasPrism: true, hasMermaid: false, hasMath: false }</script>
 </body>
 </html>
