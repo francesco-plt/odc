@@ -5,9 +5,9 @@ branding:
   title: "Offensive and Defensive Cybersecurity"
   label: "Challenges summary & write-up"
 links:
-  - text: My GitHub
-    link: https://github.com/francesco-plt/
-  - text: Course Page
-    link: https://webeep.polimi.it/course/view.php?id=2636  
+  - text: "My GitHub"
+    link: "https://github.com/francesco-plt/"
+  - text: "Course Page on Webeep"
+    link: "https://webeep.polimi.it/course/view.php?id=2636"  
 footer:
-  copyright: "Check out my GitHub profile for other notes: https://github.com/francesco-plt"
+  copyright: "Feel free to open a pull request if needed: https://github.com/francesco-plt/odc" 
