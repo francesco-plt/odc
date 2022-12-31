@@ -1,0 +1,527 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="2.4.0.725804997873">
+
+    <!-- See retype.com -->
+    <meta name="generator" content="Retype 2.4.0">
+
+    <!-- Primary Meta Tags -->
+    <title>Reversing</title>
+    <meta name="title" content="Reversing">
+    <meta name="description" content="strace" />
+
+    <!-- Canonical -->
+    <link rel="canonical" href="/03-reversing/" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="/03-reversing/">
+    <meta property="og:title" content="Reversing">
+    <meta property="og:description" content="strace">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="/03-reversing/">
+    <meta property="twitter:title" content="Reversing">
+    <meta property="twitter:description" content="strace">
+
+    <script>(function () { var el = document.documentElement, m = localStorage.getItem("doc_theme"), wm = window.matchMedia; if (m === "dark" || (!m && wm && wm("(prefers-color-scheme: dark)").matches)) { el.classList.add("dark") } else { el.classList.remove("dark") } })();</script>
+
+    <link href="../resources/css/retype.css?v=2.4.0.725804997873" rel="stylesheet" />
+
+    <script type="text/javascript" src="../resources/js/config.js?v=2.4.0.725804997873" data-turbo-eval="false" defer></script>
+    <script type="text/javascript" src="../resources/js/retype.js?v=2.4.0" data-turbo-eval="false" defer></script>
+    <script id="lunr-js" type="text/javascript" src="../resources/js/lunr.js?v=2.4.0.725804997873" data-turbo-eval="false" defer></script>
+    <script id="prism-js" type="text/javascript" src="../resources/js/prism.js?v=2.4.0.725804997873" defer></script>
+    <link href="../resources/css/katex.css?v=2.4.0" rel="stylesheet" />
+    <script id="katex-js" type="text/javascript" src="../resources/js/katex.js?v=2.4.0" defer></script>
+</head>
+<body>
+    <div id="docs-app" class="relative text-base antialiased text-gray-700 bg-white font-body dark:bg-dark-850 dark:text-dark-300">
+        <div class="absolute bottom-0 left-0 bg-gray-100 dark:bg-dark-800" style="top: 5rem; right: 50%"></div>
+    
+        <header id="docs-site-header" class="sticky top-0 z-30 flex w-full h-16 bg-white border-b border-gray-200 md:h-20 dark:bg-dark-850 dark:border-dark-650">
+            <div class="container relative flex items-center justify-between grow pr-6 md:justify-start">
+                <!-- Mobile menu button skeleton -->
+                <button v-cloak class="skeleton docs-mobile-menu-button flex items-center justify-center shrink-0 overflow-hidden dark:text-white focus:outline-none rounded-full w-10 h-10 ml-3.5 md:hidden"><svg xmlns="http://www.w3.org/2000/svg" class="mb-px shrink-0" width="24" height="24" viewBox="0 0 24 24" role="presentation" style="margin-bottom: 0px;"><g fill="currentColor"><path d="M2 4h20v2H2zM2 11h20v2H2zM2 18h20v2H2z"></path></g></svg></button>
+                <div v-cloak id="docs-sidebar-toggle"></div>
+        
+                <!-- Logo -->
+                <div class="flex items-center justify-between h-full py-2 md:w-75">
+                    <div class="flex items-center px-2 md:px-6">
+                        <a id="docs-site-logo" href="../" class="flex items-center leading-snug text-xl">
+                            <span class="dark:text-white font-semibold line-clamp-1 md:line-clamp-2">Offensive and Defensive Cybersecurity [2021/2022] [056896]</span>
+                        </a><span class="hidden px-2 py-1 ml-4 text-sm font-semibold leading-none text-root-logo-label-text bg-root-logo-label-bg rounded-sm md:inline-block">Challenges summary &amp; write-up</span>
+                    </div>
+        
+                    <span class="hidden h-8 border-r md:inline-block dark:border-dark-650"></span>
+                </div>
+        
+                <div class="flex justify-between md:grow">
+                    <!-- Top Nav -->
+                    <nav class="hidden md:flex">
+                        <ul class="flex flex-col mb-4 md:pl-16 md:mb-0 md:flex-row md:items-center">
+                            
+                        </ul>
+                    </nav>
+        
+                    <!-- Header Right Skeleton -->
+                    <div v-cloak class="flex justify-end grow skeleton">
+        
+                        <!-- Search input mock -->
+                        <div class="relative hidden w-40 lg:block lg:max-w-sm lg:ml-auto">
+                            <div class="absolute flex items-center justify-center h-full pl-3 dark:text-dark-300">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon-base" width="16" height="16" viewBox="0 0 24 24" aria-labelledby="icon" role="presentation"  style="margin-bottom: 1px;"><g fill="currentColor" ><path d="M21.71 20.29l-3.68-3.68A8.963 8.963 0 0020 11c0-4.96-4.04-9-9-9s-9 4.04-9 9 4.04 9 9 9c2.12 0 4.07-.74 5.61-1.97l3.68 3.68c.2.19.45.29.71.29s.51-.1.71-.29c.39-.39.39-1.03 0-1.42zM4 11c0-3.86 3.14-7 7-7s7 3.14 7 7c0 1.92-.78 3.66-2.04 4.93-.01.01-.02.01-.02.01-.01.01-.01.01-.01.02A6.98 6.98 0 0111 18c-3.86 0-7-3.14-7-7z" ></path></g></svg>
+                            </div>
+        
+                            <input class="w-full h-10 transition-colors duration-200 ease-in bg-gray-200 border border-transparent rounded md:text-sm hover:bg-white hover:border-gray-300 focus:outline-none focus:bg-white focus:border-gray-500 dark:bg-dark-600 dark:border-dark-600 placeholder-gray-400 dark:placeholder-dark-400"
+                            style="padding: 0.625rem 0.75rem 0.625rem 2rem" type="text" placeholder="Search" />
+                        </div>
+        
+                        <!-- Mobile search button mock -->
+                        <div class="flex items-center justify-center w-10 h-10 lg:hidden">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="shrink-0 icon-base" width="20" height="20" viewBox="0 0 24 24" aria-labelledby="icon" role="presentation"  style="margin-bottom: 0px;"><g fill="currentColor" ><path d="M21.71 20.29l-3.68-3.68A8.963 8.963 0 0020 11c0-4.96-4.04-9-9-9s-9 4.04-9 9 4.04 9 9 9c2.12 0 4.07-.74 5.61-1.97l3.68 3.68c.2.19.45.29.71.29s.51-.1.71-.29c.39-.39.39-1.03 0-1.42zM4 11c0-3.86 3.14-7 7-7s7 3.14 7 7c0 1.92-.78 3.66-2.04 4.93-.01.01-.02.01-.02.01-.01.01-.01.01-.01.02A6.98 6.98 0 0111 18c-3.86 0-7-3.14-7-7z" ></path></g></svg>
+                        </div>
+        
+                        <!-- Dark mode switch placehokder -->
+                        <div class="w-10 h-10 lg:ml-2"></div>
+        
+                        <!-- History button mock -->
+                        <div class="flex items-center justify-center w-10 h-10" style="margin-right: -0.625rem;">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="shrink-0 icon-base" width="22" height="22" viewBox="0 0 24 24" aria-labelledby="icon" role="presentation"  style="margin-bottom: 0px;"><g fill="currentColor" ><g ><path d="M12.01 6.01c-.55 0-1 .45-1 1V12a1 1 0 00.4.8l3 2.22a.985.985 0 001.39-.2.996.996 0 00-.21-1.4l-2.6-1.92V7.01c.02-.55-.43-1-.98-1z"></path><path d="M12.01 1.91c-5.33 0-9.69 4.16-10.05 9.4l-.29-.26a.997.997 0 10-1.34 1.48l1.97 1.79c.19.17.43.26.67.26s.48-.09.67-.26l1.97-1.79a.997.997 0 10-1.34-1.48l-.31.28c.34-4.14 3.82-7.41 8.05-7.41 4.46 0 8.08 3.63 8.08 8.09s-3.63 8.08-8.08 8.08c-2.18 0-4.22-.85-5.75-2.4a.996.996 0 10-1.42 1.4 10.02 10.02 0 007.17 2.99c5.56 0 10.08-4.52 10.08-10.08.01-5.56-4.52-10.09-10.08-10.09z"></path></g></g></svg>
+                        </div>
+                    </div>
+        
+                    <div v-cloak class="flex justify-end grow">
+                        <div id="docs-mobile-search-button"></div>
+                        <doc-search-desktop></doc-search-desktop>
+        
+                        <doc-theme-switch class="lg:ml-2"></doc-theme-switch>
+                        <doc-history></doc-history>
+                    </div>
+                </div>
+            </div>
+        </header>
+    
+        <div class="container relative flex bg-white">
+            <!-- Sidebar Skeleton -->
+            <div v-cloak class="fixed flex flex-col shrink-0 duration-300 ease-in-out bg-gray-100 border-gray-200 sidebar top-20 w-75 border-r h-screen md:sticky transition-transform skeleton dark:bg-dark-800 dark:border-dark-650">
+            
+                <!-- Render this div, if config.showSidebarFilter is `true` -->
+                <div class="flex items-center h-16 px-6">
+                    <input class="w-full h-8 px-3 py-2 transition-colors duration-200 ease-linear bg-white border border-gray-200 rounded shadow-none text-sm focus:outline-none focus:border-gray-600 dark:bg-dark-600 dark:border-dark-600" type="text" placeholder="Filter" />
+                </div>
+            
+                <div class="pl-6 mb-4 mt-1">
+                    <div class="w-32 h-3 mb-4 bg-gray-200 rounded-full loading dark:bg-dark-600"></div>
+                    <div class="w-48 h-3 mb-4 bg-gray-200 rounded-full loading dark:bg-dark-600"></div>
+                    <div class="w-40 h-3 mb-4 bg-gray-200 rounded-full loading dark:bg-dark-600"></div>
+                    <div class="w-32 h-3 mb-4 bg-gray-200 rounded-full loading dark:bg-dark-600"></div>
+                    <div class="w-48 h-3 mb-4 bg-gray-200 rounded-full loading dark:bg-dark-600"></div>
+                    <div class="w-40 h-3 mb-4 bg-gray-200 rounded-full loading dark:bg-dark-600"></div>
+                </div>
+            
+                <div class="shrink-0 mt-auto bg-transparent dark:border-dark-650">
+                    <a class="flex items-center justify-center flex-nowrap h-16 text-gray-400 dark:text-dark-400 hover:text-gray-700 dark:hover:text-dark-300 transition-colors duration-150 ease-in docs-powered-by" target="_blank" href="https://retype.com/" rel="noopener">
+                        <span class="text-xs whitespace-nowrap">Powered by</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="ml-2" fill="currentColor" width="96" height="20" overflow="visible"><path d="M0 0v20h13.59V0H0zm11.15 17.54H2.44V2.46h8.71v15.08zM15.8 20h2.44V4.67L15.8 2.22zM20.45 6.89V20h2.44V9.34z"/><g><path d="M40.16 8.44c0 1.49-.59 2.45-1.75 2.88l2.34 3.32h-2.53l-2.04-2.96h-1.43v2.96h-2.06V5.36h3.5c1.43 0 2.46.24 3.07.73s.9 1.27.9 2.35zm-2.48 1.1c.26-.23.38-.59.38-1.09 0-.5-.13-.84-.4-1.03s-.73-.28-1.39-.28h-1.54v2.75h1.5c.72 0 1.2-.12 1.45-.35zM51.56 5.36V7.2h-4.59v1.91h4.13v1.76h-4.13v1.92h4.74v1.83h-6.79V5.36h6.64zM60.09 7.15v7.48h-2.06V7.15h-2.61V5.36h7.28v1.79h-2.61zM70.81 14.64h-2.06v-3.66l-3.19-5.61h2.23l1.99 3.45 1.99-3.45H74l-3.19 5.61v3.66zM83.99 6.19c.65.55.97 1.4.97 2.55s-.33 1.98-1 2.51-1.68.8-3.04.8h-1.23v2.59h-2.06V5.36h3.26c1.42 0 2.45.28 3.1.83zm-1.51 3.65c.25-.28.37-.69.37-1.22s-.16-.92-.48-1.14c-.32-.23-.82-.34-1.5-.34H79.7v3.12h1.38c.68 0 1.15-.14 1.4-.42zM95.85 5.36V7.2h-4.59v1.91h4.13v1.76h-4.13v1.92H96v1.83h-6.79V5.36h6.64z"/></g></svg>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Sidebar component -->
+            <doc-sidebar v-cloak>
+                <template #sidebar-footer>
+                    <div class="shrink-0 mt-auto border-t md:bg-transparent md:border-none dark:border-dark-650">
+            
+                        <a class="flex items-center justify-center flex-nowrap h-16 text-gray-400 dark:text-dark-400 hover:text-gray-700 dark:hover:text-dark-300 transition-colors duration-150 ease-in docs-powered-by" target="_blank" href="https://retype.com/" rel="noopener">
+                            <span class="text-xs whitespace-nowrap">Powered by</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="ml-2" fill="currentColor" width="96" height="20" overflow="visible"><path d="M0 0v20h13.59V0H0zm11.15 17.54H2.44V2.46h8.71v15.08zM15.8 20h2.44V4.67L15.8 2.22zM20.45 6.89V20h2.44V9.34z"/><g><path d="M40.16 8.44c0 1.49-.59 2.45-1.75 2.88l2.34 3.32h-2.53l-2.04-2.96h-1.43v2.96h-2.06V5.36h3.5c1.43 0 2.46.24 3.07.73s.9 1.27.9 2.35zm-2.48 1.1c.26-.23.38-.59.38-1.09 0-.5-.13-.84-.4-1.03s-.73-.28-1.39-.28h-1.54v2.75h1.5c.72 0 1.2-.12 1.45-.35zM51.56 5.36V7.2h-4.59v1.91h4.13v1.76h-4.13v1.92h4.74v1.83h-6.79V5.36h6.64zM60.09 7.15v7.48h-2.06V7.15h-2.61V5.36h7.28v1.79h-2.61zM70.81 14.64h-2.06v-3.66l-3.19-5.61h2.23l1.99 3.45 1.99-3.45H74l-3.19 5.61v3.66zM83.99 6.19c.65.55.97 1.4.97 2.55s-.33 1.98-1 2.51-1.68.8-3.04.8h-1.23v2.59h-2.06V5.36h3.26c1.42 0 2.45.28 3.1.83zm-1.51 3.65c.25-.28.37-.69.37-1.22s-.16-.92-.48-1.14c-.32-.23-.82-.34-1.5-.34H79.7v3.12h1.38c.68 0 1.15-.14 1.4-.42zM95.85 5.36V7.2h-4.59v1.91h4.13v1.76h-4.13v1.92H96v1.83h-6.79V5.36h6.64z"/></g></svg>
+                        </a>
+                    </div>
+                </template>
+            </doc-sidebar>
+    
+            <div class="grow min-w-0 dark:bg-dark-850">
+                <!-- Render "toolbar" template here on api pages --><!-- Render page content -->
+                <div class="flex">
+                    <div class="grow min-w-0 px-6 md:px-16">
+                        <main class="relative pt-6 pb-16">
+                            <div class="docs-markdown" id="docs-content">
+                                <!-- Rendered if sidebar right is enabled -->
+                                <div id="docs-sidebar-right-toggle"></div>
+                
+                                <!-- Page content  -->
+<doc-anchor-target id="reversing" class="break-words">
+    <h1>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#reversing">#</doc-anchor-trigger>
+        <span>Reversing</span>
+    </h1>
+</doc-anchor-target>
+<doc-anchor-target id="revmem">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#revmem">#</doc-anchor-trigger>
+        <span>revmem</span>
+    </h2>
+</doc-anchor-target>
+<p><strong><code v-pre>strace</code></strong></p>
+<blockquote>
+<p>strace is <strong>a diagnostic, debugging and instructional userspace utility for Linux</strong>. It is used to monitor and tamper with interactions between processes and the Linux kernel, which include system calls, signal deliveries, and changes of process state.</p>
+</blockquote>
+<p><strong><code v-pre>ltrace</code></strong></p>
+<blockquote>
+<p>ltrace is <strong>a library call tracer</strong> and it is primarily used to trace calls made by programs to library functions. It can also trace system calls and signals, like strace.</p>
+</blockquote>
+<doc-anchor-target id="a-first-approach">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#a-first-approach">#</doc-anchor-trigger>
+        <span>A first approach</span>
+    </h3>
+</doc-anchor-target>
+<p>Reversing challenge, meaning that we have just the binary and no remote connection needed. We just need to find the correct output that will make our binary print the flag. In this case we can start launching the binary with some random input to check its behaviour:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-bash"><code v-pre class="language-bash">$  ./revmem ciao
+Wrong!</code></pre>
+</doc-codeblock></div>
+<p>Ok, now lets <code v-pre>strace</code> it:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-bash"><code v-pre class="language-bash">$ strace ./revmem ciao
+execve(&quot;./revmem&quot;, [&quot;./revmem&quot;, &quot;ciao&quot;], 0x7fffffffe338 /* 39 vars */) = 0
+brk(NULL)                               = 0x555555559000
+access(&quot;/etc/ld.so.nohwcap&quot;, F_OK)      = -1 ENOENT (No such file or directory)
+access(&quot;/etc/ld.so.preload&quot;, R_OK)      = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, &quot;/etc/ld.so.cache&quot;, O_RDONLY|O_CLOEXEC) = 3
+fstat(3, {st_mode=S_IFREG|0644, st_size=95222, ...}) = 0
+mmap(NULL, 95222, PROT_READ, MAP_PRIVATE, 3, 0) = 0x7ffff7fe0000
+close(3)                                = 0
+access(&quot;/etc/ld.so.nohwcap&quot;, F_OK)      = -1 ENOENT (No such file or directory)
+openat(AT_FDCWD, &quot;/lib/x86_64-linux-gnu/libc.so.6&quot;, O_RDONLY|O_CLOEXEC) = 3
+read(3, &quot;\177ELF\2\1\1\3\0\0\0\0\0\0\0\0\3\0&gt;\0\1\0\0\0\20\35\2\0\0\0\0\0&quot;..., 832) = 832
+fstat(3, {st_mode=S_IFREG|0755, st_size=2030928, ...}) = 0
+mmap(NULL, 8192, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_ANONYMOUS, -1, 0) = 0x7ffff7fde000
+mmap(NULL, 4131552, PROT_READ|PROT_EXEC, MAP_PRIVATE|MAP_DENYWRITE, 3, 0) = 0x7ffff79e2000
+mprotect(0x7ffff7bc9000, 2097152, PROT_NONE) = 0
+mmap(0x7ffff7dc9000, 24576, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_DENYWRITE, 3, 0x1e7000) = 0x7ffff7dc9000
+mmap(0x7ffff7dcf000, 15072, PROT_READ|PROT_WRITE, MAP_PRIVATE|MAP_FIXED|MAP_ANONYMOUS, -1, 0) = 0x7ffff7dcf000
+close(3)                                = 0
+arch_prctl(ARCH_SET_FS, 0x7ffff7fdf4c0) = 0
+mprotect(0x7ffff7dc9000, 16384, PROT_READ) = 0
+mprotect(0x555555557000, 4096, PROT_READ) = 0
+mprotect(0x7ffff7ffc000, 4096, PROT_READ) = 0
+munmap(0x7ffff7fe0000, 95222)           = 0
+brk(NULL)                               = 0x555555559000
+brk(0x55555557a000)                     = 0x55555557a000
+fstat(1, {st_mode=S_IFCHR|0620, st_rdev=makedev(136, 5), ...}) = 0
+write(1, &quot;Wrong!\n&quot;, 7Wrong!
+)                 = 7
+exit_group(0)                           = ?
++++ exited with 0 +++</code></pre>
+</doc-codeblock></div>
+<p>Not useful at all.</p>
+<doc-anchor-target id="actually-is-way-easier-than-it-looks-like">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#actually-is-way-easier-than-it-looks-like">#</doc-anchor-trigger>
+        <span>Actually is way easier than it looks like</span>
+    </h3>
+</doc-anchor-target>
+<p>Now lets try <code v-pre>ltrace</code> on it:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-bash"><code v-pre class="language-bash">$ ltrace ./revmem ciao
+malloc(30)                                                                                         0x555555559260
+strncmp(&quot;flag{this_was_an_easy_reverse}&quot;, &quot;ciao&quot;, 30)                                            
+puts(&quot;Wrong!&quot;Wrong!
+)                                                                                   
++++ exited (status 0) +++</code></pre>
+</doc-codeblock></div>
+<p>Well...</p>
+<p>This is happening because of this line of code:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-c"><code v-pre class="language-c">cmp = strncmp(flag,*(char **)(param_2 + 8),0x1e);</code></pre>
+</doc-codeblock></div>
+<p>From which we can see that the program is taking the flag which is hardcoded in memory.</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-c"><code v-pre class="language-c">char * flag_extractor(void)
+
+{
+  char *flag;
+  byte local_15;
+  int i;
+
+  flag = (char *)malloc(30);
+  local_15 = 0;
+  for (i = 0; i &lt; 30; i = i + 1) {
+    flag[i] = PTR_DAT_00104048[i] ^ local_15;
+    local_15 = flag[i];
+  }
+  return flag;
+}</code></pre>
+</doc-codeblock></div>
+<p>From this snippet of code we can see that the flag is put in memory by a <code v-pre>malloc</code> after being obtained by XORing the encoded version of the flag. Because of the <code v-pre>strcmp</code> with the flag in memory and our input we can see the flag in clear with <code v-pre>ltrace</code>.</p>
+<doc-anchor-target id="revmemp">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#revmemp">#</doc-anchor-trigger>
+        <span>revmemp</span>
+    </h2>
+</doc-anchor-target>
+<p>Very similar to revmem. Both <code v-pre>strace</code> and <code v-pre>ltrace</code> outputs are not very useful in this case. We can try to debug the application when the <code v-pre>strcmp</code> between the user input and the flag gets executed. From the disassembler:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-nasm"><code v-pre class="language-nasm">0010136d e8 be fc ff ff      CALL      &lt;EXTERNAL&gt;::strncmp</code></pre>
+</doc-codeblock></div>
+<p>Which corresponds to:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-c"><code v-pre class="language-c">int strncmp(char * __s1, char **)(arg2+8),33);</code></pre>
+</doc-codeblock></div>
+<p>If we try to put a breakpoint there and to debug it:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-bash"><code v-pre class="language-bash">pwndbg&gt; brva 0x136d
+Breakpoint 2 at 0x55555555536d
+pwndbg&gt; c
+Continuing.
+plz don't!
+[Inferior 1 (process 17406) exited with code 0377]</code></pre>
+</doc-codeblock></div>
+<p>Turns out we can&#x27;t debug it with gdb:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-c"><code v-pre class="language-c">void debugger_stopper(void)
+
+{
+  long lVar1;
+
+  lVar1 = ptrace(PTRACE_TRACEME,0,1,0);
+  if (lVar1 == -1) {
+    puts(&quot;plz don\'t!&quot;);
+                    /* WARNING: Subroutine does not return */
+    exit(-1);
+  }
+  return;
+}</code></pre>
+</doc-codeblock></div>
+<p>Rip. This is a special function called <code v-pre>INIT</code> function, which is called before the begin of the main, which means that they are kind of hidden. Good way to find them: looking at which text output they prints, and search for it into Ghidra, or run strings on the binary</p>
+<p>Can we stop the binary from escaping that check? Yes, we just need to patch the binary: we could, for example, replace the <code v-pre>exit(-1)</code> with tops to avoid this check altogether.</p>
+<p>Still, we have another problem. The following function gets called multiple time during execution:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-c"><code v-pre class="language-c">void wtf(void)
+
+{
+  char *aux;
+
+  aux = (char *)entry;
+  while( true ) {
+    if (aux == (char *)0x101425) {
+      return;
+    }
+    if (((*(uint *)aux &amp; 0xf0) == 0xc0) &amp;&amp; ((*(uint *)aux &amp; 0xf) == 0xc)) break;
+    aux = aux + 1;
+  }
+  puts(&quot;do not play with me!&quot;);
+                    /* WARNING: Subroutine does not return */
+  exit(-1);
+}</code></pre>
+</doc-codeblock></div>
+<p>It basicaly checks if the first and second symbols of entry are breakpoints (<code v-pre>0xcc</code>). It basically avoids the user from using them.</p>
+<doc-anchor-target id="how-to-patch-the-binary-xxd-the-hard-way">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#how-to-patch-the-binary-xxd-the-hard-way">#</doc-anchor-trigger>
+        <span>How to patch the binary (<code v-pre>xxd</code>, the hard way)</span>
+    </h3>
+</doc-anchor-target>
+<p>We&#x27;ll be using vim. First of all open the binary: <code v-pre>vim ./revmemnp</code>. then input the following:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-bash"><code v-pre class="language-bash">:%!xxd</code></pre>
+</doc-codeblock></div>
+<p>this gives us hex dump of the binary. Then we need to search for the byte codes of the instruction we want to replace. To search in vim we use the forward slash command. So, we want to replace the exit in the debugger avoider function to be a bunch of nop. So we&#x27;ll first search for its first opcode:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-none"><code v-pre class="language-none">/e8</code></pre>
+</doc-codeblock></div>
+<p>Then press enter, and keep pressing n until we find our function:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-none"><code v-pre class="language-none">000012f0: 00e8 4afd ffff bfff ffff ffe8 80fd ffff  ..J.............</code></pre>
+</doc-codeblock></div>
+<p>Then we can use I to enter intert mode, overwrite it with pops (note that it is made up of 5 opcodes, which means we need 5 nops), and pass <code v-pre>:%!xdd -r</code> and <code v-pre>:wq</code> to save and exit. Or you could just use a gui hex editor, it works either way.</p>
+<doc-anchor-target id="the-exploit">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#the-exploit">#</doc-anchor-trigger>
+        <span>The exploit</span>
+    </h3>
+</doc-anchor-target>
+<p>Basically we just need to overwrite both checks, the one which prevents us from setting a breakpoint, and the one that checks if we have gdb attached. Once the binary has been patched to remove the exit, we just start the binary with <code v-pre>gdb</code>, set a breakpoint in the <code v-pre>strcmp</code>, and then we can just see the flag in clear as argument of the <code v-pre>strcmp</code>:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-bash"><code v-pre class="language-bash"> ► 0x55555555536d    call   strncmp@plt                &lt;strncmp@plt&gt;
+        s1: 0x555555559670 ◂— 'flag{this_was_a_bit_more_complex}'
+        s2: 0x7fffffffe57a ◂— 0x5f434c006f616963 /* 'ciao' */
+        n: 0x21</code></pre>
+</doc-codeblock></div>
+<hr />
+<doc-anchor-target id="keycheck_baby">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#keycheck_baby">#</doc-anchor-trigger>
+        <span>keycheck_baby</span>
+    </h2>
+</doc-anchor-target>
+<p>In this challenge we have to reverse engineer a key encryption algorithm divided in two steps. We have the key which is split in two and encrypted differently using two loops.</p>
+<doc-anchor-target id="pt1">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#pt1">#</doc-anchor-trigger>
+        <span>Pt.1</span>
+    </h3>
+</doc-anchor-target>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-c"><code v-pre class="language-c">      for (i = 0; (uint)i &lt; 13; i = i + 1) {
+        if ((char)(j[i] ^ &quot;babuzz&quot;[(ulong)(long)i % 6]) != magic0[i]) goto LAB_00101487;
+      }</code></pre>
+</doc-codeblock></div>
+<p>This first loop XORs the key with characters from the string <code v-pre>babuzz</code> % 6 (modulo), which is the length of the string itself. Easy reverse, since we have the result of the XOR, which is the <code v-pre>magic0</code> variable and we can just XOR the two to get past it (since the XOR is an invertible function):</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-python"><code v-pre class="language-python">for i in range(0, 13):
+   tmp.append(chr(magic0[i] ^ b'babuzz'[i % 6]))
+flag = ''.join(tmp)
+print(f'flag pt.1: {flag}, len: {len(flag)}')</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="pt2">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#pt2">#</doc-anchor-trigger>
+        <span>Pt.2</span>
+    </h3>
+</doc-anchor-target>
+<p>As for the second one:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-c"><code v-pre class="language-c">      for (i = 0; (uint)i &lt; 12; i = i + 1) {
+        local_85 = local_85 + *j;
+        j = j + 1;
+                    /* if this check does not fail the program terminates. To avoid that, local_85
+                       must be identical to magic1 */
+        if (local_85 != magic1[i]) goto LAB_00101487;
+      }</code></pre>
+</doc-codeblock></div>
+<p>We have a <strong>CBC encryption algorithm</strong>:</p>
+<blockquote>
+<p>Cipher block chaining (CBC) is a mode of operation for a <a href="https://www.techtarget.com/searchsecurity/definition/block-cipher">block cipher</a> -- one in which a sequence of bits are encrypted as a single unit, or block, with a <a href="https://www.techtarget.com/searchsecurity/definition/cipher">cipher</a> key applied to the entire block. Cipher block chaining uses what is known as an initialization vector (<a href="https://whatis.techtarget.com/definition/initialization-vector-IV">IV</a>) of a certain length.</p>
+</blockquote>
+<p>Implemented as such:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-c"><code v-pre class="language-c">      for (i = 0; (uint)i &lt; 12; i = i + 1) {
+        local_85 = local_85 + *j;
+        j = j + 1;
+                    /* if this check does not fail the program terminates. To avoid that, local_85
+                       must be identical to magic1 */
+        if (local_85 != magic1[i]) goto LAB_00101487;
+      }</code></pre>
+</doc-codeblock></div>
+<p><strong>Note</strong>: in both loops the label <code v-pre>LAB_00101487</code> take the instruction pointer to the end of the main, making the program exit. To reverse this we need an equation system as such:</p>
+<div class="math"><pre>\left\{
+    \begin{array}{ll}
+p_{0} = c_{0} - IV \\
+p_{1} = c_{1} - c_{0} \\
+... \\
+p_{n} = c_{n} - c_{n-1} \\
+\end{array}
+\right.</pre></div>
+<p>Where <span class="math">IV</span> is the initialization vector. This can be implemented in python as follows:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-python"><code v-pre class="language-python">local_85 = -0x45    # IV
+tmp.append(chr(magic1[0] - local_85 &amp; 0xff))
+for i in range(1, 12):
+   tmp.append(chr(magic1[i] - magic1[i-1] &amp; 0xff))</code></pre>
+</doc-codeblock></div>
+<p>In the code above <span class="math">p_{i}</span> are characters of the flag, while <span class="math">c_{i}</span> are characters of <code v-pre>magic1</code>.</p>
+<doc-anchor-target id="crackme">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#crackme">#</doc-anchor-trigger>
+        <span>crackme</span>
+    </h2>
+</doc-anchor-target>
+<p>Another easy reversing challenge, in this case we have a XOR cypher:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-c"><code v-pre class="language-c">marker = true;
+for (i = 0; enc_key[i] != '\0'; i = i + 1) {
+  if ((char)(flag[i] ^ enc_key[i]) != (&amp;cypertext)[i]) {
+    marker = false;
+  }
+}</code></pre>
+</doc-codeblock></div>
+<p>Solution:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-python"><code v-pre class="language-python">from binascii import hexlify, unhexlify
+
+key = b'\x19\x83\x89\xD2\x6E\x1F\x84\x1C\x94\x11\x31\x82\xDE\x04\xE9\x9B\xF0\xC9\x18\xBB\x82\x51\xAA\xBA\x13\x9E\x44\xEC\x49\xE5\xAD\x49\x01\x86\xAB\x39\x6A\x00'
+cypertext = b'\x7F\xEF\xE8\xB5\x15\x73\xB4\x6A\xA7\x7D\x48\xDD\xEA\x6A\x9D\xAA\x82\xFA\x6E\xE4\xF6\x23\x9B\xD9\x78\xAB\x1B\x9B\x16\x96\x9C\x2E\x6F\xB2\xC7\x0C\x17\x00'
+
+tmp = []
+for i in range(len(cypertext)):
+    tmp.append(chr(cypertext[i] ^ key[i]))
+flag = ''.join(tmp)
+
+print(f'flag: {flag}')</code></pre>
+</doc-codeblock></div>
+
+                                
+                                <!-- Required only on API pages -->
+                                <doc-toolbar-member-filter-no-results />
+                            </div>
+                            <footer class="clear-both">
+                            
+                                <nav class="flex mt-14">
+                                    <div class="w-1/2">
+                                        <a class="px-5 py-4 h-full flex items-center break-normal font-medium text-blue-500 dark:text-blue-400 border border-gray-300 hover:border-gray-400 dark:border-dark-650 dark:hover:border-dark-450 rounded-l-lg transition-colors duration-150 relative hover:z-5" href="../04-heap/">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="mr-3" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" overflow="visible"><path d="M19 11H7.41l5.29-5.29a.996.996 0 10-1.41-1.41l-7 7a1 1 0 000 1.42l7 7a1.024 1.024 0 001.42-.01.996.996 0 000-1.41L7.41 13H19c.55 0 1-.45 1-1s-.45-1-1-1z" /><path fill="none" d="M0 0h24v24H0z" /></svg>
+                                            <span>
+                                                <span class="block text-xs font-normal text-gray-400 dark:text-dark-400">Previous</span>
+                                                <span class="block mt-1">Heap</span>
+                                            </span>
+                                        </a>
+                                    </div>
+                            
+                                    <div class="w-1/2">
+                                        <a class="px-5 py-4 -mx-px h-full flex items-center justify-end break-normal font-medium text-blue-500 dark:text-blue-400 border border-gray-300 hover:border-gray-400 dark:border-dark-650 dark:hover:border-dark-450 rounded-r-lg transition-colors duration-150 relative hover:z-5" href="../02-rop/">
+                                            <span>
+                                                <span class="block text-xs font-normal text-right text-gray-400 dark:text-dark-400">Next</span>
+                                                <span class="block mt-1">ROP</span>
+                                            </span>
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="ml-3" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" overflow="visible"><path d="M19.92 12.38a1 1 0 00-.22-1.09l-7-7a.996.996 0 10-1.41 1.41l5.3 5.3H5c-.55 0-1 .45-1 1s.45 1 1 1h11.59l-5.29 5.29a.996.996 0 000 1.41c.19.2.44.3.7.3s.51-.1.71-.29l7-7c.09-.09.16-.21.21-.33z" /><path fill="none" d="M0 0h24v24H0z" /></svg>
+                                        </a>
+                                    </div>
+                                </nav>
+                            </footer>
+                        </main>
+                
+                        <div class="border-t dark:border-dark-650 pt-6 mb-8">
+                            <footer class="flex flex-wrap items-center justify-between">
+                                <div>
+                                    <ul class="flex flex-wrap items-center text-sm">
+                                    </ul>
+                                </div>
+                                <div class="docs-copyright py-2 text-gray-500 dark:text-dark-350 text-sm leading-relaxed"><p>Check out my GitHub profile for other notes: <a href="https://github.com/francesco-plt">https://github.com/francesco-plt</a></p></div>
+                            </footer>
+                        </div>
+                    </div>
+                
+                    <!-- Rendered if sidebar right is enabled -->
+                    <!-- Sidebar right skeleton-->
+                    <div v-cloak class="fixed top-0 bottom-0 right-0 translate-x-full bg-white border-gray-200 lg:sticky lg:border-l lg:shrink-0 lg:pt-6 lg:transform-none sm:w-1/2 lg:w-64 lg:z-0 md:w-104 sidebar-right skeleton dark:bg-dark-850 dark:border-dark-650">
+                        <div class="pl-5">
+                            <div class="w-32 h-3 mb-4 bg-gray-200 dark:bg-dark-600 rounded-full loading"></div>
+                            <div class="w-48 h-3 mb-4 bg-gray-200 dark:bg-dark-600 rounded-full loading"></div>
+                            <div class="w-40 h-3 mb-4 bg-gray-200 dark:bg-dark-600 rounded-full loading"></div>
+                        </div>
+                    </div>
+                
+                    <!-- User should be able to hide sidebar right -->
+                    <doc-sidebar-right v-cloak></doc-sidebar-right>
+                </div>
+
+            </div>
+        </div>
+    
+        <doc-search-mobile></doc-search-mobile>
+        <doc-back-to-top></doc-back-to-top>
+    </div>
+
+
+    <div id="docs-overlay-target"></div>
+
+    <script>window.__DOCS__ = { "title": "Reversing", level: 1, icon: "file", hasPrism: true, hasMermaid: false, hasMath: true }</script>
+</body>
+</html>

