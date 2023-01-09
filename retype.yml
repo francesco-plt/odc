@@ -1,6 +1,6 @@
 input: ./docs
 output: .retype
-url: # Add your website address here
+url: "https://francesco-plt.github.io/odc/"
 branding:
   title: "Offensive and Defensive Cybersecurity"
   label: "Challenges summary & write-up"
@@ -8,6 +8,10 @@ links:
   - text: "My GitHub"
     link: "https://github.com/francesco-plt/"
   - text: "Course Page on Webeep"
-    link: "https://webeep.polimi.it/course/view.php?id=2636"  
+    link: "https://webeep.polimi.it/course/view.php?id=2636"
 footer:
-  copyright: "Feel free to open a pull request if needed: https://github.com/francesco-plt/odc" 
+  links:
+    - text: "License"
+      link: ""
+edit:
+  repo: "https://github.com/francesco-plt/odc"
