@@ -13,8 +13,8 @@ jobs:
     - name: Compile Markdown to PDF
       run: |
         # Install pandoc and LaTeX
-        apt-get update
-        apt-get install -y pandoc texlive-latex-base texlive-fonts-recommended texlive-latex-extra
+        sudo apt-get update
+        sudo apt-get install -y pandoc texlive-latex-base texlive-fonts-recommended texlive-latex-extra
         # Convert all .md files in the repository to .pdf
         find . -name "*.md" -exec pandoc {} -o {}.pdf \;
     - name: Upload PDF to Releases
