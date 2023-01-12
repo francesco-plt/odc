@@ -16,7 +16,7 @@ jobs:
         sudo apt-get update
         sudo apt-get install -y pandoc texlive-latex-base texlive-fonts-recommended texlive-latex-extra
         # Convert all .md files in the repository to .pdf
-        find . -name "*.md" -exec pandoc {} -o {}.pdf \;
+        find . -name "*.md" -exec pandoc --pdf-engine=xelatex {} -o {}.pdf \;
     - name: Upload PDF to Releases
       uses: actions/upload-release-asset@v1
       with:
