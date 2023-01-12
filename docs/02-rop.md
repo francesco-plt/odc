@@ -19,7 +19,7 @@ ropasaurusrex: ELF 32-bit LSB executable, Intel 80386, version 1 (SYSV), dynamic
 ```c
 int main(void) {
   int res;
-  
+
   vuln();
   res = write(1,&global_buf,4);
   return res;
@@ -31,7 +31,7 @@ int main(void) {
 ```c
 void vuln(void) {
   char buf [136];
-  
+
   read(0,buf,256);
   return;
 }
@@ -41,7 +41,7 @@ void vuln(void) {
 
 We have an overflow but we cannot perform a `ROP` exploit since we don't know where `libc` is in memory. Since we cannot print out the stack, we could exploit the `GOT` table to leak the address of `system`. Since the binary is not `PIE`, and the momry addresses of the code are not randomized at runtime, the `GOT` table has a permanent address that can be found with Ghidra. From the previous screenshot we can see the address of `read`: `804961c`, and also the address of `write`. Those two functions alone are enough to read and print to screen the content of the file containing the flag.
 
-**how did we find the address of  `write ` inside the library?**
+**how did we find the address of `write ` inside the library?**
 
 We search write into Ghidra (`ctrl+shift+e`) and we look for a `jmp` into the `GOT` that has an `<EXTERNAL>::write` parameter. Another way of doing that is using `objdump` and looking for `<write@plt>`:
 
@@ -56,10 +56,10 @@ pwndbg> got
 
 GOT protection: No RELRO | GOT functions: 4
 
-[0x8049610] __gmon_start__ -> 0x8048302 (__gmon_start__@plt+6) ◂— push   0 /* 'h' */
-[0x8049614] write@GLIBC_2.0 -> 0x8048312 (write@plt+6) ◂— push   8
-[0x8049618] __libc_start_main@GLIBC_2.0 -> 0xf7df4e30 (__libc_start_main) ◂— call   0xf7f132c9
-[0x804961c] read@GLIBC_2.0 -> 0x8048332 (read@plt+6) ◂— push   0x18
+[0x8049610] __gmon_start__ -> 0x8048302 (__gmon_start__@plt+6) <— push   0 /* 'h' */
+[0x8049614] write@GLIBC_2.0 -> 0x8048312 (write@plt+6) <— push   8
+[0x8049618] __libc_start_main@GLIBC_2.0 -> 0xf7df4e30 (__libc_start_main) <— call   0xf7f132c9
+[0x804961c] read@GLIBC_2.0 -> 0x8048332 (read@plt+6) <— push   0x18
 pwndbg>
 ```
 
@@ -68,7 +68,7 @@ pwndbg>
 To check how deep are we in the stack we can use `pwn cyclic -n 4 200 | ./ropasaurusrex` which generates a pattern of 4 bytes, 200 chars long (since we are in a 32 bit environment, otherwise we would need a 8 bytes pattern). Then we check with gdb what section of the pattern gets into the instruction pointer (for e.g. gdb would print `Invalid address at 0x6261616b`), and then we can actually see how long must be our padding, by running:
 
 ```sh
-❯ cyclic -n 4 -l 0x6261616b
+$ cyclic -n 4 -l 0x6261616b
 140
 ```
 
@@ -76,17 +76,17 @@ To check how deep are we in the stack we can use `pwn cyclic -n 4 200 | ./ropasa
 
 Since the binary is x86, we need to put call arguments on the stack. We need the following stack layout:
 
-| Before / After                                               |
-| ------------------------------------------------------------ |
-| ...                                                          |
-| **sEBP** / junk                                              |
-| **sEIP** / `write` in `PLT` (**what we want to execute**)    |
+| Before / After                                                                                                                                                                                        |
+| ----------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------- |
+| ...                                                                                                                                                                                                   |
+| **sEBP** / junk                                                                                                                                                                                       |
+| **sEIP** / `write` in `PLT` (**what we want to execute**)                                                                                                                                             |
 | Frame of caller / cleaner gadget (cleans up the next three cells and puts a `ret` in order to jump at the address that follows the three stack cells just cleared, which is the address of the `main` |
-| Frame of caller / arg #1 (1st argument of what we want to execute, the `fd` of the `write` target) |
-| Frame of caller / arg #2 (2nd argument of what we want to execute, what we want to write to `stdout`) |
-| Frame of caller / arg #3 (3rd argument of what we want to execute, how much to write) |
-| Frame of caller / `main` address (**return address** after that the gadget cleans the stack) |
-| ...                                                          |
+| Frame of caller / arg #1 (1st argument of what we want to execute, the `fd` of the `write` target)                                                                                                    |
+| Frame of caller / arg #2 (2nd argument of what we want to execute, what we want to write to `stdout`)                                                                                                 |
+| Frame of caller / arg #3 (3rd argument of what we want to execute, how much to write)                                                                                                                 |
+| Frame of caller / `main` address (**return address** after that the gadget cleans the stack)                                                                                                          |
+| ...                                                                                                                                                                                                   |
 
 ```python
 # STAGE 1
@@ -177,7 +177,7 @@ It is statically linked binary, which means that `libc` is already located into 
 Moreover:
 
 ```shell
-❯ pwn checksec ./emptyspaces
+$ pwn checksec ./emptyspaces
 [*] '/home/zerocool/chall/solved/emptyspaces/emptyspaces'
     Arch:     amd64-64-little
     RELRO:    Partial RELRO
@@ -199,7 +199,7 @@ int main(void)
 
 {
   char buf [64];
-  
+
   setvbuf((FILE *)stdin,(char *)0x0,2,0);
   setvbuf((FILE *)stdout,(char *)0x0,2,0);
   puts("What shall we use\nTo fill the empty spaces\nWhere we used to pwn?");
@@ -214,7 +214,7 @@ int main(void)
 ```c
 void empty(char *buf) {
   int i;
-  
+
   for (i = 0; i < 18; i = i + 4) {
     *(undefined4 *)(buf + (long)i * 4) = 0xc3f48948;
   }
@@ -222,7 +222,7 @@ void empty(char *buf) {
 }
 ```
 
-**Note**:  `empty` does not complicates things, since it just fills some space which would be padding anyway. If for example we fill the buffer with 64 'A' characters, the stack would look like this:
+**Note**: `empty` does not complicates things, since it just fills some space which would be padding anyway. If for example we fill the buffer with 64 'A' characters, the stack would look like this:
 
 ```assembly
 pwndbg> x/30gx $rsp
@@ -342,8 +342,8 @@ easyrop: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), statically linked,
 
 ```shell
 $ checksec --file ./easyrop
-RELRO           STACK CANARY      NX            PIE         
-No RELRO        No canary found   NX enabled    No PIE       
+RELRO           STACK CANARY      NX            PIE
+No RELRO        No canary found   NX enabled    No PIE
 ```
 
 And `system` is not present in the binary. We can perform buffer overflow by filling the stack exploiting the `while` loop in the `main` function. Ghidra disassembled code:
@@ -377,13 +377,13 @@ Basically we can fill up 8 bytes (1 cell) of the buffer in each loop iteration, 
 
 ### The actual exploit
 
-This will be the structure of our exploit:  
+This will be the structure of our exploit:
 
 | BEFORE VULNERABLE READ | AFTER VULNERABLE READ                      |
 | ---------------------- | ------------------------------------------ |
 | array[...]             | padding                                    |
 | ...                    | ...                                        |
-| * array[...] + 48      | padding                                    |
+| \* array[...] + 48     | padding                                    |
 | sebp                   | junk                                       |
 | seip                   | g1 address                                 |
 | ...                    | 0 (stdin)                                  |
@@ -403,17 +403,17 @@ Basically we want to perform a read to put '/bin/sh' in memory, and pass it as a
 
 Note that:
 
-* g1 is a gadget that performs the following operations:
-  
+- g1 is a gadget that performs the following operations:
+
   `pop rdi, pop rsi, pop rdx, pop rax, ret`
 
-* g2:
-  
+- g2:
+
   `syscall, nop, nop, pop rbp, ret `
-  
+
   We need a syscall gadget that also performs a ret in order to be able to execute another syscall (execve /bin/sh) after the read.
 
-* g3: `syscall`
+- g3: `syscall`
 
 The newline character of `/bin/sh\x00` makes the syscall fail (it will return -1 in `rax`). Solution: pass the string with `pwntools`. Actual exploit:
 

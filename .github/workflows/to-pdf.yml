@@ -1,28 +1,28 @@
 on:
   push:
-    branches: [ main ]
+    branches: [main]
   release:
-    types: [ published ]
+    types: [published]
 
 name: to-pdf
 jobs:
   build:
     runs-on: ubuntu-latest
     steps:
-    - uses: actions/checkout@v3
-    - name: Compile Markdown to PDF
-      run: |
-        # Install pandoc and LaTeX
-        sudo apt-get update
-        sudo apt-get install -y pandoc texlive-latex-base texlive-fonts-recommended texlive-latex-extra texlive-xetex
-        # Convert all .md files in the repository to .pdf
-        find . -name "*.md" -exec pandoc --pdf-engine=xelatex {} -o {}.pdf \;
-    - name: Upload PDF to Releases
-      uses: actions/upload-release-asset@v1
-      with:
-        # Replace USERNAME and REPOSITORY with the appropriate values for your repository
-        # The asset pattern should match all the .pdf files that were generated in the previous step
-        upload_url: https://uploads.github.com/repos/${GITHUB_REPOSITORY}/releases/${GITHUB_REF#refs/tags/}/assets{?name,label}
-        asset_pattern: '*.pdf'
-        asset_name: '*.pdf'
-        token: ${{ secrets.GITHUB_TOKEN }}
+      - uses: actions/checkout@v3
+      - name: Compile Markdown to PDF
+        run: |
+          # Install pandoc and LaTeX
+          sudo apt-get update
+          sudo apt-get install -y pandoc texlive-latex-base texlive-fonts-recommended texlive-latex-extra texlive-xetex
+          # Convert all .md files in the repository to .pdf
+          find . -name "*.md" -exec pandoc --pdf-engine=xelatex {} -o {}.pdf \;
+      - name: Upload PDF to Releases
+        uses: actions/upload-release-asset@v1
+        with:
+          # Replace USERNAME and REPOSITORY with the appropriate values for your repository
+          # The asset pattern should match all the .pdf files that were generated in the previous step
+          upload_url: https://uploads.github.com/repos/${GITHUB_REPOSITORY}/releases/${GITHUB_REF#refs/tags/}/assets{?name,label}
+          asset_path: "*.pdf"
+          asset_name: "*.pdf"
+          asset_content_type: "application/pdf"

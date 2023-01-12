@@ -3,7 +3,7 @@
 ## john
 
 ```shell
-➜ file john
+$ file john
 john: ELF 32-bit LSB executable, Intel 80386, version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux.so.2, for GNU/Linux 3.2.0, BuildID[sha1]=297bb194bf0ae17829e37240b7c7b6aa8a327572, stripped
 ```
 
@@ -274,8 +274,8 @@ If we look at the code with gdb:
 
 ```c
 0x80492b1    call   strstr@plt                     <strstr@plt>
-        haystack: 0xffffd518 ◂— 'flag{esketit}'
-        needle: 0x804a039 ◂— 'flag{'
+        haystack: 0xffffd518 <— 'flag{esketit}'
+        needle: 0x804a039 <— 'flag{'
 ```
 
 We've got a call to the `strstr` function, and another call to the packer.
@@ -510,7 +510,7 @@ DDE76FA6 1C000000 F8FC7A35 27020000 15000000 00000000 546C155C 6C010000 DDE76FA6
 Which is not something that really makes sense translated in ascii. Actually neither the content of `FUN_0804945e` makes sense, really. If fact I was so done that I tried to bruteforce the checks. Basically, we know that the return value of `FUN_0804945e` must be 1. This means that we can script the execution with a gdbinit and try every possible characters for every position of the flag checked by the function to find what we need.
 
 ```shell
-❯ p y.py
+$ p y.py
 13:22:02 - starting...
 found a char:  flag{packer-
 found a char:  flag{packer-4

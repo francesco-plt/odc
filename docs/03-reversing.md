@@ -64,9 +64,9 @@ Now lets try `ltrace` on it:
 ```sh
 $ ltrace ./revmem ciao
 malloc(30)                                                                                         0x555555559260
-strncmp("flag{this_was_an_easy_reverse}", "ciao", 30)                                            
+strncmp("flag{this_was_an_easy_reverse}", "ciao", 30)
 puts("Wrong!"Wrong!
-)                                                                                   
+)
 +++ exited (status 0) +++
 ```
 
@@ -198,9 +198,9 @@ Then we can use I to enter intert mode, overwrite it with pops (note that it is 
 Basically we just need to overwrite both checks, the one which prevents us from setting a breakpoint, and the one that checks if we have gdb attached. Once the binary has been patched to remove the exit, we just start the binary with `gdb`, set a breakpoint in the `strcmp`, and then we can just see the flag in clear as argument of the `strcmp`:
 
 ```sh
- ► 0x55555555536d    call   strncmp@plt                <strncmp@plt>
-        s1: 0x555555559670 ◂— 'flag{this_was_a_bit_more_complex}'
-        s2: 0x7fffffffe57a ◂— 0x5f434c006f616963 /* 'ciao' */
+ 0x55555555536d    call   strncmp@plt                <strncmp@plt>
+        s1: 0x555555559670 <— 'flag{this_was_a_bit_more_complex}'
+        s2: 0x7fffffffe57a <— 0x5f434c006f616963 /* 'ciao' */
         n: 0x21
 ```
 
@@ -244,7 +244,6 @@ As for the second one:
 We have a **CBC encryption algorithm**:
 
 > Cipher block chaining (CBC) is a mode of operation for a [block cipher](https://www.techtarget.com/searchsecurity/definition/block-cipher) -- one in which a sequence of bits are encrypted as a single unit, or block, with a [cipher](https://www.techtarget.com/searchsecurity/definition/cipher) key applied to the entire block. Cipher block chaining uses what is known as an initialization vector ([IV](https://whatis.techtarget.com/definition/initialization-vector-IV)) of a certain length.
->
 
 Implemented as such:
 
@@ -259,6 +258,7 @@ Implemented as such:
 ```
 
 **Note**: in both loops the label `LAB_00101487` take the instruction pointer to the end of the main, making the program exit. To reverse this we need an equation system as such:
+
 $$
 \left\{
     \begin{array}{ll}
@@ -269,6 +269,7 @@ p_{n} = c_{n} - c_{n-1} \\
 \end{array}
 \right.
 $$
+
 Where $IV$ is the initialization vector. This can be implemented in python as follows:
 
 ```python
@@ -278,7 +279,7 @@ for i in range(1, 12):
    tmp.append(chr(magic1[i] - magic1[i-1] & 0xff))
 ```
 
-In the code above $p_{i}$ are characters of the flag, while $c_{i}$ are characters of `magic1`. 
+In the code above $p_{i}$ are characters of the flag, while $c_{i}$ are characters of `magic1`.
 
 ## crackme
 

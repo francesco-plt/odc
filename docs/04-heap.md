@@ -500,7 +500,7 @@ If we use the following flag: `--level 1` when running `one_gadget` it will find
 ## pkm
 
 ```shell
-❯ file pkm_nopie
+$ file pkm_nopie
 pkm_nopie: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), dynamically linked, interpreter /lib64/ld-linux-x86-64.so.2, for GNU/Linux 4.4.0, BuildID[sha1]=13e816c2d730c2c5220d79c23e1d166432537e9b, with debug_info, not stripped
 ```
 
