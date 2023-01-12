@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="turbo-root" content="/odc">
-    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="2.4.0.726854041438">
+    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="2.4.0.726857580248">
 
     <!-- See retype.com -->
     <meta name="generator" content="Retype 2.4.0">
@@ -31,12 +31,12 @@
 
     <script>(function () { var el = document.documentElement, m = localStorage.getItem("/odc/doc_theme"), wm = window.matchMedia; if (m === "dark" || (!m && wm && wm("(prefers-color-scheme: dark)").matches)) { el.classList.add("dark") } else { el.classList.remove("dark") } })();</script>
 
-    <link href="../resources/css/retype.css?v=2.4.0.726854041438" rel="stylesheet" />
+    <link href="../resources/css/retype.css?v=2.4.0.726857580248" rel="stylesheet" />
 
-    <script type="text/javascript" src="../resources/js/config.js?v=2.4.0.726854041438" data-turbo-eval="false" defer></script>
+    <script type="text/javascript" src="../resources/js/config.js?v=2.4.0.726857580248" data-turbo-eval="false" defer></script>
     <script type="text/javascript" src="../resources/js/retype.js?v=2.4.0" data-turbo-eval="false" defer></script>
-    <script id="lunr-js" type="text/javascript" src="../resources/js/lunr.js?v=2.4.0.726854041438" data-turbo-eval="false" defer></script>
-    <script id="prism-js" type="text/javascript" src="../resources/js/prism.js?v=2.4.0.726854041438" defer></script>
+    <script id="lunr-js" type="text/javascript" src="../resources/js/lunr.js?v=2.4.0.726857580248" data-turbo-eval="false" defer></script>
+    <script id="prism-js" type="text/javascript" src="../resources/js/prism.js?v=2.4.0.726857580248" defer></script>
     <link href="../resources/css/katex.css?v=2.4.0" rel="stylesheet" />
     <script id="katex-js" type="text/javascript" src="../resources/js/katex.js?v=2.4.0" defer></script>
 </head>
@@ -252,9 +252,9 @@ exit_group(0)                           = ?
 <div class="codeblock-wrapper"><doc-codeblock>
 <pre class="language-bash"><code v-pre class="language-bash">$ ltrace ./revmem ciao
 malloc(30)                                                                                         0x555555559260
-strncmp(&quot;flag{this_was_an_easy_reverse}&quot;, &quot;ciao&quot;, 30)                                            
+strncmp(&quot;flag{this_was_an_easy_reverse}&quot;, &quot;ciao&quot;, 30)
 puts(&quot;Wrong!&quot;Wrong!
-)                                                                                   
+)
 +++ exited (status 0) +++</code></pre>
 </doc-codeblock></div>
 <p>Well...</p>
@@ -370,9 +370,9 @@ plz don't!
 </doc-anchor-target>
 <p>Basically we just need to overwrite both checks, the one which prevents us from setting a breakpoint, and the one that checks if we have gdb attached. Once the binary has been patched to remove the exit, we just start the binary with <code v-pre>gdb</code>, set a breakpoint in the <code v-pre>strcmp</code>, and then we can just see the flag in clear as argument of the <code v-pre>strcmp</code>:</p>
 <div class="codeblock-wrapper"><doc-codeblock>
-<pre class="language-bash"><code v-pre class="language-bash"> ► 0x55555555536d    call   strncmp@plt                &lt;strncmp@plt&gt;
-        s1: 0x555555559670 ◂— 'flag{this_was_a_bit_more_complex}'
-        s2: 0x7fffffffe57a ◂— 0x5f434c006f616963 /* 'ciao' */
+<pre class="language-bash"><code v-pre class="language-bash"> 0x55555555536d    call   strncmp@plt                &lt;strncmp@plt&gt;
+        s1: 0x555555559670 &lt;— 'flag{this_was_a_bit_more_complex}'
+        s2: 0x7fffffffe57a &lt;— 0x5f434c006f616963 /* 'ciao' */
         n: 0x21</code></pre>
 </doc-codeblock></div>
 <hr />

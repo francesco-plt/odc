@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="turbo-root" content="/odc">
-    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="2.4.0.726854041438">
+    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="2.4.0.726857580248">
 
     <!-- See retype.com -->
     <meta name="generator" content="Retype 2.4.0">
@@ -31,12 +31,12 @@
 
     <script>(function () { var el = document.documentElement, m = localStorage.getItem("/odc/doc_theme"), wm = window.matchMedia; if (m === "dark" || (!m && wm && wm("(prefers-color-scheme: dark)").matches)) { el.classList.add("dark") } else { el.classList.remove("dark") } })();</script>
 
-    <link href="../resources/css/retype.css?v=2.4.0.726854041438" rel="stylesheet" />
+    <link href="../resources/css/retype.css?v=2.4.0.726857580248" rel="stylesheet" />
 
-    <script type="text/javascript" src="../resources/js/config.js?v=2.4.0.726854041438" data-turbo-eval="false" defer></script>
+    <script type="text/javascript" src="../resources/js/config.js?v=2.4.0.726857580248" data-turbo-eval="false" defer></script>
     <script type="text/javascript" src="../resources/js/retype.js?v=2.4.0" data-turbo-eval="false" defer></script>
-    <script id="lunr-js" type="text/javascript" src="../resources/js/lunr.js?v=2.4.0.726854041438" data-turbo-eval="false" defer></script>
-    <script id="prism-js" type="text/javascript" src="../resources/js/prism.js?v=2.4.0.726854041438" defer></script>
+    <script id="lunr-js" type="text/javascript" src="../resources/js/lunr.js?v=2.4.0.726857580248" data-turbo-eval="false" defer></script>
+    <script id="prism-js" type="text/javascript" src="../resources/js/prism.js?v=2.4.0.726857580248" defer></script>
 </head>
 <body>
     <div id="docs-app" class="relative text-base antialiased text-gray-700 bg-white font-body dark:bg-dark-850 dark:text-dark-300">
@@ -386,7 +386,7 @@ class User{
     $this-&gt;isAdmin = false;
     $this-&gt;solved = array();
     $this-&gt;points = 0;
-  
+
   }
 
   function setSolved($challid){
@@ -427,7 +427,7 @@ class Challenge{
       echo($output[0]);
     }
   }
-  
+
   function __destruct(){
     $this-&gt;stop();
   }
@@ -477,7 +477,7 @@ return $isadmin;</code></pre>
 </doc-anchor-target>
 <p>I tried downloading the default user object created by the website, changing the number of points and setting <code v-pre>isAdmin</code> to <code v-pre>true</code>:</p>
 <div class="codeblock-wrapper"><doc-codeblock>
-<pre class="language-php"><code v-pre class="language-php">❯ php user.php
+<pre class="language-php"><code v-pre class="language-php">$ php user.php
 object(User)#1 (5) {
   [&quot;name&quot;]=&gt;
   string(3) &quot;123&quot;
@@ -676,7 +676,7 @@ if (($id != 0) &amp;&amp; !is_null($id)){
   #get_body(r)
   if &quot;Registration Completed!&quot; in r.text:
     return True
-  return False 
+  return False
 
 def login(s, user, password):
   url = &quot;%s/login.php&quot; % HOST
@@ -694,7 +694,7 @@ while True:
   r = threading.Thread(target=registration, args=(s, username, password))
   l = threading.Thread(target=login, args=(s, username, password))
   r.start()
-  l.start() </code></pre>
+  l.start()</code></pre>
 </doc-codeblock></div>
 </li>
 </ul>

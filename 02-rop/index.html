@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="turbo-root" content="/odc">
-    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="2.4.0.726854041438">
+    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="2.4.0.726857580248">
 
     <!-- See retype.com -->
     <meta name="generator" content="Retype 2.4.0">
@@ -31,12 +31,12 @@
 
     <script>(function () { var el = document.documentElement, m = localStorage.getItem("/odc/doc_theme"), wm = window.matchMedia; if (m === "dark" || (!m && wm && wm("(prefers-color-scheme: dark)").matches)) { el.classList.add("dark") } else { el.classList.remove("dark") } })();</script>
 
-    <link href="../resources/css/retype.css?v=2.4.0.726854041438" rel="stylesheet" />
+    <link href="../resources/css/retype.css?v=2.4.0.726857580248" rel="stylesheet" />
 
-    <script type="text/javascript" src="../resources/js/config.js?v=2.4.0.726854041438" data-turbo-eval="false" defer></script>
+    <script type="text/javascript" src="../resources/js/config.js?v=2.4.0.726857580248" data-turbo-eval="false" defer></script>
     <script type="text/javascript" src="../resources/js/retype.js?v=2.4.0" data-turbo-eval="false" defer></script>
-    <script id="lunr-js" type="text/javascript" src="../resources/js/lunr.js?v=2.4.0.726854041438" data-turbo-eval="false" defer></script>
-    <script id="prism-js" type="text/javascript" src="../resources/js/prism.js?v=2.4.0.726854041438" defer></script>
+    <script id="lunr-js" type="text/javascript" src="../resources/js/lunr.js?v=2.4.0.726857580248" data-turbo-eval="false" defer></script>
+    <script id="prism-js" type="text/javascript" src="../resources/js/prism.js?v=2.4.0.726857580248" defer></script>
 </head>
 <body>
     <div id="docs-app" class="relative text-base antialiased text-gray-700 bg-white font-body dark:bg-dark-850 dark:text-dark-300">
@@ -201,7 +201,7 @@ ropasaurusrex: ELF 32-bit LSB executable, Intel 80386, version 1 (SYSV), dynamic
 <div class="codeblock-wrapper"><doc-codeblock>
 <pre class="language-c"><code v-pre class="language-c">int main(void) {
   int res;
-  
+
   vuln();
   res = write(1,&amp;global_buf,4);
   return res;
@@ -211,7 +211,7 @@ ropasaurusrex: ELF 32-bit LSB executable, Intel 80386, version 1 (SYSV), dynamic
 <div class="codeblock-wrapper"><doc-codeblock>
 <pre class="language-c"><code v-pre class="language-c">void vuln(void) {
   char buf [136];
-  
+
   read(0,buf,256);
   return;
 }</code></pre>
@@ -223,7 +223,7 @@ ropasaurusrex: ELF 32-bit LSB executable, Intel 80386, version 1 (SYSV), dynamic
     </h3>
 </doc-anchor-target>
 <p>We have an overflow but we cannot perform a <code v-pre>ROP</code> exploit since we don&#x27;t know where <code v-pre>libc</code> is in memory. Since we cannot print out the stack, we could exploit the <code v-pre>GOT</code> table to leak the address of <code v-pre>system</code>. Since the binary is not <code v-pre>PIE</code>, and the momry addresses of the code are not randomized at runtime, the <code v-pre>GOT</code> table has a permanent address that can be found with Ghidra. From the previous screenshot we can see the address of <code v-pre>read</code>: <code v-pre>804961c</code>, and also the address of <code v-pre>write</code>. Those two functions alone are enough to read and print to screen the content of the file containing the flag.</p>
-<p><strong>how did we find the address of  <code v-pre>write </code> inside the library?</strong></p>
+<p><strong>how did we find the address of <code v-pre>write </code> inside the library?</strong></p>
 <p>We search write into Ghidra (<code v-pre>ctrl+shift+e</code>) and we look for a <code v-pre>jmp</code> into the <code v-pre>GOT</code> that has an <code v-pre>&lt;EXTERNAL&gt;::write</code> parameter. Another way of doing that is using <code v-pre>objdump</code> and looking for <code v-pre>&lt;write@plt&gt;</code>:</p>
 <div class="codeblock-wrapper"><doc-codeblock>
 <pre class="language-bash"><code v-pre class="language-bash">objdump -d -M intel ./ropasaurusrex | grep write</code></pre>
@@ -234,10 +234,10 @@ ropasaurusrex: ELF 32-bit LSB executable, Intel 80386, version 1 (SYSV), dynamic
 
 GOT protection: No RELRO | GOT functions: 4
 
-[0x8049610] __gmon_start__ -&gt; 0x8048302 (__gmon_start__@plt+6) ◂— push   0 /* 'h' */
-[0x8049614] write@GLIBC_2.0 -&gt; 0x8048312 (write@plt+6) ◂— push   8
-[0x8049618] __libc_start_main@GLIBC_2.0 -&gt; 0xf7df4e30 (__libc_start_main) ◂— call   0xf7f132c9
-[0x804961c] read@GLIBC_2.0 -&gt; 0x8048332 (read@plt+6) ◂— push   0x18
+[0x8049610] __gmon_start__ -&gt; 0x8048302 (__gmon_start__@plt+6) &lt;— push   0 /* 'h' */
+[0x8049614] write@GLIBC_2.0 -&gt; 0x8048312 (write@plt+6) &lt;— push   8
+[0x8049618] __libc_start_main@GLIBC_2.0 -&gt; 0xf7df4e30 (__libc_start_main) &lt;— call   0xf7f132c9
+[0x804961c] read@GLIBC_2.0 -&gt; 0x8048332 (read@plt+6) &lt;— push   0x18
 pwndbg&gt;</code></pre>
 </doc-codeblock></div>
 <doc-anchor-target id="cyclic">
@@ -248,7 +248,7 @@ pwndbg&gt;</code></pre>
 </doc-anchor-target>
 <p>To check how deep are we in the stack we can use <code v-pre>pwn cyclic -n 4 200 | ./ropasaurusrex</code> which generates a pattern of 4 bytes, 200 chars long (since we are in a 32 bit environment, otherwise we would need a 8 bytes pattern). Then we check with gdb what section of the pattern gets into the instruction pointer (for e.g. gdb would print <code v-pre>Invalid address at 0x6261616b</code>), and then we can actually see how long must be our padding, by running:</p>
 <div class="codeblock-wrapper"><doc-codeblock>
-<pre class="language-bash"><code v-pre class="language-bash">❯ cyclic -n 4 -l 0x6261616b
+<pre class="language-bash"><code v-pre class="language-bash">$ cyclic -n 4 -l 0x6261616b
 140</code></pre>
 </doc-codeblock></div>
 <doc-anchor-target id="leaking-libc">
@@ -383,7 +383,7 @@ easyrop: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), statically linked,
 </doc-codeblock></div>
 <p>Moreover:</p>
 <div class="codeblock-wrapper"><doc-codeblock>
-<pre class="language-bash"><code v-pre class="language-bash">❯ pwn checksec ./emptyspaces
+<pre class="language-bash"><code v-pre class="language-bash">$ pwn checksec ./emptyspaces
 [*] '/home/zerocool/chall/solved/emptyspaces/emptyspaces'
     Arch:     amd64-64-little
     RELRO:    Partial RELRO
@@ -405,7 +405,7 @@ easyrop: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), statically linked,
 
 {
   char buf [64];
-  
+
   setvbuf((FILE *)stdin,(char *)0x0,2,0);
   setvbuf((FILE *)stdout,(char *)0x0,2,0);
   puts(&quot;What shall we use\nTo fill the empty spaces\nWhere we used to pwn?&quot;);
@@ -418,14 +418,14 @@ easyrop: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), statically linked,
 <div class="codeblock-wrapper"><doc-codeblock>
 <pre class="language-c"><code v-pre class="language-c">void empty(char *buf) {
   int i;
-  
+
   for (i = 0; i &lt; 18; i = i + 4) {
     *(undefined4 *)(buf + (long)i * 4) = 0xc3f48948;
   }
   return;
 }</code></pre>
 </doc-codeblock></div>
-<p><strong>Note</strong>:  <code v-pre>empty</code> does not complicates things, since it just fills some space which would be padding anyway. If for example we fill the buffer with 64 &#x27;A&#x27; characters, the stack would look like this:</p>
+<p><strong>Note</strong>: <code v-pre>empty</code> does not complicates things, since it just fills some space which would be padding anyway. If for example we fill the buffer with 64 &#x27;A&#x27; characters, the stack would look like this:</p>
 <div class="codeblock-wrapper"><doc-codeblock>
 <pre class="language-nasm"><code v-pre class="language-nasm">pwndbg&gt; x/30gx $rsp
 0x7fffffffdf80: 0x00007fffffffe0f8      0x0000000100000002
@@ -548,8 +548,8 @@ easyrop: ELF 64-bit LSB executable, x86-64, version 1 (SYSV), statically linked,
 <p>64 bit statically linked binary: the calling convention needs us to use register to setup a call to <code v-pre>execve</code> to spawn a shell. This is the only way since the stack is NX:</p>
 <div class="codeblock-wrapper"><doc-codeblock>
 <pre class="language-bash"><code v-pre class="language-bash">$ checksec --file ./easyrop
-RELRO           STACK CANARY      NX            PIE         
-No RELRO        No canary found   NX enabled    No PIE       </code></pre>
+RELRO           STACK CANARY      NX            PIE
+No RELRO        No canary found   NX enabled    No PIE</code></pre>
 </doc-codeblock></div>
 <p>And <code v-pre>system</code> is not present in the binary. We can perform buffer overflow by filling the stack exploiting the <code v-pre>while</code> loop in the <code v-pre>main</code> function. Ghidra disassembled code:</p>
 <div class="codeblock-wrapper"><doc-codeblock>

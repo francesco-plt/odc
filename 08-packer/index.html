@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="turbo-root" content="/odc">
-    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="2.4.0.726854041438">
+    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="2.4.0.726857580248">
 
     <!-- See retype.com -->
     <meta name="generator" content="Retype 2.4.0">
@@ -31,12 +31,12 @@
 
     <script>(function () { var el = document.documentElement, m = localStorage.getItem("/odc/doc_theme"), wm = window.matchMedia; if (m === "dark" || (!m && wm && wm("(prefers-color-scheme: dark)").matches)) { el.classList.add("dark") } else { el.classList.remove("dark") } })();</script>
 
-    <link href="../resources/css/retype.css?v=2.4.0.726854041438" rel="stylesheet" />
+    <link href="../resources/css/retype.css?v=2.4.0.726857580248" rel="stylesheet" />
 
-    <script type="text/javascript" src="../resources/js/config.js?v=2.4.0.726854041438" data-turbo-eval="false" defer></script>
+    <script type="text/javascript" src="../resources/js/config.js?v=2.4.0.726857580248" data-turbo-eval="false" defer></script>
     <script type="text/javascript" src="../resources/js/retype.js?v=2.4.0" data-turbo-eval="false" defer></script>
-    <script id="lunr-js" type="text/javascript" src="../resources/js/lunr.js?v=2.4.0.726854041438" data-turbo-eval="false" defer></script>
-    <script id="prism-js" type="text/javascript" src="../resources/js/prism.js?v=2.4.0.726854041438" defer></script>
+    <script id="lunr-js" type="text/javascript" src="../resources/js/lunr.js?v=2.4.0.726857580248" data-turbo-eval="false" defer></script>
+    <script id="prism-js" type="text/javascript" src="../resources/js/prism.js?v=2.4.0.726857580248" defer></script>
 </head>
 <body>
     <div id="docs-app" class="relative text-base antialiased text-gray-700 bg-white font-body dark:bg-dark-850 dark:text-dark-300">
@@ -187,7 +187,7 @@
     </h2>
 </doc-anchor-target>
 <div class="codeblock-wrapper"><doc-codeblock>
-<pre class="language-bash"><code v-pre class="language-bash">➜ file john
+<pre class="language-bash"><code v-pre class="language-bash">$ file john
 john: ELF 32-bit LSB executable, Intel 80386, version 1 (SYSV), dynamically linked, interpreter /lib/ld-linux.so.2, for GNU/Linux 3.2.0, BuildID[sha1]=297bb194bf0ae17829e37240b7c7b6aa8a327572, stripped</code></pre>
 </doc-codeblock></div>
 <div class="codeblock-wrapper"><doc-codeblock>
@@ -444,8 +444,8 @@ pwndbg&gt; x/30gi 0x804970e
 <p>If we look at the code with gdb:</p>
 <div class="codeblock-wrapper"><doc-codeblock>
 <pre class="language-c"><code v-pre class="language-c">0x80492b1    call   strstr@plt                     &lt;strstr@plt&gt;
-        haystack: 0xffffd518 ◂— 'flag{esketit}'
-        needle: 0x804a039 ◂— 'flag{'</code></pre>
+        haystack: 0xffffd518 &lt;— 'flag{esketit}'
+        needle: 0x804a039 &lt;— 'flag{'</code></pre>
 </doc-codeblock></div>
 <p>We&#x27;ve got a call to the <code v-pre>strstr</code> function, and another call to the packer.</p>
 <p><strong>From this behaviour we unedrstand that the check on the flag is performed incrementally by calling <code v-pre>unpack</code> and the <code v-pre>pack</code> on some code, and so on. This means that we&#x27;ll not have a point in time in which during execution the binary is completely unpacked.</strong> Extracting the unpacked code dynamically can be very time consuming, which means that a more efficient method would be to write a script that reverse engineer the packing algorithm, which then can be used to create a binary containing an unpacked payload. This is what the static approach does in a nutshell.</p>
@@ -670,7 +670,7 @@ LAB_08049692:
 </doc-codeblock></div>
 <p>Which is not something that really makes sense translated in ascii. Actually neither the content of <code v-pre>FUN_0804945e</code> makes sense, really. If fact I was so done that I tried to bruteforce the checks. Basically, we know that the return value of <code v-pre>FUN_0804945e</code> must be 1. This means that we can script the execution with a gdbinit and try every possible characters for every position of the flag checked by the function to find what we need.</p>
 <div class="codeblock-wrapper"><doc-codeblock>
-<pre class="language-bash"><code v-pre class="language-bash">❯ p y.py
+<pre class="language-bash"><code v-pre class="language-bash">$ p y.py
 13:22:02 - starting...
 found a char:  flag{packer-
 found a char:  flag{packer-4
