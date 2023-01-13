@@ -304,7 +304,7 @@ It is used to fetch a result row as an associative array.
 
 ### A first approach
 
-I tried downloading the default user object created by the website, changing the number of points and setting `isAdmin` to `true`:
+I tried downloading the default user object created by the website, changing the number of points and setting `isAdmin` to `true`:
 
 ```php
 $ php user.php

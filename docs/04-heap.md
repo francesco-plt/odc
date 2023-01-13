@@ -678,7 +678,7 @@ void rename_pkm(void) {
 }
 ```
 
-Where `UNKNOWN` is a global variable containing an address to the 'PKM' hardcoded string. ~~This means that we can avoid to free a chunk if we previously wrote that in it.~~
+Where `UNKNOWN` is a global variable containing an address to the 'PKM' hardcoded string. ~~This means that we can avoid to free a chunk if we previously wrote that in it.~~
 
 ### How to perform the `null byte` poisoning
 
