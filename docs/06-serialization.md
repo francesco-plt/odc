@@ -187,7 +187,7 @@ Basically we need to serialize an instance of the `GPLSourceBloater` class with 
 
 ## metactf
 
-More complex than free-as-in-beer. We have two classes: `User` and `Challenge`:
+More complex than free-as-in-beer. We have two classes: `User` and `Challenge`:
 
 ```php
 <?php
