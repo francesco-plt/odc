@@ -1,28 +1,23 @@
-on:
-  push:
-    branches: [main]
-  release:
-    types: [published]
-
-name: to-pdf
-jobs:
-  build:
-    runs-on: ubuntu-latest
-    steps:
-      - uses: actions/checkout@v3
-      - name: Compile Markdown to PDF
-        run: |
-          # Install pandoc and LaTeX
-          sudo apt-get update
-          sudo apt-get install -y pandoc texlive-latex-base texlive-fonts-recommended texlive-latex-extra texlive-xetex
-          # Convert all .md files in the repository to .pdf
-          find . -name "*.md" -exec pandoc --pdf-engine=xelatex {} -o {}.pdf \;
-      - name: Upload PDF to Releases
-        uses: actions/upload-release-asset@v1
-        with:
-          # Replace USERNAME and REPOSITORY with the appropriate values for your repository
-          # The asset pattern should match all the .pdf files that were generated in the previous step
-          upload_url: https://uploads.github.com/repos/${GITHUB_REPOSITORY}/releases/${GITHUB_REF#refs/tags/}/assets{?name,label}
-          asset_path: "*.pdf"
-          asset_name: "*.pdf"
-          asset_content_type: "application/pdf"
+steps:
+  - name: Checkout code
+    uses: actions/checkout@v3
+  - name: Convert Markdown to PDF
+    run: |
+      for file in docs/*.md; do
+        pandoc --from=markdown --to=pdf --output=dist/$(basename $file .md).pdf "$file"
+      done
+  - name: Create Release
+    id: create_release
+    uses: actions/create-release@v1
+    env:
+      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+    with:
+      tag_name: ${{ github.ref }}
+      release_name: Release ${{ github.ref }}
+  - name: Upload PDF as Release Asset
+    uses: actions/upload-release-asset@v1
+    with:
+      upload_url: ${{ steps.create_release.outputs.upload_url }}
+      asset_path: dist/*.pdf
+      asset_name: $(basename $file .md).pdf
+      asset_content_type: application/pdf
