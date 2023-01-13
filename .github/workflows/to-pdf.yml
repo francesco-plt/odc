@@ -1,29 +1,32 @@
+name: to-pdf
 on:
   push:
     branches: [main]
   release:
     types: [published]
-
-steps:
-  - name: Checkout code
-    uses: actions/checkout@v3
-  - name: Convert Markdown to PDF
-    run: |
-      for file in docs/*.md; do
-        pandoc --from=markdown --to=pdf --output=dist/$(basename $file .md).pdf "$file"
-      done
-  - name: Create Release
-    id: create_release
-    uses: actions/create-release@v1
-    env:
-      GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-    with:
-      tag_name: ${{ github.ref }}
-      release_name: Release ${{ github.ref }}
-  - name: Upload PDF as Release Asset
-    uses: actions/upload-release-asset@v1
-    with:
-      upload_url: ${{ steps.create_release.outputs.upload_url }}
-      asset_path: dist/*.pdf
-      asset_name: $(basename $file .md).pdf
-      asset_content_type: application/pdf
+jobs:
+  build:
+    runs-on: ubuntu-latest
+  steps:
+    - name: Checkout code
+      uses: actions/checkout@v3
+    - name: Convert Markdown to PDF
+      run: |
+        for file in docs/*.md; do
+          pandoc --from=markdown --to=pdf --output=dist/$(basename $file .md).pdf "$file"
+        done
+    - name: Create Release
+      id: create_release
+      uses: actions/create-release@v1
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+    - name: Upload PDF as Release Asset
+      uses: actions/upload-release-asset@v1
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: dist/*.pdf
+        asset_name: $(basename $file .md).pdf
+        asset_content_type: application/pdf
