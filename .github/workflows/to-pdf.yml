@@ -8,25 +8,21 @@ name: to-pdf
 jobs:
   build:
     runs-on: ubuntu-latest
-  steps:
-    - uses: actions/checkout@v3
-    - name: Convert Markdown to PDF
-      run: |
-        for file in docs/*.md; do
-          pandoc --from=markdown --to=pdf --output=dist/$(basename $file .md).pdf "$file"
-        done
-    - uses: actions/create-release@v1
-    - name: Create Release
-      id: create_release
-      env:
-        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-      with:
-        tag_name: ${{ github.ref }}
-        release_name: Release ${{ github.ref }}
-    - uses: actions/upload-release-asset@v1
-    - name: Upload PDF as Release Asset
-      with:
-        upload_url: ${{ steps.create_release.outputs.upload_url }}
-        asset_path: dist/*.pdf
-        asset_name: $(basename $file .md).pdf
-        asset_content_type: application/pdf
+    steps:
+      - uses: actions/checkout@v3
+      - name: Compile Markdown to PDF
+        run: |
+          # Install pandoc and LaTeX
+          sudo apt-get update
+          sudo apt-get install -y pandoc texlive-latex-base texlive-fonts-recommended texlive-latex-extra texlive-xetex
+          # Convert all .md files in the repository to .pdf
+          find . -name "*.md" -exec pandoc --pdf-engine=xelatex {} -o {}.pdf \;
+      - uses: actions/create-release@v1
+        name: Upload PDF to Releases
+        with:
+          draft: false
+          prerelease: false
+          release_name: ${{ steps.version.outputs.version }}
+          tag_name: ${{ github.ref }}
+        env:
+          GITHUB_TOKEN: ${{ github.token }}
