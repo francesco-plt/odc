@@ -1,0 +1,32 @@
+on:
+  push:
+    branches: [main]
+  release:
+    types: [published]
+
+name: to-pdf
+jobs:
+  build:
+    runs-on: ubuntu-latest
+  steps:
+    - uses: actions/checkout@v3
+      name: Convert Markdown to PDF
+      run: |
+        for file in docs/*.md; do
+          pandoc --from=markdown --to=pdf --output=dist/$(basename $file .md).pdf "$file"
+        done
+    - uses: actions/create-release@v1
+      name: Create Release
+      id: create_release
+      env:
+        GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+      with:
+        tag_name: ${{ github.ref }}
+        release_name: Release ${{ github.ref }}
+    - uses: actions/upload-release-asset@v1
+      name: Upload PDF as Release Asset
+      with:
+        upload_url: ${{ steps.create_release.outputs.upload_url }}
+        asset_path: dist/*.pdf
+        asset_name: $(basename $file .md).pdf
+        asset_content_type: application/pdf
