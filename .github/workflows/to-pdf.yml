@@ -14,8 +14,8 @@ jobs:
       - name: Checkout repository
         uses: actions/checkout@v2
 
-      - name: Install pandoc
-        run: sudo apt-get install pandoc
+      - name: Install pandoc and other dependencies
+        run: sudo apt-get install -y pandoc pdflatex
 
       - name: Convert markdown to pdf
         run: |
