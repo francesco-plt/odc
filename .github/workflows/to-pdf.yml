@@ -12,7 +12,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Install pandoc and other dependencies
         run: sudo apt-get install -y pandoc texlive-latex-base texlive-latex-extra
@@ -23,10 +23,7 @@ jobs:
           for file in docs/*.md; do
             pandoc "$file" -o "dist/$(basename "$file" .md).pdf"
           done
-      - name: Check dist directory
-        run: |
-          pwd
-          ls -la dist
+        
       - name: Zip pdf files
         run: zip -r pdfs.zip dist/
 
@@ -42,11 +39,7 @@ jobs:
           prerelease: false
 
       - name: Upload PDFs
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        uses: actions/upload-artifact@v3
         with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: dist/pdfs.zip
-          asset_name: PDF files
-          asset_content_type: application/zip
+          name: pdfs
+          path: dist/pdfs.zip
