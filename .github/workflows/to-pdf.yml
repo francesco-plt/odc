@@ -23,6 +23,11 @@ jobs:
           for file in docs/*.md; do
             pandoc "$file" -o "dist/$(basename "$file" .md).pdf"
           done
+      - name: Check dist directory
+        run: |
+          pwd
+          ls -la dist
+
 
       - name: Create release
         id: create_release
