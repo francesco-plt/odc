@@ -27,7 +27,8 @@ jobs:
         run: |
           pwd
           ls -la dist
-
+      - name: Zip pdf files
+        run: zip -r pdfs.zip dist/
 
       - name: Create release
         id: create_release
@@ -46,6 +47,6 @@ jobs:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
           upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: dist/*.pdf
-          asset_name: pdfs.zip
+          asset_path: dist/pdfs.zip
+          asset_name: PDF files
           asset_content_type: application/zip
