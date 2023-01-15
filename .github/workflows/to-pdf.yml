@@ -34,7 +34,7 @@ jobs:
           artifactpath='$(pwd)/dist/pdfs.zip'
           if [ -f "$artifactpath" ]; then
             echo "$artifactpath exists."
-          else
+          fi
 
       - name: Create release
         id: create_release
