@@ -30,8 +30,8 @@ jobs:
       - name: Artifact check
         run: |
           curpath=$(pwd)
-          echo 'current path: $curpath'
-          artifactpath='$(pwd)/dist/pdfs.zip'
+          echo "current path: $curpath"
+          artifactpath="$(pwd)/dist/pdfs.zip"
           if [ -f "$artifactpath" ]; then
             echo "$artifactpath exists."
           fi
