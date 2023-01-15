@@ -714,7 +714,7 @@ Let's call those chunk as follows:
 3. **Chunk 3**: third chunk, it corresponds to pokemon 1 name
 4. **Chunk 4**: third chunk, it corresponds to pokemon 2 name
 
-Let's remember that the vulnerable function is the one that allocates the chunks of arbitrary length, which is the one we used to allocate the two `0x200` chunks. here's their content:
+Let's remember that the vulnerable function is the one that allocates the chunks of arbitrary length, which is the one we used to allocate the two `0x200` chunks. here's their content:
 
 ```
 pwndbg> x/68gx 0x405200
