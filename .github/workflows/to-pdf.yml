@@ -26,6 +26,15 @@ jobs:
         
       - name: Zip pdf files
         run: zip -r pdfs.zip dist/
+        
+      - name: Artifact check
+        run: |
+          curpath=$(pwd)
+          echo 'current path: $curpath'
+          artifactpath='$(pwd)/dist/pdfs.zip'
+          if [ -f "$artifactpath" ]; then
+            echo "$artifactpath exists."
+          else
 
       - name: Create release
         id: create_release
