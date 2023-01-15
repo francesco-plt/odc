@@ -1,9 +1,10 @@
 name: Publish Retype powered website to GitHub Pages
+
 on:
-  workflow_dispatch:
   push:
-    branches:
-      - main
+    paths:
+      - docs/*.md
+  workflow_dispatch:
 
 jobs:
   publish:
