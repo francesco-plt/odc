@@ -4,6 +4,7 @@ on:
   push:
     paths:
       - docs/*.md
+  workflow_dispatch:
 
 jobs:
   build:
