@@ -44,6 +44,6 @@ jobs:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           automatic_release_tag: "latest"
           prerelease: true
-          title: 'Release {{ vars.$GITHUB_SHA }}'
+          title: Release {{ vars.$GITHUB_SHA }}
           files: |
             pdfs.zip
