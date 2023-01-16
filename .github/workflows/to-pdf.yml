@@ -39,10 +39,11 @@ jobs:
             exit 1
           fi
       
-      - name: Set git_hash variable
-        run: echo ::set-env name=git_hash::$(git rev-parse --short "$GITHUB_SHA")
-      - name: Set git_branch variable
-        run: echo ::set-env name=git_branch::${GITHUB_REF#refs/heads/}
+      - name: Setting release identifier variables
+        id: release_vars
+        run: |
+          echo ::set-env name=git_hash::$(git rev-parse --short "$GITHUB_SHA")
+          echo ::set-env name=git_branch::${GITHUB_REF#refs/heads/}
 
 
       - name: Create release
@@ -51,8 +52,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.ref }}-${{ git_hash }}
-          release_name: Release ${{ github.ref }}-${{ git_branch }}
+          tag_name: ${{ github.ref }}-${{ steps.release_vars.git_hash }}
+          release_name: Release ${{ github.ref }}-${{ steps.release_vars.git_branch }}
           draft: false
           prerelease: false
 
