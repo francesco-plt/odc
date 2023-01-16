@@ -31,7 +31,7 @@ jobs:
         
       - name: Artifact check
         run: |
-          outpath="$(pwd)/dist/pdfs.zip"
+          outpath="$(pwd)/pdfs.zip"
           if [ -f "$outpath" ]; then
             echo "$outpath exists, and everything is good"
             exit 0
@@ -55,4 +55,4 @@ jobs:
         uses: actions/upload-artifact@v3
         with:
           name: pdfs
-          path: dist/pdfs.zip
+          path: pdfs.zip
