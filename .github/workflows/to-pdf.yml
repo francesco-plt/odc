@@ -44,25 +44,6 @@ jobs:
           repo_token: "${{ secrets.GITHUB_TOKEN }}"
           automatic_release_tag: "latest"
           prerelease: true
-          title: 'Release $GITHUB_SHA'
+          title: 'Release {{ vars.$GITHUB_SHA }}'
           files: |
             pdfs.zip
-      
-#      - name: Setting release identifier variables
-#         id: release_vars
-#         run: |
-#           echo "git_hash=$(git rev-parse --short '$GITHUB_SHA')" >> $GITHUB_ENV
-
-
-#       - name: Create a Release
-#         uses: elgohr/Github-Release-Action@v4
-#         env:
-#           GITHUB_TOKEN: ${{ secrets.RELEASE_TOKEN }}
-#         with:
-#           title: Release associated to commit ${{ env.git_hash }}
-
-#       - name: Upload PDFs
-#         uses: actions/upload-artifact@v3
-#         with:
-#           name: pdfs
-#           path: pdfs.zip
