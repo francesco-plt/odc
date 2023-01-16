@@ -25,18 +25,17 @@ jobs:
           done
         
       - name: Zip pdf files
-        run: zip -r pdfs.zip dist/
+        run: |
+          outpath="$(pwd)/dist/pdfs.zip"
+          zip -rv pdfs.zip dist/
         
       - name: Artifact check
         run: |
-          curpath=$(pwd)
-          echo "current path: $curpath"
-          artifactpath="$(pwd)/dist/pdfs.zip"
-          if [ -f "$artifactpath" ]; then
-            echo "$artifactpath exists."
+          if [ -f "$outpath" ]; then
+            echo "$outpath exists, and everything is good"
             exit 0
           else
-            echo "cannot locate artifacts at $artifactpath. exiting..."
+            echo "cannot locate artifacts at $outpath. exiting..."
             exit 1
           fi
 
