@@ -26,7 +26,6 @@ jobs:
         
       - name: Zip pdf files
         run: |
-          echo "$(pwd)"
           zip -rv pdfs.zip dist/
         
       - name: Artifact check
@@ -39,6 +38,12 @@ jobs:
             echo "cannot locate artifacts at $outpath. exiting..."
             exit 1
           fi
+      
+      - name: Set git_hash variable
+        run: echo ::set-env name=git_hash::$(git rev-parse --short "$GITHUB_SHA")
+      - name: Set git_branch variable
+        run: echo ::set-env name=git_branch::${GITHUB_REF#refs/heads/}
+
 
       - name: Create release
         id: create_release
@@ -46,8 +51,8 @@ jobs:
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
+          tag_name: ${{ github.ref }}-${{ git_hash }}
+          release_name: Release ${{ github.ref }}-${{ git_branch }}
           draft: false
           prerelease: false
 
