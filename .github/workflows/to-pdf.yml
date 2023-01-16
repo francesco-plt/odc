@@ -12,7 +12,7 @@ jobs:
 
     steps:
       - name: Checkout repository
-        uses: actions/checkout@v2
+        uses: actions/checkout@v3
 
       - name: Install pandoc and other dependencies
         run: sudo apt-get install -y pandoc texlive-latex-base texlive-latex-extra
@@ -23,24 +23,26 @@ jobs:
           for file in docs/*.md; do
             pandoc "$file" -o "dist/$(basename "$file" .md).pdf"
           done
-
-      - name: Create release
-        id: create_release
-        uses: actions/create-release@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+        
+      - name: Zip pdf files
+        run: |
+          zip -rv pdfs.zip dist/
+        
+      - name: Artifact check
+        run: |
+          outpath="$(pwd)/pdfs.zip"
+          if [ -f "$outpath" ]; then
+            echo "$outpath exists, and everything is good"
+            exit 0
+          else
+            echo "cannot locate artifacts at $outpath. exiting..."
+            exit 1
+          fi
+          
+      - uses: "marvinpinto/action-automatic-releases@latest"
         with:
-          tag_name: ${{ github.ref }}
-          release_name: Release ${{ github.ref }}
-          draft: false
+          repo_token: "${{ secrets.GITHUB_TOKEN }}"
+          automatic_release_tag: "latest"
           prerelease: false
-
-      - name: Upload PDFs
-        uses: actions/upload-release-asset@v1
-        env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        with:
-          upload_url: ${{ steps.create_release.outputs.upload_url }}
-          asset_path: dist/*.pdf
-          asset_name: pdfs.zip
-          asset_content_type: application/zip
+          files: |
+            pdfs.zip
