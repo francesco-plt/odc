@@ -26,11 +26,12 @@ jobs:
         
       - name: Zip pdf files
         run: |
-          outpath="$(pwd)/dist/pdfs.zip"
+          echo "$(pwd)"
           zip -rv pdfs.zip dist/
         
       - name: Artifact check
         run: |
+          outpath="$(pwd)/dist/pdfs.zip"
           if [ -f "$outpath" ]; then
             echo "$outpath exists, and everything is good"
             exit 0
