@@ -34,6 +34,10 @@ jobs:
           artifactpath="$(pwd)/dist/pdfs.zip"
           if [ -f "$artifactpath" ]; then
             echo "$artifactpath exists."
+            exit 0
+          else
+            echo "cannot locate artifacts at $artifactpath. exiting..."
+            exit 1
           fi
 
       - name: Create release
