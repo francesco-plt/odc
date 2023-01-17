@@ -20,17 +20,26 @@ jobs:
       - name: Convert markdown to pdf
         run: |
           mkdir dist
-          for file in docs/*.md; do
-            pandoc "$file" -o "dist/$(basename "$file" .md).pdf"
-          done
+          if [ -d "docs/assets" ]; then
+            cd docs
+            for file in *.md; do
+              pandoc "$file" -o "../dist/$(basename "$file" .md).pdf"
+            done
+            cd ..
+          else
+            for file in docs/*.md; do
+              pandoc "$file" -o "dist/$(basename "$file" .md).pdf"
+            done
+          fi
         
       - name: Zip pdf files
         run: |
-          zip -rv pdfs.zip dist/
+          echo "REPO_NAME=$(echo $GITHUB_REPOSITORY | rev | cut -d/ -f1 | rev)" >> $GITHUB_ENV
+          zip -rv "$(echo $GITHUB_REPOSITORY | rev | cut -d/ -f1 | rev).zip" dist/
         
       - name: Artifact check
         run: |
-          outpath="$(pwd)/pdfs.zip"
+          outpath="$(pwd)/${{ env.REPO_NAME }}.zip"
           if [ -f "$outpath" ]; then
             echo "$outpath exists, and everything is good"
             exit 0
@@ -45,4 +54,4 @@ jobs:
           automatic_release_tag: "latest"
           prerelease: false
           files: |
-            pdfs.zip
+            ${{ env.REPO_NAME }}.zip
