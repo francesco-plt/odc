@@ -2,8 +2,6 @@ name: Publish Retype powered website to GitHub Pages
 
 on:
   push:
-    paths:
-      - docs/*.md
   workflow_dispatch:
 
 jobs:
